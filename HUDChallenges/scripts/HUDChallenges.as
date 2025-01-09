@@ -37,10 +37,6 @@ package
       
       private static const DATA_TEXT:String = "text";
       
-      private static const DATA_POSITION_X:String = "positionX";
-      
-      private static const DATA_POSITION_Y:String = "positionY";
-      
       private static const DATA_CHALLENGES:String = "challenges";
       
       private static const DATA_EVENTS:String = "events";
@@ -224,16 +220,6 @@ package
       private var xpBar:Object;
       
       private var XPMeter:* = null;
-      
-      private var forcePositionX:Number = 0;
-      
-      private var forcePositionY:Number = 0;
-      
-      private var lastPositionX:Number = -1;
-      
-      private var lastPositionY:Number = -1;
-      
-      private var lastBgPositionY:Number = 0;
       
       private var isHudMenu:Boolean = true;
       
@@ -619,43 +605,13 @@ package
       public function applyConfig(tf:TextField) : void
       {
          tf.visible = true;
-         if(forcePositionX != 0)
-         {
-            tf.x = forcePositionX;
-            forcePositionX = 0;
-         }
-         else
-         {
-            tf.x = config.x;
-         }
+         tf.x = config.x;
          tf.background = false;
          tf.width = config.width;
          tf.height = this.dummy_tf.height;
-         if(forcePositionY != 0)
-         {
-            if(lastPositionY == -1)
-            {
-               if(challenges_index == 0)
-               {
-                  lastPositionY = config.y;
-               }
-               else
-               {
-                  lastPositionY = LastDisplayTextfield.y + LastDisplayTextfield.height + config.ySpacing + yOffset;
-               }
-            }
-            tf.y = forcePositionY;
-            forcePositionY = 0;
-         }
-         else if(challenges_index == 0)
+         if(challenges_index == 0)
          {
             tf.y = config.y;
-         }
-         else if(lastPositionY != -1)
-         {
-            tf.y = lastPositionY;
-            lastPositionY = -1;
-            yOffset = 0;
          }
          else
          {
@@ -1098,17 +1054,6 @@ package
                               if(parts.length > 1)
                               {
                                  displayEvents(parts[1]);
-                              }
-                           case DATA_POSITION_X:
-                              if(parts.length > 1 && !isNaN(parts[1]))
-                              {
-                                 forcePositionX = Number(parts[1]);
-                              }
-                              break;
-                           case DATA_POSITION_Y:
-                              if(parts.length > 1 && !isNaN(parts[1]))
-                              {
-                                 forcePositionY = Number(parts[1]);
                               }
                         }
                      }
