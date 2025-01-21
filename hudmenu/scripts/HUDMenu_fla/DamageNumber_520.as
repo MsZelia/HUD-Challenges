@@ -2,14 +2,14 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol571")]
-   public dynamic class DamageNumber_513 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol561")]
+   public dynamic class DamageNumber_520 extends MovieClip
    {
        
       
       public var Number_mc:MovieClip;
       
-      public function DamageNumber_513()
+      public function DamageNumber_520()
       {
          super();
          addFrameScript(0,this.frame1,39,this.frame40);

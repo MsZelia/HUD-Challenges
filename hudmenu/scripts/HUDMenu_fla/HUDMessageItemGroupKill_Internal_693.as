@@ -3,8 +3,8 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol286")]
-   public dynamic class HUDMessageItemGroupKill_Internal_686 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol276")]
+   public dynamic class HUDMessageItemGroupKill_Internal_693 extends MovieClip
    {
        
       
@@ -14,7 +14,7 @@ package HUDMenu_fla
       
       public var Team1Score_tf:TextField;
       
-      public function HUDMessageItemGroupKill_Internal_686()
+      public function HUDMessageItemGroupKill_Internal_693()
       {
          super();
          addFrameScript(0,this.frame1,1,this.frame2);

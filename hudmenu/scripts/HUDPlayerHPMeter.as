@@ -25,7 +25,7 @@ package
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1626")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1634")]
    public dynamic class HUDPlayerHPMeter extends HealthMeter
    {
        

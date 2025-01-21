@@ -2,14 +2,14 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1622")]
-   public dynamic class PoseidonMeterFill_94 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol1630")]
+   public dynamic class GlowMeterFill_94 extends MovieClip
    {
        
       
       public var Fill_mc:MovieClip;
       
-      public function PoseidonMeterFill_94()
+      public function GlowMeterFill_94()
       {
          super();
          addFrameScript(0,this.frame1);

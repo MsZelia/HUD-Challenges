@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1678")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1686")]
    public dynamic class HUDThirstMeter_mc_74 extends MovieClip
    {
        

@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import flash.geom.ColorTransform;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1654")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1662")]
    public dynamic class HUDActiveEffectsWidget extends BSUIComponent
    {
       

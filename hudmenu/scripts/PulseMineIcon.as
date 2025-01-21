@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol458")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol448")]
    public dynamic class PulseMineIcon extends MovieClip
    {
        

@@ -54,7 +54,7 @@ package
       
       public var expFlare_mc:MovieClip;
       
-      public var PoseidonMeter_mc:MovieClip;
+      public var GlowMeter_mc:MovieClip;
       
       private var _hpMeterFrames:int = 100;
       

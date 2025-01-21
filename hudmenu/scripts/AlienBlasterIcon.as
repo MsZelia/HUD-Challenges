@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol499")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol489")]
    public dynamic class AlienBlasterIcon extends MovieClip
    {
        

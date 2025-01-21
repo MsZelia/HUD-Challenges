@@ -108,7 +108,7 @@ package
       
       public var LeftMeters_mc:MovieClip;
       
-      public var BottomCenterGroup_mc:MovieClip;
+      public var BottomCenterGroup_mc:BottomCenterGroup;
       
       public var RightMeters_mc:HUDRightMeters;
       

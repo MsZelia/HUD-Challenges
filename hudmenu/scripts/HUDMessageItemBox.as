@@ -3,7 +3,7 @@ package
    import Shared.GlobalFunc;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol297")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol287")]
    public class HUDMessageItemBox extends HUDMessageItemBase
    {
        

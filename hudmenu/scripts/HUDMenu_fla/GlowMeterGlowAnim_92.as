@@ -3,12 +3,12 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1618")]
-   public dynamic class PoseidonMeterGlowAnim_92 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol1626")]
+   public dynamic class GlowMeterGlowAnim_92 extends MovieClip
    {
        
       
-      public function PoseidonMeterGlowAnim_92()
+      public function GlowMeterGlowAnim_92()
       {
          super();
          addFrameScript(0,this.frame1,48,this.frame49,96,this.frame97);

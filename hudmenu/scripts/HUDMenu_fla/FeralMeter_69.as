@@ -2,10 +2,12 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1674")]
-   public dynamic class PoseidonRightMeter_69 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol1682")]
+   public dynamic class FeralMeter_69 extends MovieClip
    {
        
+      
+      public var FeralMeterLabel_mc:MovieClip;
       
       public var GhostMeter_mc:MovieClip;
       
@@ -15,7 +17,7 @@ package HUDMenu_fla
       
       public var survivalMeterIcon_mc:MovieClip;
       
-      public function PoseidonRightMeter_69()
+      public function FeralMeter_69()
       {
          super();
          addFrameScript(0,this.frame1,6,this.frame7,12,this.frame13);

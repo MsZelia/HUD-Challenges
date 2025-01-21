@@ -2,12 +2,12 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol294")]
-   public dynamic class MessageBoxStar_683 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol284")]
+   public dynamic class MessageBoxStar_690 extends MovieClip
    {
        
       
-      public function MessageBoxStar_683()
+      public function MessageBoxStar_690()
       {
          super();
          addFrameScript(0,this.frame1);

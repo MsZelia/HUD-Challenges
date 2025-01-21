@@ -2,14 +2,14 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol530")]
-   public dynamic class DoTBackerAnimation_524 extends MovieClip
+   [Embed(source="/_assets/assets.swf", symbol="symbol520")]
+   public dynamic class DoTBackerAnimation_531 extends MovieClip
    {
        
       
       public var FillInternal_mc:MovieClip;
       
-      public function DoTBackerAnimation_524()
+      public function DoTBackerAnimation_531()
       {
          super();
          addFrameScript(0,this.frame1,32,this.frame33,65,this.frame66);
