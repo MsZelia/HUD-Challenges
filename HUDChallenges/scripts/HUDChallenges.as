@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.0.8";
+      public static const MOD_VERSION:String = "1.0.9";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -88,6 +88,8 @@ package
       private static const CHALLENGE_TYPE_DAILY:uint = 0;
       
       private static const CHALLENGE_TYPE_WEEKLY:uint = 1;
+      
+      private static const ACTIVITY_TYPE_PUBLIC_EVENT:uint = 1;
       
       private static const ACTIVITY_TYPE_MUTATED_EVENT:uint = 5;
       
@@ -197,6 +199,8 @@ package
       
       private var _events:Array;
       
+      private var _eventTimes:*;
+      
       private var challenges_tf:Array;
       
       private var challenges_index:int = 0;
@@ -229,6 +233,7 @@ package
       
       public function HUDChallenges()
       {
+         this._eventTimes = {};
          this.challenges_tf = [];
          this.separators = [];
          super();
@@ -516,10 +521,17 @@ package
                if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
                {
                   events.push({
+                     "id":activity.id,
                      "name":activity.name,
-                     "type":activity.type,
-                     "time":activity.time
+                     "type":activity.type
                   });
+                  if(_eventTimes[activity.id] == null || _eventTimes[activity.id].time != activity.time)
+                  {
+                     _eventTimes[activity.id] = {
+                        "time":activity.time,
+                        "timestamp":getTimer()
+                     };
+                  }
                   if(activity.type == ACTIVITY_TYPE_MUTATED_EVENT)
                   {
                      events[events.length - 1].mutation = "";
@@ -1096,7 +1108,8 @@ package
          {
             config.formats[eventType] = HUDChallengesConfig.DEFAULT_EVENT_FORMAT;
          }
-         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,GlobalFunc.FormatTimeString(event.time)).replace(STRING_TIME_IN_SECONDS,Math.floor(event.time)).replace(STRING_TIME_IN_MINUTES,Math.floor(event.time / 60)).replace(STRING_MUTATION,event.mutation);
+         var timeSeconds:Number = _eventTimes[event.id].time + (getTimer() - _eventTimes[event.id].timestamp) / 1000;
+         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation);
       }
       
       public function drawBar(bar:Object, barConfig:Object, barColorName:String) : void
