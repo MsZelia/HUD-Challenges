@@ -85,7 +85,7 @@ package
       
       private var _IsLocalPlayer:Boolean = false;
       
-      private var _Distance:Number;
+      public var _Distance:Number;
       
       private var _EmoteVisible:Boolean = false;
       
