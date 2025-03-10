@@ -64,6 +64,7 @@ package
          config.refresh = Parser.parseNumber(config.refresh,1000);
          config.offsetUTC = Parser.parseNumber(config.offsetUTC,0);
          config.toggleVisibilityHotkey = Parser.parsePositiveNumber(config.toggleVisibilityHotkey,0);
+         config.forceHideHotkey = Parser.parsePositiveNumber(config.forceHideHotkey,0);
          if(!config.formats)
          {
             config.formats = {};

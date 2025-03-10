@@ -231,6 +231,8 @@ package
       
       private var toggleVisibility:Boolean = false;
       
+      private var forceHide:Boolean = false;
+      
       public function HUDChallenges()
       {
          this._eventTimes = {};
@@ -343,6 +345,10 @@ package
          if(event.keyCode == config.toggleVisibilityHotkey)
          {
             this.toggleVisibility = !this.toggleVisibility;
+         }
+         if(event.keyCode == config.forceHideHotkey)
+         {
+            this.forceHide = !this.forceHide;
          }
       }
       
@@ -1155,7 +1161,7 @@ package
          try
          {
             t1 = Number(getTimer());
-            this.visible = this.isValidHUDMode() ^ this.toggleVisibility;
+            this.visible = !this.forceHide && this.isValidHUDMode() ^ this.toggleVisibility;
             this.scoreBar = null;
             this.xpBar = null;
             if(!this.visible)
