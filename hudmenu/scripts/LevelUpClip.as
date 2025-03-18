@@ -3,7 +3,7 @@ package
    import Shared.AS3.Events.CustomEvent;
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol697")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol711")]
    public dynamic class LevelUpClip extends MovieClip
    {
        

@@ -499,7 +499,7 @@ package
          }
          catch(e:Error)
          {
-            this.displayError("Error loading humodloader: " + e.toString());
+            this.displayError("Error loading hudmodloader: " + e.toString());
          }
       }
       

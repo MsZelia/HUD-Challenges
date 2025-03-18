@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol555")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol569")]
    public dynamic class DirectionalHitIndicator extends MovieClip
    {
        

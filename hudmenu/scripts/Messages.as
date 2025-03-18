@@ -9,7 +9,7 @@ package
    import flash.events.Event;
    import flash.utils.getTimer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol675")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol689")]
    public dynamic class Messages extends BSUIComponent
    {
       
@@ -240,7 +240,7 @@ package
             this.bAnimating = _loc9_ > 0 || _loc4_.bIsDirty;
             if(!_loc4_.bIsDirty)
             {
-               if(_loc10_ = _loc4_.CanFadeIn() && height + _loc4_.height + this.MessageSpacing < this._maxClipHeight)
+               if(_loc10_ = _loc4_.CanFadeIn() && _loc1_ <= MAX_SHOWN)
                {
                   _loc4_.FadeIn();
                }

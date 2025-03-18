@@ -5,13 +5,12 @@ package
    import Shared.GlobalFunc;
    import Shared.HUDModes;
    import flash.display.MovieClip;
-   import flash.events.Event;
    import flash.utils.clearTimeout;
    import flash.utils.setTimeout;
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1704")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1723")]
    public class HUDRightMeters extends MovieClip
    {
       
@@ -40,7 +39,7 @@ package
       
       public var HUDThirstMeter_mc:MovieClip;
       
-      public var HUDPoseidonRightMeter_mc:MovieClip;
+      public var FeralMeter_mc:MovieClip;
       
       public var HUDFusionCoreMeter_mc:MovieClip;
       
@@ -62,19 +61,21 @@ package
       
       private var m_PowerArmorHUDEnabled:Boolean = true;
       
-      private var m_IsGhoul:Boolean = false;
-      
       private var fHungerPercent:Number = -1;
       
       private var fThirstPercent:Number = -1;
       
       private var fFeralPercent:Number = -1;
       
+      private var bHungerVisible:Boolean = false;
+      
+      private var bThirstVisible:Boolean = false;
+      
+      private var bFeralVisible:Boolean = false;
+      
       private var HungerTimeout:int = -1;
       
       private var ThirstTimeout:int = -1;
-      
-      private var FeralTimeout:int = -1;
       
       private const PercentIndefiniteShow:Number = 0.2;
       
@@ -100,31 +101,12 @@ package
          this.HUDHungerMeter_mc.gotoAndStop("off");
          this.HUDThirstMeter_mc.gotoAndStop("off");
          this.HUDFusionCoreMeter_mc.gotoAndStop("off");
-         this.HUDPoseidonRightMeter_mc.gotoAndStop("off");
+         this.FeralMeter_mc.gotoAndStop("off");
          Extensions.enabled = true;
          TextFieldEx.setTextAutoSize(this.AmmoCount_mc.ClipCount_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          TextFieldEx.setTextAutoSize(this.AmmoCount_mc.ReserveCount_tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          this.OverheatMeter_mc.visible = false;
-         this.HUDPoseidonRightMeter_mc.visible = false;
          this.SetOverheatMeterPercent(0);
-      }
-      
-      public function updateActiveMeters(param1:Event) : void
-      {
-         if(this.m_IsGhoul)
-         {
-            this.HUDThirstMeter_mc;
-            visible = false;
-            this.HUDHungerMeter_mc.visible = false;
-            this.HUDPoseidonRightMeter_mc.visible = true;
-         }
-         else
-         {
-            this.HUDThirstMeter_mc;
-            visible = true;
-            this.HUDHungerMeter_mc.visible = true;
-            this.HUDPoseidonRightMeter_mc.visible = false;
-         }
       }
       
       public function set showFusionCoreMeter(param1:Boolean) : void
@@ -185,19 +167,18 @@ package
          this.bIsPip = param1.data.hudMode == Shared.HUDModes.PIPBOY;
          if(this.bIsPip)
          {
-            if(this.fHungerPercent >= 0)
+            if(this.fHungerPercent >= 0 && this.bHungerVisible)
             {
                this.endHungerHideTimeout();
                this.fadeInHunger();
             }
-            if(this.fThirstPercent >= 0)
+            if(this.fThirstPercent >= 0 && this.bThirstVisible)
             {
                this.endThirstHideTimeout();
                this.fadeInThirst();
             }
-            if(this.fFeralPercent >= 0)
+            if(this.fFeralPercent >= 0 && this.bFeralVisible)
             {
-               this.endFeralHideTimeout();
                this.fadeInFeral();
             }
          }
@@ -210,10 +191,6 @@ package
             if(this.ThirstTimeout == -1 && this.fThirstPercent >= this.PercentIndefiniteShow)
             {
                this.ThirstTimeout = setTimeout(this.fadeOutThirst,FADE_DELAY);
-            }
-            if(this.FeralTimeout == -1 && this.fFeralPercent >= this.PercentIndefiniteShow)
-            {
-               this.FeralTimeout = setTimeout(this.fadeOutFeral,FADE_DELAY);
             }
          }
          if(Boolean(param1.data.inPowerArmor) && Boolean(param1.data.powerArmorHUDEnabled))
@@ -229,104 +206,104 @@ package
       
       private function onStateUpdate(param1:FromClientDataEvent) : *
       {
-         var _loc9_:Number = NaN;
-         var _loc10_:int = 0;
-         var _loc11_:Number = NaN;
-         var _loc12_:int = 0;
-         var _loc13_:Number = NaN;
-         var _loc14_:int = 0;
+         var _loc6_:int = 0;
+         var _loc7_:Number = NaN;
+         var _loc8_:int = 0;
+         var _loc9_:int = 0;
+         var _loc10_:Number = NaN;
+         var _loc11_:int = 0;
          var _loc2_:Object = param1.data;
-         if(_loc2_.hungerPercent < 0 || _loc2_.thirstPercent < 0)
-         {
-            return;
-         }
-         if(_loc2_.feralPercent < 0)
-         {
-            return;
-         }
+         this.HUDActiveEffectsWidget_mc.onDataUpdate(_loc2_.activeEffects);
          var _loc3_:Number = Number(_loc2_.hungerPercent);
          var _loc4_:Number = Number(_loc2_.thirstPercent);
          var _loc5_:Number = Number(_loc2_.feralPercent);
-         if(_loc3_ < this.PercentIndefiniteShow)
+         this.bHungerVisible = _loc2_.hungerVisible;
+         this.bThirstVisible = _loc2_.thirstVisible;
+         this.bFeralVisible = _loc2_.feralVisible;
+         if(this.bHungerVisible)
          {
-            this.endHungerHideTimeout();
-            this.fadeInHunger();
+            if(_loc3_ < this.PercentIndefiniteShow)
+            {
+               this.endHungerHideTimeout();
+               this.fadeInHunger();
+            }
+            else if(!GlobalFunc.CloseToNumber(this.fHungerPercent,_loc3_,this.PercentChangeVal) || _loc3_ > this.fHungerPercent)
+            {
+               this.endHungerHideTimeout();
+               this.fadeInHunger();
+               this.HungerTimeout = setTimeout(this.fadeOutHunger,FADE_DELAY);
+            }
+            this.fHungerPercent = _loc3_;
+            _loc3_ = GlobalFunc.Clamp(_loc3_,0,this.PercentMax) / this.PercentMax;
+            _loc6_ = Math.ceil(_loc3_ * this.HUDHungerMeter_mc.Meter_mc.totalFrames);
+            this.HUDHungerMeter_mc.Meter_mc.gotoAndStop(_loc6_);
+            this.HUDHungerMeter_mc.survivalMeterIcon_mc.gotoAndStop("foodPositive");
+            if(_loc2_.hunger_RestorePct is Number && _loc2_.hunger_RestorePct > 0)
+            {
+               _loc7_ = GlobalFunc.Clamp(this.fHungerPercent + _loc2_.hunger_RestorePct,0,this.PercentMax) / this.PercentMax;
+               _loc8_ = Math.ceil(_loc7_ * this.HUDHungerMeter_mc.GhostMeter_mc.totalFrames);
+               this.HUDHungerMeter_mc.GhostMeter_mc.gotoAndStop(_loc8_);
+               this.HUDHungerMeter_mc.GhostMeter_mc.visible = true;
+            }
+            else
+            {
+               this.HUDHungerMeter_mc.GhostMeter_mc.visible = false;
+            }
          }
-         else if(!GlobalFunc.CloseToNumber(this.fHungerPercent,_loc3_,this.PercentChangeVal) || _loc3_ > this.fHungerPercent)
+         else if(this.bShowHunger)
          {
-            this.endHungerHideTimeout();
-            this.fadeInHunger();
-            this.HungerTimeout = setTimeout(this.fadeOutHunger,FADE_DELAY);
+            this.setHungerOff();
          }
-         this.fHungerPercent = _loc3_;
-         _loc3_ = GlobalFunc.Clamp(_loc3_,0,this.PercentMax) / this.PercentMax;
-         var _loc6_:int = Math.ceil(_loc3_ * this.HUDHungerMeter_mc.Meter_mc.totalFrames);
-         this.HUDHungerMeter_mc.Meter_mc.gotoAndStop(_loc6_);
-         this.HUDHungerMeter_mc.survivalMeterIcon_mc.gotoAndStop("foodPositive");
-         if(_loc2_.hunger_RestorePct is Number && _loc2_.hunger_RestorePct > 0)
+         if(this.bThirstVisible)
          {
-            _loc9_ = GlobalFunc.Clamp(this.fHungerPercent + _loc2_.hunger_RestorePct,0,this.PercentMax) / this.PercentMax;
-            _loc10_ = Math.ceil(_loc9_ * this.HUDHungerMeter_mc.GhostMeter_mc.totalFrames);
-            this.HUDHungerMeter_mc.GhostMeter_mc.gotoAndStop(_loc10_);
-            this.HUDHungerMeter_mc.GhostMeter_mc.visible = true;
+            if(_loc4_ < this.PercentIndefiniteShow)
+            {
+               this.endThirstHideTimeout();
+               this.fadeInThirst();
+            }
+            else if(!GlobalFunc.CloseToNumber(this.fThirstPercent,_loc4_,this.PercentChangeVal) || _loc4_ > this.fThirstPercent)
+            {
+               this.endThirstHideTimeout();
+               this.fadeInThirst();
+               this.ThirstTimeout = setTimeout(this.fadeOutThirst,FADE_DELAY);
+            }
+            this.fThirstPercent = _loc4_;
+            _loc4_ = GlobalFunc.Clamp(_loc4_,0,this.PercentMax) / this.PercentMax;
+            _loc9_ = Math.ceil(_loc4_ * this.HUDThirstMeter_mc.Meter_mc.totalFrames);
+            this.HUDThirstMeter_mc.Meter_mc.gotoAndStop(_loc9_);
+            this.HUDThirstMeter_mc.survivalMeterIcon_mc.gotoAndStop("thirstPositive");
+            if(_loc2_.thirst_RestorePct is Number && _loc2_.thirst_RestorePct > 0)
+            {
+               _loc10_ = GlobalFunc.Clamp(this.fThirstPercent + _loc2_.thirst_RestorePct,0,this.PercentMax) / this.PercentMax;
+               _loc11_ = Math.ceil(_loc10_ * this.HUDThirstMeter_mc.GhostMeter_mc.totalFrames);
+               this.HUDThirstMeter_mc.GhostMeter_mc.gotoAndStop(_loc11_);
+               this.HUDThirstMeter_mc.GhostMeter_mc.visible = true;
+            }
+            else
+            {
+               this.HUDThirstMeter_mc.GhostMeter_mc.visible = false;
+            }
          }
-         else
+         else if(this.bShowThirst)
          {
-            this.HUDHungerMeter_mc.GhostMeter_mc.visible = false;
+            this.setThirstOff();
          }
-         if(_loc4_ < this.PercentIndefiniteShow)
+         if(this.bFeralVisible)
          {
-            this.endThirstHideTimeout();
-            this.fadeInThirst();
-         }
-         else if(!GlobalFunc.CloseToNumber(this.fThirstPercent,_loc4_,this.PercentChangeVal) || _loc4_ > this.fThirstPercent)
-         {
-            this.endThirstHideTimeout();
-            this.fadeInThirst();
-            this.ThirstTimeout = setTimeout(this.fadeOutThirst,FADE_DELAY);
-         }
-         this.fThirstPercent = _loc4_;
-         _loc4_ = GlobalFunc.Clamp(_loc4_,0,this.PercentMax) / this.PercentMax;
-         var _loc7_:int = Math.ceil(_loc4_ * this.HUDThirstMeter_mc.Meter_mc.totalFrames);
-         this.HUDThirstMeter_mc.Meter_mc.gotoAndStop(_loc7_);
-         this.HUDThirstMeter_mc.survivalMeterIcon_mc.gotoAndStop("thirstPositive");
-         if(_loc2_.thirst_RestorePct is Number && _loc2_.thirst_RestorePct > 0)
-         {
-            _loc11_ = GlobalFunc.Clamp(this.fThirstPercent + _loc2_.thirst_RestorePct,0,this.PercentMax) / this.PercentMax;
-            _loc12_ = Math.ceil(_loc11_ * this.HUDThirstMeter_mc.GhostMeter_mc.totalFrames);
-            this.HUDThirstMeter_mc.GhostMeter_mc.gotoAndStop(_loc12_);
-            this.HUDThirstMeter_mc.GhostMeter_mc.visible = true;
-         }
-         else
-         {
-            this.HUDThirstMeter_mc.GhostMeter_mc.visible = false;
-         }
-         if(_loc5_ < this.PercentIndefiniteShow)
-         {
-            this.endFeralHideTimeout();
             this.fadeInFeral();
+            this.fFeralPercent = _loc5_;
+            if((_loc5_ = GlobalFunc.Clamp(_loc5_,0,this.PercentMax) / this.PercentMax) == 0 && (this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "empty" && this.FeralMeter_mc.FeralMeterInternal_mc.currentLabel != "emptyAnim"))
+            {
+               this.FeralMeter_mc.FeralMeterInternal_mc.gotoAndPlay("emptyAnim");
+            }
+            else if(_loc5_ != 0)
+            {
+               this.FeralMeter_mc.FeralMeterInternal_mc.gotoAndStop((1 - _loc5_) * 100);
+            }
          }
-         else if(!GlobalFunc.CloseToNumber(this.fFeralPercent,_loc5_,this.PercentChangeVal) || _loc5_ > this.fFeralPercent)
+         else if(this.bShowFeral)
          {
-            this.endFeralHideTimeout();
-            this.fadeInFeral();
-            this.FeralTimeout = setTimeout(this.fadeOutFeral,FADE_DELAY);
-         }
-         this.fFeralPercent = _loc5_;
-         _loc5_ = GlobalFunc.Clamp(_loc5_,0,this.PercentMax) / this.PercentMax;
-         var _loc8_:int = Math.ceil(_loc5_ * this.HUDPoseidonRightMeter_mc.Meter_mc.totalFrames);
-         this.HUDPoseidonRightMeter_mc.Meter_mc.gotoAndStop(_loc8_);
-         this.HUDPoseidonRightMeter_mc.survivalMeterIcon_mc.gotoAndStop("poseidonPositive");
-         if(_loc2_.feral_RestorePct is Number && _loc2_.feral_RestorePct > 0)
-         {
-            _loc13_ = GlobalFunc.Clamp(this.fFeralPercent + _loc2_.feral_RestorePct,0,this.PercentMax) / this.PercentMax;
-            _loc14_ = Math.ceil(_loc13_ * this.HUDPoseidonRightMeter_mc.GhostMeter_mc.totalFrames);
-            this.HUDPoseidonRightMeter_mc.GhostMeter_mc.gotoAndStop(_loc14_);
-            this.HUDPoseidonRightMeter_mc.GhostMeter_mc.visible = true;
-         }
-         else
-         {
-            this.HUDPoseidonRightMeter_mc.GhostMeter_mc.visible = false;
+            this.setFeralOff();
          }
          if(Boolean(_loc2_.overheatWeaponEquipped) && !_loc2_.currentWeaponSheathed)
          {
@@ -358,6 +335,16 @@ package
          }
       }
       
+      public function setHungerOff() : *
+      {
+         if(this.bShowHunger && !this.bIsPip)
+         {
+            this.HungerTimeout = -1;
+            this.bShowHunger = false;
+            this.HUDHungerMeter_mc.gotoAndStop("off");
+         }
+      }
+      
       private function endHungerHideTimeout() : void
       {
          if(this.HungerTimeout != -1)
@@ -386,6 +373,16 @@ package
          }
       }
       
+      public function setThirstOff() : *
+      {
+         if(this.bShowThirst && !this.bIsPip)
+         {
+            this.ThirstTimeout = -1;
+            this.bShowThirst = false;
+            this.HUDThirstMeter_mc.gotoAndStop("off");
+         }
+      }
+      
       private function endThirstHideTimeout() : void
       {
          if(this.ThirstTimeout != -1)
@@ -400,7 +397,7 @@ package
          if(!this.bShowFeral)
          {
             this.bShowFeral = true;
-            this.HUDPoseidonRightMeter_mc.gotoAndPlay("rollOn");
+            this.FeralMeter_mc.gotoAndPlay("rollOn");
          }
       }
       
@@ -408,18 +405,17 @@ package
       {
          if(this.bShowFeral && !this.bIsPip)
          {
-            this.FeralTimeout = -1;
             this.bShowFeral = false;
-            this.HUDPoseidonRightMeter_mc.gotoAndPlay("rollOff");
+            this.FeralMeter_mc.gotoAndPlay("rollOff");
          }
       }
       
-      private function endFeralHideTimeout() : void
+      public function setFeralOff() : *
       {
-         if(this.FeralTimeout != -1)
+         if(this.bShowFeral && !this.bIsPip)
          {
-            clearTimeout(this.FeralTimeout);
-            this.FeralTimeout = -1;
+            this.bShowFeral = false;
+            this.FeralMeter_mc.gotoAndStop("off");
          }
       }
       

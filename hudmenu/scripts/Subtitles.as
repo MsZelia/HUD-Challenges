@@ -5,7 +5,7 @@ package
    import flash.text.TextFieldAutoSize;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1535")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1549")]
    public dynamic class Subtitles extends BSUIComponent
    {
        

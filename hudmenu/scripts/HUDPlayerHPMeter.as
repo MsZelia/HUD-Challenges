@@ -1,40 +1,83 @@
 package
 {
-   import adobe.utils.*;
-   import flash.accessibility.*;
-   import flash.desktop.*;
-   import flash.display.*;
-   import flash.errors.*;
-   import flash.events.*;
-   import flash.external.*;
-   import flash.filters.*;
-   import flash.geom.*;
-   import flash.globalization.*;
-   import flash.media.*;
-   import flash.net.*;
-   import flash.net.drm.*;
-   import flash.printing.*;
-   import flash.profiler.*;
-   import flash.sampler.*;
-   import flash.sensors.*;
-   import flash.system.*;
-   import flash.text.*;
-   import flash.text.engine.*;
-   import flash.text.ime.*;
-   import flash.ui.*;
-   import flash.utils.*;
-   import flash.xml.*;
+   import fl.transitions.Tween;
+   import fl.transitions.TweenEvent;
+   import fl.transitions.easing.*;
+   import flash.display.MovieClip;
+   import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1634")]
-   public dynamic class HUDPlayerHPMeter extends HealthMeter
+   [Embed(source="/_assets/assets.swf", symbol="symbol1648")]
+   public class HUDPlayerHPMeter extends HealthMeter
    {
+      
+      private static const EVENT_GLOW_ROLLON_COMPLETE:String = "GlowRollOnComplete";
+      
+      private static const EVENT_GLOW_ROLLOFF_COMPLETE:String = "GlowRollOffComplete";
+      
+      private static const MIN_METER_X:Number = 0;
+      
+      private static const METER_X_DIFFERENCE:Number = 312;
+      
+      private static const ANIM_TIME:Number = 150;
        
+      
+      public var GlowMeter_mc:MovieClip;
+      
+      private var m_GlowMeterPercent:Number = 0;
+      
+      private var m_MeterTween:Tween;
       
       public function HUDPlayerHPMeter()
       {
          super();
+         this.GlowMeter_mc.visible = false;
          this.__setProp_Optional_mc_HPMeter_Optional_mc_0();
          this.__setProp_RadsBar_mc_HPMeter_RadsBar_mc_0();
+      }
+      
+      override public function onAddedToStage() : void
+      {
+         super.onAddedToStage();
+         addEventListener(EVENT_GLOW_ROLLOFF_COMPLETE,this.onGlowRollOffComplete);
+      }
+      
+      public function updateGlowMeter(param1:Number) : void
+      {
+         if(!this.GlowMeter_mc.visible && param1 == 0)
+         {
+            return;
+         }
+         this.m_GlowMeterPercent = Math.max(0,param1);
+         if(!this.GlowMeter_mc.visible)
+         {
+            this.GlowMeter_mc.visible = true;
+            this.GlowMeter_mc.Glow_mc.gotoAndPlay("rollOn");
+            this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,MIN_METER_X,MIN_METER_X + METER_X_DIFFERENCE * this.m_GlowMeterPercent,ANIM_TIME / 1000,true);
+         }
+         else if(param1 == 0)
+         {
+            this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,this.GlowMeter_mc.Meter_mc.Fill_mc.x,MIN_METER_X,ANIM_TIME / 1000,true);
+            this.m_MeterTween.addEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
+         }
+         else if(this.m_MeterTween)
+         {
+            this.m_MeterTween.continueTo(MIN_METER_X + METER_X_DIFFERENCE * this.m_GlowMeterPercent,ANIM_TIME / 1000);
+         }
+         else
+         {
+            this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,this.GlowMeter_mc.Meter_mc.Fill_mc.x,MIN_METER_X + METER_X_DIFFERENCE * this.m_GlowMeterPercent,ANIM_TIME / 1000,true);
+         }
+      }
+      
+      private function onGlowRollOffComplete(param1:Event) : void
+      {
+         this.GlowMeter_mc.visible = false;
+      }
+      
+      private function onTweenFinish(param1:TweenEvent) : *
+      {
+         this.m_MeterTween.removeEventListener(TweenEvent.MOTION_FINISH,this.onTweenFinish);
+         this.GlowMeter_mc.Glow_mc.gotoAndPlay("rollOff");
       }
       
       internal function __setProp_Optional_mc_HPMeter_Optional_mc_0() : *

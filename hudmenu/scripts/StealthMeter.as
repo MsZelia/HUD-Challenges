@@ -6,7 +6,7 @@ package
    import flash.text.TextField;
    import flash.text.TextFieldAutoSize;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol988")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1002")]
    public class StealthMeter extends MovieClip
    {
       

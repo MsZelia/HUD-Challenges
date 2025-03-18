@@ -7,7 +7,7 @@ package Shared.AS3
    import flash.net.URLRequest;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol994")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1008")]
    public dynamic class ConditionBoy extends BSUIComponent
    {
       
@@ -17,39 +17,21 @@ package Shared.AS3
       
       private static const CLIP_BODY_HUNGER_ID:int = 16;
       
-      private static const CLIP_BODY_THIRST_ID:int = 18;
-      
       private static const CLIP_BODY_DISEASE_ID:int = 17;
+      
+      private static const CLIP_BODY_THIRST_ID:int = 18;
       
       private static const CLIP_BODY_MUTATION_ID:int = 19;
       
-      private static const NUM_BODY_CLIPS:int = 20;
+      private static const CLIP_BODY_FERAL_ID:int = 20;
       
-      private static const HEAD_NORMAL_FRAME:uint = 1;
+      private static const NUM_BODY_CLIPS:int = 21;
       
-      private static const HEAD_GENERAL_NEGATIVE_FRAME:uint = 4;
+      private static const HEAD_HUNGER_FRAME:String = "Drugged";
       
-      private static const HEAD_GENERAL_NEGATIVE_DAMAGED_FRAME:uint = 33;
+      private static const HEAD_THIRST_FRAME:String = "Drugged";
       
-      private static const HEAD_DRUGGED_FRAME:uint = 5;
-      
-      private static const HEAD_DRUGGED_DAMAGED_FRAME:uint = 37;
-      
-      private static const HEAD_IRRADIATED_FRAME:uint = 17;
-      
-      private static const HEAD_IRRADIATED_DAMAGED_FRAME:uint = 49;
-      
-      private static const HEAD_DISEASED_FRAME:uint = 65;
-      
-      private static const HEAD_DISEASED_DAMAGED_FRAME:uint = 67;
-      
-      private static const HEAD_MUTATED_FRAME:uint = 71;
-      
-      private static const HEAD_MUTATED_DAMAGED_FRAME:uint = 76;
-      
-      private static const HEAD_HUNGER_FRAME:uint = HEAD_DRUGGED_FRAME;
-      
-      private static const HEAD_THIRST_FRAME:uint = HEAD_DRUGGED_FRAME;
+      private static const HEAD_FERAL_FRAME:String = "Feral";
        
       
       private var BodyClip:MovieClip = null;
@@ -83,6 +65,10 @@ package Shared.AS3
       private var IsThirstStateNegative:Boolean = false;
       
       private var IsHungerStateNegative:Boolean = false;
+      
+      private var IsFeralStateNegative:Boolean = false;
+      
+      private var IsGhoul:Boolean = false;
       
       private var Monochrome:Boolean = false;
       
@@ -151,18 +137,22 @@ package Shared.AS3
       private function UpdatePrimaryCondition(param1:Object) : *
       {
          var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
-         var _loc3_:uint = HEAD_NORMAL_FRAME;
-         if(param1.isIrradiated)
+         var _loc3_:String = "Normal";
+         if(param1.isGhoul)
          {
-            _loc3_ = _loc2_ ? HEAD_IRRADIATED_DAMAGED_FRAME : HEAD_IRRADIATED_FRAME;
+            _loc3_ = _loc2_ ? "GhoulDamaged" : "Ghoul";
+         }
+         else if(param1.isIrradiated)
+         {
+            _loc3_ = _loc2_ ? "IrradiatedDamaged" : "Irradiated";
          }
          else if(param1.isDrugged)
          {
-            _loc3_ = _loc2_ ? HEAD_DRUGGED_DAMAGED_FRAME : HEAD_DRUGGED_FRAME;
+            _loc3_ = _loc2_ ? "DruggedDamaged" : "Drugged";
          }
          else if(param1.isAddicted || _loc2_ || param1.bodyFlags != 0)
          {
-            _loc3_ = _loc2_ ? HEAD_GENERAL_NEGATIVE_DAMAGED_FRAME : HEAD_GENERAL_NEGATIVE_FRAME;
+            _loc3_ = _loc2_ ? "NegativeDamaged" : "Negative";
          }
          this.PrimaryCondition.isPersistent = _loc2_ || param1.bodyFlags != 0;
          if(this.PrimaryCondition.headFrame != _loc3_ || this.PrimaryCondition.bodyId != param1.bodyFlags)
@@ -176,10 +166,11 @@ package Shared.AS3
       private function UpdateSecondaryConditions(param1:Object) : *
       {
          var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
+         this.IsGhoul = param1.isGhoul;
          if(!this.IsMutated && Boolean(param1.isMutated))
          {
             this.SecondaryConditions.push({
-               "headFrame":(_loc2_ ? HEAD_MUTATED_DAMAGED_FRAME : HEAD_MUTATED_FRAME),
+               "headFrame":(this.IsGhoul ? "Ghoul" : (!!("" + _loc2_) ? "MutatedDamaged" : "Mutated")),
                "bodyId":CLIP_BODY_MUTATION_ID
             });
          }
@@ -187,7 +178,7 @@ package Shared.AS3
          if(!this.IsDiseased && Boolean(param1.isDiseased))
          {
             this.SecondaryConditions.push({
-               "headFrame":(_loc2_ ? HEAD_DISEASED_DAMAGED_FRAME : HEAD_DISEASED_FRAME),
+               "headFrame":(_loc2_ ? "DiseasedDamaged" : "Diseased"),
                "bodyId":CLIP_BODY_DISEASE_ID
             });
          }
@@ -208,6 +199,14 @@ package Shared.AS3
             });
          }
          this.IsHungerStateNegative = param1.isHungerStateNegative;
+         if(Boolean(param1.isFeralStateNegative) && !this.IsFeralStateNegative)
+         {
+            this.SecondaryConditions.push({
+               "headFrame":HEAD_FERAL_FRAME,
+               "bodyId":CLIP_BODY_FERAL_ID
+            });
+         }
+         this.IsFeralStateNegative = param1.isFeralStateNegative;
       }
       
       private function ShowNextCondition() : *
@@ -230,6 +229,7 @@ package Shared.AS3
             if(!_loc2_)
             {
                this.UnloadBody();
+               this.LoadHead();
                this.CurrentlyShownCondition.headFrame = _loc1_.headFrame;
                this.CurrentlyShownCondition.bodyId = _loc1_.bodyId;
                if(this.PreloadedBodyClips != null)

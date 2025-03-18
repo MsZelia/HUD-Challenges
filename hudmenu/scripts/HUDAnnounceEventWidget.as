@@ -20,7 +20,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol889")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol903")]
    public class HUDAnnounceEventWidget extends MovieClip
    {
       

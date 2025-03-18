@@ -60,6 +60,8 @@ package
       
       private var _radsMeterFrames:int = 100;
       
+      private var m_GlowMeterFrames:int = 100;
+      
       private var _EntityID:uint;
       
       private var _showSharedPerk:Boolean = false;
@@ -114,6 +116,10 @@ package
          if(!this.BondMeter_mc)
          {
             trace("BondMeter_mc doesn\'t exist");
+         }
+         if(!this.GlowMeter_mc)
+         {
+            trace("GlowMeter_mc doesn\'t exist");
          }
          Extensions.enabled = true;
          TextFieldEx.setTextAutoSize(textField,"shrink");
@@ -199,6 +205,7 @@ package
          this.SpeakerIcon_mc.mouseEnabled = false;
          this.LevelText_mc.mouseEnabled = false;
          textField.mouseEnabled = false;
+         this.GlowMeter_mc.mouseEnabled = false;
          this._EntityID = param1.entityId;
          this.Emote_mc.entityID = param1.entityId;
          textField.text = "";
@@ -225,6 +232,7 @@ package
          {
             this.Meter_mc.visible = false;
          }
+         this.GlowMeter_mc.visible = param1.isGlow;
          if(param1.level > 0)
          {
             TextFieldEx.setTextAutoSize(this.LevelText_mc.LevelText_tf,"shrink");
@@ -289,6 +297,7 @@ package
          this.Emote_mc.x = Math.max(EMOTE_MIN_X,_loc4_ + EMOTE_ICON_SPACING);
          this.Meter_mc.gotoAndStop(param1.healthPercentage / 100 * this._hpMeterFrames);
          this.RadsMeter_mc.gotoAndStop(param1.radsPercentage / 100 * this._radsMeterFrames);
+         this.GlowMeter_mc.Meter_mc.gotoAndStop(param1.glowMeterPercentage / 100 * this.m_GlowMeterFrames);
          this.AccountIcon_mc.LoadInternal(GlobalFunc.GetAccountIconPath(param1.avatarId),GlobalFunc.PLAYER_ICON_TEXTURE_BUFFER);
          this.EventIcon_mc.visible = param1.isDoingEventQuest;
          if(param1.showSharedIcon)
@@ -320,6 +329,7 @@ package
             this.MeterBG_mc.visible = false;
             this.RadsMeter_mc.visible = false;
             this.LevelText_mc.visible = false;
+            this.GlowMeter_mc.visible = false;
          }
          else
          {

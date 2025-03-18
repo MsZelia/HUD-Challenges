@@ -5,7 +5,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol890")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol904")]
    public class AreaVoiceList extends MovieClip
    {
        

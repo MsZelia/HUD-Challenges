@@ -2,7 +2,7 @@ package
 {
    import Shared.AS3.BSUIComponent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1378")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1392")]
    public dynamic class HUDCrosshair extends BSUIComponent
    {
        

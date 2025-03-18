@@ -2,7 +2,7 @@ package
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol465")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol479")]
    public dynamic class JunkJetIcon extends MovieClip
    {
        

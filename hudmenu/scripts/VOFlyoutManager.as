@@ -7,7 +7,7 @@ package
    import flash.events.TimerEvent;
    import flash.utils.Timer;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1320")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1334")]
    public class VOFlyoutManager extends MovieClip
    {
       

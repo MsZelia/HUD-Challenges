@@ -3,7 +3,7 @@ package
    import Shared.AS3.BSUIComponent;
    import Shared.AS3.ConditionBoy;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol995")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1009")]
    public dynamic class HUDConditionBoyWidget extends BSUIComponent
    {
        
