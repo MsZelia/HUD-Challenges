@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.0.9";
+      public static const MOD_VERSION:String = "1.1.0";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -111,6 +111,10 @@ package
       },{
          "name":"weekly",
          "type":1,
+         "category":8
+      },{
+         "name":"monthly",
+         "type":3,
          "category":8
       },{
          "name":"character",
@@ -463,6 +467,7 @@ package
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in param1.data.categories)
             {
+               challengeType = "";
                fo1st_disabledChallenges = 0;
                for each(filter in FILTER_CHALLENGE)
                {
@@ -472,33 +477,36 @@ package
                      break;
                   }
                }
-               challenges[challengeType] = [];
-               for each(challenge in category.challenges)
+               if(challengeType != "")
                {
-                  if(challenge.currentValue < challenge.thresholdValue)
+                  challenges[challengeType] = [];
+                  for each(challenge in category.challenges)
                   {
-                     if(hasSeasonPass || !challenge.isFO1st)
+                     if(challenge.currentValue < challenge.thresholdValue)
                      {
-                        challenges[challengeType].push({
-                           "text":challenge.text,
-                           "currentValue":challenge.currentValue,
-                           "thresholdValue":challenge.thresholdValue,
-                           "isTracked":challenge.isTracked
-                        });
-                     }
-                     else
-                     {
-                        fo1st_disabledChallenges++;
+                        if(hasSeasonPass || !challenge.isFO1st)
+                        {
+                           challenges[challengeType].push({
+                              "text":challenge.text,
+                              "currentValue":challenge.currentValue,
+                              "thresholdValue":challenge.thresholdValue,
+                              "isTracked":challenge.isTracked
+                           });
+                        }
+                        else
+                        {
+                           fo1st_disabledChallenges++;
+                        }
                      }
                   }
-               }
-               if(category.type == CHALLENGE_TYPE_DAILY)
-               {
-                  this.daily_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
-               }
-               else if(category.type == CHALLENGE_TYPE_WEEKLY)
-               {
-                  this.weekly_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  if(category.type == CHALLENGE_TYPE_DAILY)
+                  {
+                     this.daily_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  }
+                  else if(category.type == CHALLENGE_TYPE_WEEKLY)
+                  {
+                     this.weekly_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  }
                }
             }
             _challenges = challenges;
