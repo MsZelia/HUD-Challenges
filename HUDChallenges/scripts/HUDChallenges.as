@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.0";
+      public static const MOD_VERSION:String = "1.1.1";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -75,6 +75,10 @@ package
       
       private static const STRING_WEEKLY_PROGRESS:String = "{weeklyProgress}";
       
+      private static const STRING_MONTHLY_EXPIRE:String = "{monthlyExpireTime}";
+      
+      private static const STRING_MONTHLY_PROGRESS:String = "{monthlyProgress}";
+      
       private static const STRING_CODE_ALPHA:String = "{codeAlpha}";
       
       private static const STRING_CODE_BRAVO:String = "{codeBravo}";
@@ -88,6 +92,8 @@ package
       private static const CHALLENGE_TYPE_DAILY:uint = 0;
       
       private static const CHALLENGE_TYPE_WEEKLY:uint = 1;
+      
+      private static const CHALLENGE_TYPE_MONTHLY:uint = 3;
       
       private static const ACTIVITY_TYPE_PUBLIC_EVENT:uint = 1;
       
@@ -219,9 +225,17 @@ package
       
       private var weekly_daysTilRefresh:int = 0;
       
+      private var monthly_minsTilRefresh:int = 0;
+      
+      private var monthly_hoursTilRefresh:int = 0;
+      
+      private var monthly_daysTilRefresh:int = 0;
+      
       private var daily_progress:String = "0/0";
       
       private var weekly_progress:String = "0/0";
+      
+      private var monthly_progress:String = "0/0";
       
       private var scoreBar:Object;
       
@@ -463,6 +477,9 @@ package
             this.daily_minsTilRefresh = Math.max(int(param1.data.daily_minsTilRefresh),0);
             this.daily_hoursTilRefresh = Math.max(int(param1.data.daily_hoursTilRefresh),0);
             this.weekly_daysTilRefresh = Math.max(int(param1.data.weekly_daysTilRefresh),0);
+            this.monthly_minsTilRefresh = Math.max(int(param1.data.monthly_minsTilRefresh),0);
+            this.monthly_hoursTilRefresh = Math.max(int(param1.data.monthly_hoursTilRefresh),0);
+            this.monthly_daysTilRefresh = Math.max(int(param1.data.monthly_daysTilRefresh),0);
             challenges = {};
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in param1.data.categories)
@@ -506,6 +523,10 @@ package
                   else if(category.type == CHALLENGE_TYPE_WEEKLY)
                   {
                      this.weekly_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  }
+                  else if(category.type == CHALLENGE_TYPE_MONTHLY)
+                  {
+                     this.monthly_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
                   }
                }
             }
@@ -781,7 +802,11 @@ package
             {
                text = text.replace(STRING_WEEKLY_EXPIRE,weekly_daysTilRefresh + ":" + GlobalFunc.PadNumber(daily_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(daily_minsTilRefresh,2));
             }
-            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress);
+            if(text.indexOf(STRING_MONTHLY_EXPIRE) != -1)
+            {
+               text = text.replace(STRING_MONTHLY_EXPIRE,monthly_daysTilRefresh + ":" + GlobalFunc.PadNumber(monthly_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(monthly_minsTilRefresh,2));
+            }
+            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress);
             displayMessage(text);
             LastDisplayTextfield.textColor = color;
          }
