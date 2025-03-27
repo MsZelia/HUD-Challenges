@@ -639,6 +639,10 @@ package
                   challenge_tf.filters = Boolean(config.textShadow) ? this.dummy_tf.filters : [];
                   challenge_tf.blendMode = config.textBlendMode;
                }
+               else
+               {
+                  challenge_tf.textColor = config.textColor;
+               }
             }
          }
       }
