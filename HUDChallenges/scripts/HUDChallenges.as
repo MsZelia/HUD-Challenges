@@ -406,7 +406,7 @@ package
                }
                catch(e:Error)
                {
-                  ShowHUDMessage("Error loading config: " + e);
+                  ShowHUDMessage("Error parsing config: " + e);
                }
             };
             url = new URLRequest(CONFIG_FILE);
@@ -618,9 +618,10 @@ package
          this.dummy_tf.filters = [new DropShadowFilter(2,45,0,1,1,1,1,BitmapFilterQuality.HIGH)];
          this.alpha = config.alpha;
          this.blendMode = config.blendMode;
+         resetMessages(true);
       }
       
-      public function resetMessages() : void
+      public function resetMessages(setFormat:Boolean = false) : void
       {
          this.separators = [];
          this.graphics.clear();
@@ -631,8 +632,13 @@ package
             if(challenge_tf != null)
             {
                challenge_tf.visible = false;
-               challenge_tf.defaultTextFormat = this.textFormat;
-               challenge_tf.setTextFormat(this.textFormat);
+               if(setFormat)
+               {
+                  challenge_tf.defaultTextFormat = this.textFormat;
+                  challenge_tf.setTextFormat(this.textFormat);
+                  challenge_tf.filters = Boolean(config.textShadow) ? this.dummy_tf.filters : [];
+                  challenge_tf.blendMode = config.textBlendMode;
+               }
             }
          }
       }
@@ -645,13 +651,17 @@ package
          tf.defaultTextFormat = this.textFormat;
          TextFieldEx.setTextAutoSize(tf,TextFieldEx.TEXTAUTOSZ_SHRINK);
          tf.setTextFormat(this.textFormat);
+         if(config)
+         {
+            tf.filters = Boolean(config.textShadow) ? this.dummy_tf.filters : [];
+            tf.blendMode = config.textBlendMode;
+         }
          addChild(tf);
          return tf;
       }
       
       public function applyConfig(tf:TextField) : void
       {
-         tf.visible = true;
          tf.x = config.x;
          tf.background = false;
          tf.width = config.width;
@@ -665,8 +675,7 @@ package
             tf.y = LastDisplayTextfield.y + LastDisplayTextfield.height + config.ySpacing + yOffset;
             yOffset = 0;
          }
-         tf.blendMode = config.textBlendMode;
-         tf.filters = Boolean(config.textShadow) ? this.dummy_tf.filters : [];
+         tf.visible = true;
       }
       
       public function displayMessage(text:String) : void
