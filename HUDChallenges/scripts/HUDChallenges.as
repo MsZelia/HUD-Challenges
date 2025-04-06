@@ -41,6 +41,10 @@ package
       
       private static const DATA_EVENTS:String = "events";
       
+      private static const DATA_POSITION_X:String = "positionX";
+      
+      private static const DATA_POSITION_Y:String = "positionY";
+      
       private static const STRING_TEXT:String = "{text}";
       
       private static const STRING_TIME:String = "{time}";
@@ -48,6 +52,8 @@ package
       private static const STRING_LOCATION:String = "{location}";
       
       private static const STRING_MUTATION:String = "{mutation}";
+      
+      private static const STRING_PARTICIPANTS:String = "{participants}";
       
       private static const STRING_TIME_IN_SECONDS:String = "{timeInSeconds}";
       
@@ -100,6 +106,10 @@ package
       private static const ACTIVITY_TYPE_MUTATED_EVENT:uint = 5;
       
       private static const ACTIVITY_LABEL_MUTATED_EVENT:String = "$DailyOps_Header_Mutation";
+      
+      private static const ACTIVITY_LABEL_EVENT_STATS:String = "$STATS";
+      
+      private static const ACTIVITY_LABEL_EVENT_PARTICIPANTS:String = "$Participants";
       
       private static const FILTER_RECENT_ACTIVITY_TYPES:Array = [1,2,5,6];
       
@@ -251,6 +261,12 @@ package
       
       private var forceHide:Boolean = false;
       
+      private var nextY:Number = 0;
+      
+      private var nextX:Number = 0;
+      
+      private var nextAlign:Number = 0;
+      
       public function HUDChallenges()
       {
          this._eventTimes = {};
@@ -295,31 +311,11 @@ package
             timeString = GlobalFunc.PadNumber(nDays,2);
             isSet = true;
          }
-         if(nDays > 0 || nHours > 0)
+         if(isSet)
          {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else
-            {
-               isSet = true;
-            }
-            timeString += GlobalFunc.PadNumber(nHours,2);
+            timeString += ":";
          }
-         if(nDays > 0 || nHours > 0 || nMinutes > 0)
-         {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else
-            {
-               isSet = true;
-            }
-            timeString += GlobalFunc.PadNumber(nMinutes,2);
-         }
-         return timeString;
+         return timeString + (GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2));
       }
       
       public function addedToStageHandler(param1:Event) : *
@@ -570,6 +566,7 @@ package
                   if(activity.type == ACTIVITY_TYPE_MUTATED_EVENT)
                   {
                      events[events.length - 1].mutation = "";
+                     events[events.length - 1].participants = -1;
                      for each(detail in activity.details)
                      {
                         if(detail.groupLabel == ACTIVITY_LABEL_MUTATED_EVENT && detail.pairList.length > 0)
@@ -583,6 +580,33 @@ package
                               else
                               {
                                  events[events.length - 1].mutation += "|" + detail.pairList[mutation].label;
+                              }
+                           }
+                        }
+                        else if(detail.groupLabel == ACTIVITY_LABEL_EVENT_STATS && detail.pairList.length > 0)
+                        {
+                           for(pair in detail.pairList)
+                           {
+                              if(detail.pairList[pair].label == ACTIVITY_LABEL_EVENT_PARTICIPANTS)
+                              {
+                                 events[events.length - 1].participants = Number(detail.pairList[pair].description);
+                              }
+                           }
+                        }
+                     }
+                  }
+                  else if(activity.type == ACTIVITY_TYPE_PUBLIC_EVENT)
+                  {
+                     events[events.length - 1].participants = -1;
+                     for each(detail in activity.details)
+                     {
+                        if(detail.groupLabel == ACTIVITY_LABEL_EVENT_STATS && detail.pairList.length > 0)
+                        {
+                           for(pair in detail.pairList)
+                           {
+                              if(detail.pairList[pair].label == ACTIVITY_LABEL_EVENT_PARTICIPANTS)
+                              {
+                                 events[events.length - 1].participants = Number(detail.pairList[pair].description);
                               }
                            }
                         }
@@ -623,6 +647,8 @@ package
       
       public function resetMessages(setFormat:Boolean = false) : void
       {
+         this.nextY = config.y;
+         this.nextX = config.x;
          this.separators = [];
          this.graphics.clear();
          this.challenges_index = 0;
@@ -666,17 +692,25 @@ package
       
       public function applyConfig(tf:TextField) : void
       {
-         tf.x = config.x;
+         tf.x = nextX;
          tf.background = false;
          tf.width = config.width;
          tf.height = this.dummy_tf.height;
          if(challenges_index == 0)
          {
-            tf.y = config.y;
+            tf.y = nextY;
          }
          else
          {
-            tf.y = LastDisplayTextfield.y + LastDisplayTextfield.height + config.ySpacing + yOffset;
+            if(config.anchor == "bottom")
+            {
+               tf.y = nextY - LastDisplayTextfield.height - config.ySpacing - yOffset;
+            }
+            else
+            {
+               tf.y = nextY + LastDisplayTextfield.height + config.ySpacing + yOffset;
+            }
+            nextY = tf.y;
             yOffset = 0;
          }
          tf.visible = true;
@@ -701,13 +735,16 @@ package
             this.graphics.drawRect(config.x,config.y,config.width,LastDisplayTextfield.y + LastDisplayTextfield.height - config.y);
             this.graphics.endFill();
          }
-         if(config.anchor == "bottom")
+         if(config.legacyAnchor)
          {
-            this.y = -(LastDisplayTextfield.y + LastDisplayTextfield.height - config.y);
-         }
-         else if(this.y != 0)
-         {
-            this.y = 0;
+            if(config.anchor == "bottom")
+            {
+               this.y = -(LastDisplayTextfield.y + LastDisplayTextfield.height - config.y);
+            }
+            else if(this.y != 0)
+            {
+               this.y = 0;
+            }
          }
       }
       
@@ -893,8 +930,13 @@ package
          }
       }
       
-      public function displayData(data:Array) : void
+      public function displayData(ddata:Array) : void
       {
+         var data:Array = ddata.concat();
+         if(config.anchor == "bottom")
+         {
+            data.reverse();
+         }
          if(data && data.length > 0)
          {
             var date:Date = new Date();
@@ -1119,6 +1161,18 @@ package
                               {
                                  displayEvents(parts[1]);
                               }
+                              break;
+                           case DATA_POSITION_Y:
+                              if(!isNaN(parts[1]))
+                              {
+                                 nextY = parts[1];
+                              }
+                              break;
+                           case DATA_POSITION_X:
+                              if(!isNaN(parts[1]))
+                              {
+                                 nextX = parts[1];
+                              }
                         }
                      }
                      break;
@@ -1161,7 +1215,7 @@ package
             config.formats[eventType] = HUDChallengesConfig.DEFAULT_EVENT_FORMAT;
          }
          var timeSeconds:Number = _eventTimes[event.id].time + (getTimer() - _eventTimes[event.id].timestamp) / 1000;
-         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation);
+         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation).replace(STRING_PARTICIPANTS,event.participants);
       }
       
       public function drawBar(bar:Object, barConfig:Object, barColorName:String) : void

@@ -70,6 +70,7 @@ package
             config.formats = {};
             config.formats.daily = DEFAULT_CHALLENGE_FORMAT;
             config.formats.weekly = DEFAULT_CHALLENGE_FORMAT;
+            config.formats.monthly = DEFAULT_CHALLENGE_FORMAT;
             config.formats.events = DEFAULT_CHALLENGE_FORMAT;
             config.formats.seasonal = DEFAULT_CHALLENGE_FORMAT;
             config.formats.character = DEFAULT_CHALLENGE_FORMAT;
@@ -91,6 +92,10 @@ package
             if(!config.formats.weekly)
             {
                config.formats.weekly = DEFAULT_CHALLENGE_FORMAT;
+            }
+            if(!config.formats.monthly)
+            {
+               config.formats.monthly = DEFAULT_CHALLENGE_FORMAT;
             }
             if(!config.formats.events)
             {
