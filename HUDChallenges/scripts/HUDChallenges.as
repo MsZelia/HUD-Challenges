@@ -732,7 +732,14 @@ package
          if(config.background)
          {
             this.graphics.beginFill(config.backgroundColor,config.backgroundAlpha);
-            this.graphics.drawRect(config.x,config.y,config.width,LastDisplayTextfield.y + LastDisplayTextfield.height - config.y);
+            if(config.anchor == "bottom")
+            {
+               this.graphics.drawRect(config.x,config.y + LastDisplayTextfield.height,config.width,LastDisplayTextfield.y - LastDisplayTextfield.height - config.y);
+            }
+            else
+            {
+               this.graphics.drawRect(config.x,config.y,config.width,LastDisplayTextfield.y + LastDisplayTextfield.height - config.y);
+            }
             this.graphics.endFill();
          }
          if(config.legacyAnchor)
