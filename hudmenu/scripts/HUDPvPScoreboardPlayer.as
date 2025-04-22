@@ -4,7 +4,7 @@ package
    import flash.display.MovieClip;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1804")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1777")]
    public class HUDPvPScoreboardPlayer extends MovieClip
    {
        

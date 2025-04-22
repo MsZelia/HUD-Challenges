@@ -4,7 +4,7 @@ package
    import Shared.AS3.Data.BSUIDataManager;
    import Shared.AS3.Data.FromClientDataEvent;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1815")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1788")]
    public class TeammateMarkersManager extends BSDisplayObject
    {
        

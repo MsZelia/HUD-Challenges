@@ -1,6 +1,6 @@
 package
 {
-   [Embed(source="/_assets/assets.swf", symbol="symbol28")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol29")]
    public dynamic class PingPlayerImage extends ImageFixture
    {
        

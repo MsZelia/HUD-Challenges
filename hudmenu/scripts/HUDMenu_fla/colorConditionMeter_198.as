@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1526")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1499")]
    public dynamic class colorConditionMeter_198 extends MovieClip
    {
        

@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.geom.Point;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1807")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1780")]
    public class DamageNumbers extends MovieClip
    {
        

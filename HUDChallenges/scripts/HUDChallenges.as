@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.1";
+      public static const MOD_VERSION:String = "1.1.2";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -1180,11 +1180,50 @@ package
                               {
                                  nextX = parts[1];
                               }
+                              break;
+                           case "showHUDChildrenOf":
+                              showHUDChildrenOf(parts[1]);
                         }
                      }
                      break;
                }
             }
+         }
+      }
+      
+      public function showHUDChildrenOf(item:String) : void
+      {
+         if(item == null || item == "")
+         {
+            displayMessage("children not found of: \"\"");
+            return;
+         }
+         var itemProp:* = this.topLevel;
+         var parts:Array = item.split(/\./);
+         var i:int = 0;
+         var len:int = parts.length - 1;
+         while(i < parts.length)
+         {
+            if(itemProp[parts[i]] == null)
+            {
+               displayMessage(parts[i] + " child not found");
+               break;
+            }
+            itemProp = itemProp[parts[i]];
+            i++;
+         }
+         displayMessage("children: " + itemProp.numChildren);
+         getChildrenOf(itemProp);
+      }
+      
+      private function getChildrenOf(item:Object, pref:String = "") : void
+      {
+         var i:int = 0;
+         displayMessage(pref + getQualifiedClassName(item));
+         while(i < item.numChildren)
+         {
+            getChildrenOf(item.getChildAt(i),pref + "\t");
+            i++;
          }
       }
       

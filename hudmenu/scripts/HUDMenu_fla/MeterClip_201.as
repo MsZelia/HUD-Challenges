@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1528")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1501")]
    public dynamic class MeterClip_201 extends MovieClip
    {
        

@@ -3,7 +3,7 @@ package HUDMenu_fla
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1759")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1732")]
    public dynamic class pvpIdentifier_mc_44 extends MovieClip
    {
        

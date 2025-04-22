@@ -13,7 +13,7 @@ package
    import scaleform.gfx.Extensions;
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1546")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1519")]
    public dynamic class QuickContainerWidget extends BSUIComponent
    {
       

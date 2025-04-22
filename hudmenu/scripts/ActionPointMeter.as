@@ -3,7 +3,7 @@ package
    import flash.display.MovieClip;
    import flash.text.TextField;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1673")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1646")]
    public class ActionPointMeter extends MovieClip
    {
        

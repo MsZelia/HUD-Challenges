@@ -2,7 +2,7 @@ package
 {
    import scaleform.gfx.TextFieldEx;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol244")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol245")]
    public class HUDMessageItemRecentActivity extends HUDMessageItemBase
    {
       

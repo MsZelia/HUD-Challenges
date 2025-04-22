@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1832")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1805")]
    public dynamic class dpadMapContainer_105 extends MovieClip
    {
        

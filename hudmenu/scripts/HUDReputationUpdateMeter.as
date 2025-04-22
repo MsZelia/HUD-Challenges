@@ -10,7 +10,7 @@ package
    import flash.text.TextLineMetrics;
    import flash.utils.setTimeout;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol225")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol226")]
    public class HUDReputationUpdateMeter extends MovieClip
    {
       

@@ -26,7 +26,7 @@ package
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol23")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol25")]
    public dynamic class EmoteVaultBoy extends VaultBoyImageLoader
    {
        

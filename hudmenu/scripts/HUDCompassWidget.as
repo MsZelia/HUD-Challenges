@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.utils.getDefinitionByName;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1622")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1595")]
    public dynamic class HUDCompassWidget extends BSUIComponent
    {
        
