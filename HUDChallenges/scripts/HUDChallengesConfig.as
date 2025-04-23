@@ -29,6 +29,12 @@ package
       
       public static const DEFAULT_EVENT_TIMER_TEXT_FORMAT:* = "Next public event in: {time}";
       
+      public static const DEFAULT_SEASON_END_FORMAT:* = "Season end: {time}";
+      
+      public static const DEFAULT_MINISEASON_ACTIVE_FORMAT:* = "MiniSeason end: {time} [{currentValue}/{thresholdValue}]";
+      
+      public static const DEFAULT_MINISEASON_INACTIVE_FORMAT:* = "MiniSeason start: {time}";
+      
       private static var _config:Object;
        
       
@@ -78,10 +84,12 @@ package
             config.formats.combat = DEFAULT_CHALLENGE_FORMAT;
             config.formats.social = DEFAULT_CHALLENGE_FORMAT;
             config.formats.world = DEFAULT_CHALLENGE_FORMAT;
+            config.formats.fishing = DEFAULT_CHALLENGE_FORMAT;
             config.formats.mutatedEvent = DEFAULT_MUTATED_EVENT_FORMAT;
             config.formats.publicEvent = DEFAULT_EVENT_FORMAT;
             config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
+            config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
          }
          else
          {
@@ -125,6 +133,10 @@ package
             {
                config.formats.world = DEFAULT_CHALLENGE_FORMAT;
             }
+            if(!config.formats.fishing)
+            {
+               config.formats.fishing = DEFAULT_CHALLENGE_FORMAT;
+            }
             if(!config.formats.mutatedEvent)
             {
                config.formats.mutatedEvent = DEFAULT_MUTATED_EVENT_FORMAT;
@@ -140,6 +152,10 @@ package
             if(!config.formats.caravan)
             {
                config.formats.caravan = DEFAULT_EVENT_FORMAT;
+            }
+            if(!config.formats.showSeasonEndTime)
+            {
+               config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
             }
          }
          if(!config.xpBar)
@@ -205,15 +221,30 @@ package
          if(!config.eventTimer)
          {
             config.eventTimer = {};
-            config.eventTimer.showWithDurationBelowMinutes = Parser.parseNumber(config.eventTimer.showWithDurationBelowMinutes,15);
+            config.eventTimer.showWithDurationBelowMinutes = Parser.parseNumber(config.eventTimer.showWithDurationBelowMinutes,5);
             config.eventTimer.eventTimestamps = [20,40,60];
             config.eventTimer.text = DEFAULT_EVENT_TIMER_TEXT_FORMAT;
          }
          else
          {
-            config.eventTimer.showWithDurationBelowMinutes = Parser.parseNumber(config.eventTimer.showWithDurationBelowMinutes,15);
+            config.eventTimer.showWithDurationBelowMinutes = Parser.parseNumber(config.eventTimer.showWithDurationBelowMinutes,5);
             config.eventTimer.eventTimestamps = Boolean(config.eventTimer.eventTimestamps) ? config.eventTimer.eventTimestamps : [20,40,60];
             config.eventTimer.text = Boolean(config.eventTimer.text) ? config.eventTimer.text : DEFAULT_EVENT_TIMER_TEXT_FORMAT;
+         }
+         if(!config.miniSeason)
+         {
+            config.miniSeason = {};
+            config.miniSeason.hideIfInactive = false;
+            config.miniSeason.hideIfRewardsClaimed = false;
+            config.miniSeason.activeText = DEFAULT_MINISEASON_ACTIVE_FORMAT;
+            config.miniSeason.inactiveText = DEFAULT_MINISEASON_INACTIVE_FORMAT;
+         }
+         else
+         {
+            config.miniSeason.hideIfInactive = Boolean(config.miniSeason.hideIfInactive);
+            config.miniSeason.hideIfRewardsClaimed = Boolean(config.miniSeason.hideIfRewardsClaimed);
+            config.miniSeason.activeText = Boolean(config.miniSeason.activeText) ? config.miniSeason.activeText : DEFAULT_MINISEASON_ACTIVE_FORMAT;
+            config.miniSeason.inactiveText = Boolean(config.miniSeason.inactiveText) ? config.miniSeason.inactiveText : DEFAULT_MINISEASON_INACTIVE_FORMAT;
          }
          if(!config.showOnlyTrackedChallenges)
          {

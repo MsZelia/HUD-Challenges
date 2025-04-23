@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.2";
+      public static const MOD_VERSION:String = "1.1.3";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -85,6 +85,10 @@ package
       
       private static const STRING_MONTHLY_PROGRESS:String = "{monthlyProgress}";
       
+      private static const STRING_EVENTS_EXPIRE:String = "{eventsExpireTime}";
+      
+      private static const STRING_EVENTS_PROGRESS:String = "{eventsProgress}";
+      
       private static const STRING_CODE_ALPHA:String = "{codeAlpha}";
       
       private static const STRING_CODE_BRAVO:String = "{codeBravo}";
@@ -100,6 +104,8 @@ package
       private static const CHALLENGE_TYPE_WEEKLY:uint = 1;
       
       private static const CHALLENGE_TYPE_MONTHLY:uint = 3;
+      
+      private static const CHALLENGE_TYPE_EVENTS:uint = 4;
       
       private static const ACTIVITY_TYPE_PUBLIC_EVENT:uint = 1;
       
@@ -133,9 +139,21 @@ package
          "type":3,
          "category":8
       },{
+         "name":"events",
+         "type":4,
+         "category":8
+      },{
+         "name":"seasonal",
+         "type":5,
+         "category":8
+      },{
          "name":"character",
          "type":2,
          "category":0
+      },{
+         "name":"survival",
+         "type":2,
+         "category":1
       },{
          "name":"combat",
          "type":2,
@@ -145,21 +163,13 @@ package
          "type":2,
          "category":5
       },{
-         "name":"survival",
-         "type":2,
-         "category":1
-      },{
          "name":"world",
          "type":2,
          "category":6
       },{
-         "name":"events",
-         "type":4,
-         "category":8
-      },{
-         "name":"seasonal",
-         "type":5,
-         "category":8
+         "name":"fishing",
+         "type":2,
+         "category":9
       }];
        
       
@@ -241,11 +251,19 @@ package
       
       private var monthly_daysTilRefresh:int = 0;
       
+      private var event_minsTilRefresh:int = 0;
+      
+      private var event_hoursTilRefresh:int = 0;
+      
+      private var event_daysTilRefresh:int = 0;
+      
       private var daily_progress:String = "0/0";
       
       private var weekly_progress:String = "0/0";
       
       private var monthly_progress:String = "0/0";
+      
+      private var event_progress:String = "0/0";
       
       private var scoreBar:Object;
       
@@ -476,10 +494,17 @@ package
             this.monthly_minsTilRefresh = Math.max(int(param1.data.monthly_minsTilRefresh),0);
             this.monthly_hoursTilRefresh = Math.max(int(param1.data.monthly_hoursTilRefresh),0);
             this.monthly_daysTilRefresh = Math.max(int(param1.data.monthly_daysTilRefresh),0);
+            this.event_minsTilRefresh = Math.max(int(param1.data.event_minsTilRefresh),0);
+            this.event_hoursTilRefresh = Math.max(int(param1.data.event_hoursTilRefresh),0);
+            this.event_daysTilRefresh = Math.max(int(param1.data.event_daysTilRefresh),0);
             challenges = {};
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in param1.data.categories)
             {
+               if(false)
+               {
+                  displayMessage(category.text + ": " + category.type + " " + category.category);
+               }
                challengeType = "";
                fo1st_disabledChallenges = 0;
                for each(filter in FILTER_CHALLENGE)
@@ -523,6 +548,10 @@ package
                   else if(category.type == CHALLENGE_TYPE_MONTHLY)
                   {
                      this.monthly_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  }
+                  else if(category.type == CHALLENGE_TYPE_EVENTS)
+                  {
+                     this.event_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
                   }
                }
             }
@@ -863,7 +892,11 @@ package
             {
                text = text.replace(STRING_MONTHLY_EXPIRE,monthly_daysTilRefresh + ":" + GlobalFunc.PadNumber(monthly_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(monthly_minsTilRefresh,2));
             }
-            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress);
+            if(text.indexOf(STRING_EVENTS_EXPIRE) != -1)
+            {
+               text = text.replace(STRING_EVENTS_EXPIRE,event_daysTilRefresh + ":" + GlobalFunc.PadNumber(event_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(event_minsTilRefresh,2));
+            }
+            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress).replace(STRING_EVENTS_PROGRESS,event_progress);
             displayMessage(text);
             LastDisplayTextfield.textColor = color;
          }
@@ -997,8 +1030,42 @@ package
                   case "showSeasonEndTime":
                      if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonDataA && this.SeasonData.data.allSeasonDataA.length > 0 && this.SeasonData.data.allSeasonDataA[0])
                      {
-                        displayMessage("SeasonEnd: " + FormatTimeStringShort(Number(this.SeasonData.data.allSeasonDataA[0].uSeasonEndTime - date.getTime() / 1000)));
+                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,FormatTimeStringShort(Number(this.SeasonData.data.allSeasonDataA[0].uSeasonEndTime - date.getTime() / 1000))));
                         applyColor(dataField);
+                     }
+                     break;
+                  case "showMiniSeasonTime":
+                     if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonDataA && this.SeasonData.data.allSeasonDataA.length > 0 && this.SeasonData.data.allSeasonDataA[0] && this.SeasonData.data.allSeasonDataA[0].miniSeasonDataA)
+                     {
+                        var miniSeasonData:Object = this.SeasonData.data.allSeasonDataA[0].miniSeasonDataA;
+                        if(miniSeasonData.bHasMiniSeasonActive)
+                        {
+                           var rewards:int = 0;
+                           var rewardsClaimed:int = 0;
+                           if(miniSeasonData.miniSeasonPageDataA && miniSeasonData.miniSeasonPageDataA.length > 0 && miniSeasonData.miniSeasonPageDataA[0] && miniSeasonData.miniSeasonPageDataA[0].pageTileDataA)
+                           {
+                              var i:int = 0;
+                              rewards = int(miniSeasonData.miniSeasonPageDataA[0].pageTileDataA.length);
+                              while(i < rewards)
+                              {
+                                 if(miniSeasonData.miniSeasonPageDataA[0].pageTileDataA[i] && miniSeasonData.miniSeasonPageDataA[0].pageTileDataA[i].bHasBeenClaimed)
+                                 {
+                                    rewardsClaimed++;
+                                 }
+                                 i++;
+                              }
+                           }
+                           if(!config.miniSeason.hideIfRewardsClaimed || rewards == 0 || rewards != rewardsClaimed)
+                           {
+                              displayMessage(config.miniSeason.activeText.replace(STRING_TIME,miniSeasonData.miniSeasonEndTime).replace(STRING_CURRENT_VALUE,rewardsClaimed).replace(STRING_THRESHOLD_VALUE,rewards));
+                              applyColor("miniSeasonActive");
+                           }
+                        }
+                        else if(!config.miniSeason.hideIfInactive)
+                        {
+                           displayMessage(config.miniSeason.inactiveText.replace(STRING_TIME,miniSeasonData.miniSeasonBeginTime));
+                           applyColor("miniSeasonInactive");
+                        }
                      }
                      break;
                   case "showXPBar":
@@ -1126,7 +1193,7 @@ package
                      if(config.eventTimer)
                      {
                         var timeThisHour:Number = (utcSeconds - eventsTimestampHour) % 3600;
-                        var i:int = 0;
+                        i = 0;
                         while(i < config.eventTimer.eventTimestamps.length)
                         {
                            var timeUntilEvent:Number = config.eventTimer.eventTimestamps[i] * 60 - timeThisHour;
