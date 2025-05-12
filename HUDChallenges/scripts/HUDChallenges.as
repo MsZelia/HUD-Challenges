@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.3";
+      public static const MOD_VERSION:String = "1.1.4";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -94,6 +94,8 @@ package
       private static const STRING_CODE_BRAVO:String = "{codeBravo}";
       
       private static const STRING_CODE_CHARLIE:String = "{codeCharlie}";
+      
+      private static const STRING_REGION:String = "{region}";
       
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
@@ -189,6 +191,44 @@ package
       
       private const NUCLEAR_CODE_COMBINATIONS:int = 99999999;
       
+      private const VERDANT_SEASON_BEGIN:* = /It's a verdant season in .*! Enjoy the abundance!/;
+      
+      private const VERDANT_SEASON_END:* = /The verdant season in .* has ended./;
+      
+      private const VERDANT_SEASON_BEGIN_LOCALIZED:* = {
+         "en":/It's a verdant season in .*! Enjoy the abundance!/,
+         "es":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
+         "esmx":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
+         "fr":/Une saison verdoyante a commencé dans .* ! Profitez de l'abondance !/,
+         "de":/In .* hat die fruchtbare Saison begonnen! Genieße den Überfluss!/,
+         "it":/Stagione della fioritura iniziata in questa regione: .*! Goditi l'abbondanza!/,
+         "pl":/.* świętuje sezon urodzaju! Korzystaj z bogactwa zbiorów!/,
+         "ptbr":/Chegou a estação verdejante em .*! Desfrute da abundância!/,
+         "ru":/Зеленый сезон в регионе .*! Наслаждайтесь изобилием!/,
+         "ja":/.*が緑の季節に入りました！ 豊かな緑をお楽しみください！/,
+         "ko":/.*에 푸른 계절이 찾아왔습니다! 풍요를 만끽하세요!/,
+         "zhhans":/现在的.*正处于繁茂季节！享受丰收吧！/,
+         "zhhant":/.*已經到了繁茂季節！好好享受這片富饒吧！/
+      };
+      
+      private const VERDANT_SEASON_END_LOCALIZED:* = {
+         "en":/The verdant season in .* has ended./,
+         "es":/Ha terminado la temporada verde en .*./,
+         "esmx":/Terminó la temporada verde en .*./,
+         "fr":/La saison verdoyante dans .* est terminée./,
+         "de":/Die fruchtbare Saison in .* ist vorüber./,
+         "it":/Stagione della fioritura terminata in questa regione: .*./,
+         "pl":/.* wita koniec sezonu urodzaju./,
+         "ptbr":/A estação verdejante em .* acabou./,
+         "ru":/Зеленый сезон в регионе .* закончился./,
+         "ja":/.*の緑の季節が終わりました/,
+         "ko":/.*의 푸른 계절이 끝났습니다./,
+         "zhhans":/.*的繁茂季节结束了。/,
+         "zhhant":/.*的繁茂季節結束了。/
+      };
+      
+      private const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
+      
       private var _lastRecentActivitiesUpdateTime:Number = 0;
       
       private var _lastChallengeUpdateTime:Number = 0;
@@ -224,6 +264,8 @@ package
       private var SeasonWidgetData:*;
       
       private var SeasonData:*;
+      
+      private var HUDMessageProvider:*;
       
       private var _challenges:Object;
       
@@ -285,8 +327,13 @@ package
       
       private var nextAlign:Number = 0;
       
+      private var verdantSeasons:Array;
+      
+      private var language:String = "";
+      
       public function HUDChallenges()
       {
+         this.verdantSeasons = [];
          this._eventTimes = {};
          this.challenges_tf = [];
          this.separators = [];
@@ -299,6 +346,8 @@ package
          this.RecentActivitiesData = BSUIDataManager.GetDataFromClient("RecentActivitiesData");
          this.SeasonWidgetData = BSUIDataManager.GetDataFromClient("SeasonWidgetData");
          this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
+         this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
+         BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          this.configTimer = new Timer(CONFIG_RELOAD_TIME);
          this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig);
          this.configTimer.start();
@@ -390,6 +439,116 @@ package
          {
             return x.menuName == MAIN_MENU;
          });
+      }
+      
+      private function onMessageEvent(event:FromClientDataEvent) : void
+      {
+         var messageData:*;
+         var messageText:String;
+         var startId:int;
+         var endId:int;
+         var regionName:String;
+         var parts:Array;
+         var i:int;
+         var isBegin:Boolean;
+         var lang:String;
+         var l:int;
+         var vsRegex:*;
+         var isVerdantSeasonMessage:Boolean;
+         var messageIndex:int = 0;
+         var errorCode:String = "init";
+         try
+         {
+            if(this.HUDMessageProvider.data.messages == null)
+            {
+               return;
+            }
+            while(messageIndex < this.HUDMessageProvider.data.messages.length)
+            {
+               errorCode = "messageData";
+               messageData = this.HUDMessageProvider.data.messages[messageIndex];
+               errorCode = "messageText";
+               if(messageData != null && messageData.messageText != null)
+               {
+                  messageText = messageData.messageText;
+                  errorCode = "LANGUAGE";
+                  isBegin = false;
+                  isVerdantSeasonMessage = false;
+                  if(language != "")
+                  {
+                     if(VERDANT_SEASON_BEGIN_LOCALIZED[language] && VERDANT_SEASON_BEGIN_LOCALIZED[language].test(messageText))
+                     {
+                        lang = language;
+                        isBegin = true;
+                        isVerdantSeasonMessage = true;
+                     }
+                     else if(VERDANT_SEASON_END_LOCALIZED[language] && VERDANT_SEASON_END_LOCALIZED[language].test(messageText))
+                     {
+                        lang = language;
+                        isVerdantSeasonMessage = true;
+                     }
+                  }
+                  else
+                  {
+                     l = 0;
+                     while(l < LANGUAGES.length)
+                     {
+                        lang = LANGUAGES[l];
+                        if(VERDANT_SEASON_BEGIN_LOCALIZED[lang] && VERDANT_SEASON_BEGIN_LOCALIZED[lang].test(messageText))
+                        {
+                           isVerdantSeasonMessage = true;
+                           isBegin = true;
+                           if(lang != "es" && lang != "esmx")
+                           {
+                              language = lang;
+                           }
+                           break;
+                        }
+                        if(VERDANT_SEASON_END_LOCALIZED[lang] && VERDANT_SEASON_END_LOCALIZED[lang].test(messageText))
+                        {
+                           isVerdantSeasonMessage = true;
+                           language = lang;
+                           break;
+                        }
+                        l++;
+                     }
+                  }
+                  if(isVerdantSeasonMessage)
+                  {
+                     errorCode = "VERDANT_SEASON";
+                     vsRegex = isBegin ? VERDANT_SEASON_BEGIN_LOCALIZED[lang] : VERDANT_SEASON_END_LOCALIZED[lang];
+                     errorCode = "VERDANT_SEASON_MATCH";
+                     parts = String(vsRegex).split(".*");
+                     errorCode = "VSM ids";
+                     startId = Math.max(0,parts[0].length - 1);
+                     endId = parts[1].length - 1;
+                     errorCode = "VSM regionName";
+                     regionName = messageText.substring(startId,messageText.length - endId);
+                     errorCode = "VSM splice";
+                     i = verdantSeasons.length - 1;
+                     while(i >= 0)
+                     {
+                        if(verdantSeasons[i].region == regionName)
+                        {
+                           verdantSeasons.splice(i,1);
+                        }
+                        i--;
+                     }
+                     errorCode = "VSB push";
+                     verdantSeasons.push({
+                        "region":regionName,
+                        "active":isBegin,
+                        "time":new Date().getTime() / 1000
+                     });
+                  }
+               }
+               messageIndex++;
+            }
+         }
+         catch(e:Error)
+         {
+            ShowHUDMessage("Error onMessageEvent: " + errorCode + ", " + e);
+         }
       }
       
       public function loadConfig() : void
@@ -1065,6 +1224,36 @@ package
                         {
                            displayMessage(config.miniSeason.inactiveText.replace(STRING_TIME,miniSeasonData.miniSeasonBeginTime));
                            applyColor("miniSeasonInactive");
+                        }
+                     }
+                     break;
+                  case "showVerdantSeasons":
+                     if(this.verdantSeasons)
+                     {
+                        if(config.verdantSeason.debug)
+                        {
+                           displayMessage("vs lang: " + language);
+                        }
+                        i = this.verdantSeasons.length - 1;
+                        while(i >= 0)
+                        {
+                           var vSeason:Object = this.verdantSeasons[i];
+                           var timeDelta:int = utcSeconds - vSeason.time;
+                           if(vSeason.active)
+                           {
+                              displayMessage(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeDelta)));
+                              applyColor("verdantSeasonActive");
+                           }
+                           else if(timeDelta < config.verdantSeason.hideEndedSeasonAfter)
+                           {
+                              displayMessage(config.verdantSeason.endedText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeDelta)));
+                              applyColor("verdantSeasonEnded");
+                           }
+                           else
+                           {
+                              this.verdantSeasons.splice(i,1);
+                           }
+                           i--;
                         }
                      }
                      break;

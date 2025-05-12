@@ -35,6 +35,10 @@ package
       
       public static const DEFAULT_MINISEASON_INACTIVE_FORMAT:* = "MiniSeason start: {time}";
       
+      public static const DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT:* = "Verdant season active in {region} ({time} ago)";
+      
+      public static const DEFAULT_VERDANT_SEASON_ENDED_FORMAT:* = "Verdant season ended in {region} ({time} ago)";
+      
       private static var _config:Object;
        
       
@@ -245,6 +249,19 @@ package
             config.miniSeason.hideIfRewardsClaimed = Boolean(config.miniSeason.hideIfRewardsClaimed);
             config.miniSeason.activeText = Boolean(config.miniSeason.activeText) ? config.miniSeason.activeText : DEFAULT_MINISEASON_ACTIVE_FORMAT;
             config.miniSeason.inactiveText = Boolean(config.miniSeason.inactiveText) ? config.miniSeason.inactiveText : DEFAULT_MINISEASON_INACTIVE_FORMAT;
+         }
+         if(!config.verdantSeason)
+         {
+            config.verdantSeason = {};
+            config.verdantSeason.hideEndedSeasonAfter = 30;
+            config.verdantSeason.activeText = DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT;
+            config.verdantSeason.endedText = DEFAULT_VERDANT_SEASON_ENDED_FORMAT;
+         }
+         else
+         {
+            config.verdantSeason.hideEndedSeasonAfter = Parser.parseNumber(config.verdantSeason.hideEndedSeasonAfter,30);
+            config.verdantSeason.activeText = Boolean(config.verdantSeason.activeText) ? config.verdantSeason.activeText : DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT;
+            config.verdantSeason.endedText = Boolean(config.verdantSeason.endedText) ? config.verdantSeason.endedText : DEFAULT_VERDANT_SEASON_ENDED_FORMAT;
          }
          if(!config.showOnlyTrackedChallenges)
          {
