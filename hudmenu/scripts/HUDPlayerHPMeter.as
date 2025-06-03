@@ -6,7 +6,7 @@ package
    import flash.display.MovieClip;
    import flash.events.Event;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1621")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1625")]
    public class HUDPlayerHPMeter extends HealthMeter
    {
       
@@ -23,6 +23,10 @@ package
       
       public var GlowMeter_mc:MovieClip;
       
+      public var Segments_mc:MovieClip;
+      
+      public var PercentText_mc:MovieClip;
+      
       private var m_GlowMeterPercent:Number = 0;
       
       private var m_MeterTween:Tween;
@@ -30,6 +34,8 @@ package
       public function HUDPlayerHPMeter()
       {
          super();
+         this.PercentText_mc.visible = true;
+         this.Segments_mc.visible = true;
          this.GlowMeter_mc.visible = false;
          this.__setProp_Optional_mc_HPMeter_Optional_mc_0();
          this.__setProp_RadsBar_mc_HPMeter_RadsBar_mc_0();
@@ -67,6 +73,13 @@ package
          {
             this.m_MeterTween = new Tween(this.GlowMeter_mc.Meter_mc.Fill_mc,"x",None.easeNone,this.GlowMeter_mc.Meter_mc.Fill_mc.x,MIN_METER_X + METER_X_DIFFERENCE * this.m_GlowMeterPercent,ANIM_TIME / 1000,true);
          }
+      }
+      
+      override public function SetMeterPercent(param1:Number) : *
+      {
+         super.SetMeterPercent(param1);
+         this.PercentText_mc.DisplayText_tf.text = param1.toPrecision(3);
+         this.PercentText_mc.DropShadowText_tf.text = param1.toPrecision(3);
       }
       
       private function onGlowRollOffComplete(param1:Event) : void

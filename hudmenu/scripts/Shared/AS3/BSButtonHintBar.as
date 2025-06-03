@@ -158,6 +158,22 @@ package Shared.AS3
          this.CreateButtonHints();
       }
       
+      public function FindDispatchEventForUserEvent(param1:String) : String
+      {
+         var _loc2_:String = "";
+         var _loc3_:* = 0;
+         while(_loc3_ < this._buttonHintDataV.length)
+         {
+            if(this._buttonHintDataV[_loc3_].UserEvent == param1)
+            {
+               _loc2_ = this._buttonHintDataV[_loc3_].DispatchEvent;
+               break;
+            }
+            _loc3_++;
+         }
+         return _loc2_;
+      }
+      
       public function onButtonHintDataDirtyEvent(param1:Event) : void
       {
          SetIsDirty();

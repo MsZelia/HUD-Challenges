@@ -25,7 +25,7 @@ package HUDMenu_fla
    import flash.utils.*;
    import flash.xml.*;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1650")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1654")]
    public dynamic class OverheatMeter_66 extends MovieClip
    {
        

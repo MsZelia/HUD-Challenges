@@ -35,6 +35,10 @@ package Shared.AS3
       
       private var _bButtonFlashing:Boolean;
       
+      private var m_DispatchEvent:String;
+      
+      private var m_UserEvent:String;
+      
       private var _hasSecondaryButton:Boolean;
       
       private var _strSecondaryPCKey:String;
@@ -65,7 +69,7 @@ package Shared.AS3
       
       public var onSecondaryButtonClick:Function;
       
-      public function BSButtonHintData(param1:String, param2:String, param3:String, param4:String, param5:uint, param6:Function)
+      public function BSButtonHintData(param1:String, param2:String, param3:String, param4:String, param5:uint, param6:Function, param7:String = "", param8:String = "")
       {
          this.onAnnounceDataChange = this.onAnnounceDataChange_Impl;
          this.onTextClick = this.onTextClick_Impl;
@@ -80,6 +84,8 @@ package Shared.AS3
          this._bButtonDisabled = false;
          this._bButtonVisible = true;
          this._bButtonFlashing = false;
+         this.m_DispatchEvent = param7;
+         this.m_UserEvent = param8;
          this._hasSecondaryButton = false;
          this._strSecondaryPCKey = "";
          this._strSecondaryPSNButton = "";
@@ -107,6 +113,16 @@ package Shared.AS3
       public function get Justification() : uint
       {
          return this._uiJustification;
+      }
+      
+      public function get DispatchEvent() : String
+      {
+         return this.m_DispatchEvent;
+      }
+      
+      public function get UserEvent() : String
+      {
+         return this.m_UserEvent;
       }
       
       public function get SecondaryPCKey() : String
@@ -402,7 +418,14 @@ package Shared.AS3
       {
          if(this._callbackFunction is Function)
          {
-            this._callbackFunction.call();
+            if(this.m_DispatchEvent != "")
+            {
+               this._callbackFunction.call(null,this.m_DispatchEvent);
+            }
+            else
+            {
+               this._callbackFunction.call();
+            }
          }
       }
       

@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1665")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1669")]
    public dynamic class survivalMeterHUD_mc_77 extends MovieClip
    {
        

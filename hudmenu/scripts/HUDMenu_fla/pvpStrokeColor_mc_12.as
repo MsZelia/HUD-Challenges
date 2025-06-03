@@ -2,7 +2,7 @@ package HUDMenu_fla
 {
    import flash.display.MovieClip;
    
-   [Embed(source="/_assets/assets.swf", symbol="symbol1700")]
+   [Embed(source="/_assets/assets.swf", symbol="symbol1704")]
    public dynamic class pvpStrokeColor_mc_12 extends MovieClip
    {
        

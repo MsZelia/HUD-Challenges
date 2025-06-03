@@ -113,9 +113,11 @@ package Shared.AS3
       
       protected var bEnableScrollWrap:Boolean = false;
       
-      private var fBorderHeight:Number = 0;
+      protected var m_AllowMouseOver:Boolean = true;
       
-      private var _DisplayNumListItems:uint = 0;
+      protected var fBorderHeight:Number = 0;
+      
+      protected var _DisplayNumListItems:uint = 0;
       
       public function BSScrollingList()
       {
@@ -282,7 +284,7 @@ package Shared.AS3
       public function onEntryRollover(param1:Event) : *
       {
          var _loc2_:* = undefined;
-         if(this.uiPlatform == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
+         if(this.m_AllowMouseOver && this.uiPlatform == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
             this.bMouseDrivenNav = true;
             if(!this.bDisableInput && !this.bDisableSelection)
@@ -414,7 +416,7 @@ package Shared.AS3
          }
       }
       
-      private function SetFocusUnderMouse() : *
+      protected function SetFocusUnderMouse() : *
       {
          var _loc2_:BSScrollingListEntry = null;
          var _loc3_:MovieClip = null;
@@ -799,6 +801,11 @@ package Shared.AS3
          this.bAllowSelectionDisabledListNav = param1;
       }
       
+      public function set allowMouseOver(param1:Boolean) : void
+      {
+         this.m_AllowMouseOver = param1;
+      }
+      
       public function get reverseOrder() : Boolean
       {
          return this.bReverseOrder;
@@ -1118,9 +1125,13 @@ package Shared.AS3
                   _loc3_ = _loc2_.height;
                }
             }
+            else if(_loc2_.Sizer_mc)
+            {
+               _loc2_.Sizer_mc.height;
+            }
             else
             {
-               _loc3_ = _loc2_.defaultHeight;
+               _loc2_.defaultHeight;
             }
          }
          return _loc3_;

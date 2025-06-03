@@ -120,5 +120,10 @@ package
       {
          return this.m_IsHolding;
       }
+      
+      public function get ButtonEnabled() : Boolean
+      {
+         return this.m_CanHold ? this.m_HintDataHold.ButtonEnabled : this.m_HintDataTap.ButtonEnabled;
+      }
    }
 }

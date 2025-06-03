@@ -68,9 +68,7 @@ package Shared.AS3
       
       private var IsFeralStateNegative:Boolean = false;
       
-      private var IsGhoul:Boolean = false;
-      
-      private var Monochrome:Boolean = false;
+      private var m_IsGhoul:Boolean = false;
       
       private var IsMenuInstance:Boolean = false;
       
@@ -82,15 +80,6 @@ package Shared.AS3
          this.CurrentlyShownCondition = {};
          super();
          this.LoadHead();
-      }
-      
-      public function set monochrome(param1:Boolean) : *
-      {
-      }
-      
-      public function get monochrome() : *
-      {
-         return this.Monochrome;
       }
       
       public function set isMenuInstance(param1:Boolean) : *
@@ -123,6 +112,7 @@ package Shared.AS3
       
       public function SetData(param1:Object) : *
       {
+         this.m_IsGhoul = param1.isGhoul;
          this.UpdatePrimaryCondition(param1);
          if(!this.IsMenuInstance)
          {
@@ -138,7 +128,7 @@ package Shared.AS3
       {
          var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
          var _loc3_:String = "Normal";
-         if(param1.isGhoul)
+         if(this.m_IsGhoul)
          {
             _loc3_ = _loc2_ ? "GhoulDamaged" : "Ghoul";
          }
@@ -166,11 +156,10 @@ package Shared.AS3
       private function UpdateSecondaryConditions(param1:Object) : *
       {
          var _loc2_:Boolean = Boolean(param1.isHeadDamaged);
-         this.IsGhoul = param1.isGhoul;
          if(!this.IsMutated && Boolean(param1.isMutated))
          {
             this.SecondaryConditions.push({
-               "headFrame":(this.IsGhoul ? "Ghoul" : (!!("" + _loc2_) ? "MutatedDamaged" : "Mutated")),
+               "headFrame":(this.m_IsGhoul ? "Ghoul" : (!!("" + _loc2_) ? "MutatedDamaged" : "Mutated")),
                "bodyId":CLIP_BODY_MUTATION_ID
             });
          }
@@ -265,7 +254,7 @@ package Shared.AS3
             this.HeadLoader.unloadAndStop();
          }
          this.HeadLoader = new PipboyLoader();
-         var _loc1_:URLRequest = new URLRequest(!!this.monochrome ? "Components/ConditionClips/Condition_Head_Mono.swf" : "Components/ConditionClips/Condition_Head.swf");
+         var _loc1_:URLRequest = new URLRequest("Components/ConditionClips/Condition_Head.swf");
          this.HeadLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,this.onConditionHeadLoadComplete);
          this.HeadLoader.load(_loc1_);
       }
@@ -307,7 +296,7 @@ package Shared.AS3
             this.BodyClip.scaleX = 1.2;
             this.BodyClip.scaleY = this.BodyClip.scaleX;
             addChild(this.BodyClip);
-            this.BodyClip.play();
+            this.BodyClip.gotoAndPlay(this.m_IsGhoul ? "Ghoul" : "Human");
             this.HeadClip.gotoAndStop(this.CurrentlyShownCondition.headFrame);
             if(!this.IsMenuInstance)
             {

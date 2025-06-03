@@ -932,7 +932,8 @@ package
          var _loc2_:Number = NaN;
          var _loc3_:String = null;
          var _loc4_:* = undefined;
-         var _loc5_:Object = null;
+         var _loc5_:* = undefined;
+         var _loc6_:Object = null;
          if(this.m_CurClip != null)
          {
             _loc1_ = this.getEventTypeData(this.m_CurEvent.fanfareEventType);
@@ -943,16 +944,16 @@ package
             {
                if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_QUESTCOMPLETE)
                {
-                  _loc4_ = null;
-                  for each(_loc5_ in this.m_EventData.data.fanfareEvents)
+                  _loc5_ = null;
+                  for each(_loc6_ in this.m_EventData.data.fanfareEvents)
                   {
-                     if(_loc5_.isCompletionRewards && _loc5_.fanfareEventType == FANFARE_TYPE_ITEMREWARD && _loc5_.questInstanceId == this.m_CurEvent.questInstanceId)
+                     if(_loc6_.isCompletionRewards && _loc6_.fanfareEventType == FANFARE_TYPE_ITEMREWARD && _loc6_.questInstanceId == this.m_CurEvent.questInstanceId)
                      {
-                        _loc4_ = _loc5_;
+                        _loc5_ = _loc6_;
                         break;
                      }
                   }
-                  if(_loc4_ != null && _loc4_.rewardsA.length > 0)
+                  if(_loc5_ != null && _loc5_.rewardsA.length > 0)
                   {
                      this.m_CurClip.gotoAndPlay("rollOffForRewards");
                      _loc2_ = COMPLETION_TO_REWARDS_FADE_TIME_MS;
@@ -961,7 +962,7 @@ package
                   {
                      this.m_CurClip.gotoAndPlay(_loc3_);
                      this.m_CurEvent.isCompletionRewards = false;
-                     this.DisplaySimpleRewards(_loc4_);
+                     this.DisplaySimpleRewards(_loc5_);
                   }
                }
                else if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_ITEMREWARD)
@@ -988,8 +989,13 @@ package
             {
                this.m_CurClip.gotoAndPlay(!!this.m_CurEvent.useDescAnim ? "rollOffDesc" : _loc3_);
             }
+            _loc4_ = 0;
+            if(this.m_CurEvent.fanfareEventType == FANFARE_TYPE_FEATUREDITEM)
+            {
+               _loc4_ = this.m_CurEvent.itemHandle;
+            }
             BSUIDataManager.dispatchEvent(new CustomEvent(EVENT_CONSUME,{"fanfareEventID":this.m_CurEvent.fanfareEventID}));
-            BSUIDataManager.dispatchEvent(new Event("FanfareEvent::FadeOut"));
+            BSUIDataManager.dispatchEvent(new CustomEvent("FanfareEvent::FadeOut",{"fadedItemHandleID":_loc4_}));
             this.m_CurTimeout = setTimeout(this.onAnimEnd,_loc2_);
          }
          else
@@ -1259,7 +1265,7 @@ package
       
       private function onAddedToStage(param1:Event) : void
       {
-         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.INSPECT_MODE,HUDModes.WORKSHOP_MODE,HUDModes.CAMP_PLACEMENT,HUDModes.FURNITURE_ENTER_EXIT);
+         this.m_ValidHudModes = new Array(HUDModes.ALL,HUDModes.ACTIVATE_TYPE,HUDModes.SIT_WAIT_MODE,HUDModes.VERTIBIRD_MODE,HUDModes.POWER_ARMOR,HUDModes.IRON_SIGHTS,HUDModes.SCOPE_MENU,HUDModes.INSIDE_MEMORY,HUDModes.INSPECT_MODE,HUDModes.WORKSHOP_MODE,HUDModes.CAMP_PLACEMENT,HUDModes.FURNITURE_ENTER_EXIT,HUDModes.FISHING_MODE);
          BSUIDataManager.Subscribe("FireForgetEvent",this.onFFEvent);
          this.m_EventData = BSUIDataManager.GetDataFromClient("FanfareData");
          BSUIDataManager.Subscribe("FanfareData",this.onDataUpdate);

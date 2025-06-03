@@ -254,7 +254,7 @@ package
          while(_loc3_ < BUTTON_TYPE_COUNT)
          {
             _loc2_ = this.m_ButtonData[_loc3_];
-            if(_loc2_ != null)
+            if(_loc2_ != null && _loc2_.ButtonEnabled)
             {
                _loc2_.updateHoldPercent();
             }
