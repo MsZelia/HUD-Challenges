@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.5";
+      public static const MOD_VERSION:String = "1.1.6";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -173,6 +173,10 @@ package
          "type":2,
          "category":9
       }];
+      
+      private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
+      
+      private static const HUDTOOLS_MENU_HIDE:String = MOD_NAME + "_HIDE";
        
       
       private const MINERVA_TIMESTAMP:Number = 1725897600;
@@ -331,6 +335,8 @@ package
       
       private var language:String = "";
       
+      private var hudTools:SharedHUDTools;
+      
       public function HUDChallenges()
       {
          this.verdantSeasons = [];
@@ -397,6 +403,8 @@ package
                {
                   this.XPMeter = this.topLevel.HUDNotificationsGroup_mc.XPMeter_mc;
                }
+               this.hudTools = new SharedHUDTools(MOD_NAME);
+               this.hudTools.RegisterMenu(this.onBuildMenu,this.onSelectMenu);
             }
             else
             {
@@ -411,6 +419,33 @@ package
             ShowHUDMessage("Not added to stage: " + getQualifiedClassName(this.topLevel));
          }
          stage.addEventListener(KeyboardEvent.KEY_DOWN,this.keyDownHandler);
+      }
+      
+      public function onBuildMenu(parentItem:String = null) : *
+      {
+         try
+         {
+            if(parentItem == MOD_NAME)
+            {
+               this.hudTools.AddMenuItem(HUDTOOLS_MENU_TOGGLE_VISIBILITY,"Toggle Visible",true,false,500);
+               this.hudTools.AddMenuItem(HUDTOOLS_MENU_HIDE,"Force Hide",true,false,500);
+            }
+         }
+         catch(e:Error)
+         {
+         }
+      }
+      
+      public function onSelectMenu(selectItem:String) : *
+      {
+         if(selectItem == HUDTOOLS_MENU_TOGGLE_VISIBILITY)
+         {
+            this.toggleVisibility = !this.toggleVisibility;
+         }
+         else if(selectItem == HUDTOOLS_MENU_HIDE)
+         {
+            this.forceHide = !this.forceHide;
+         }
       }
       
       public function keyDownHandler(event:Event) : void
