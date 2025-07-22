@@ -676,7 +676,7 @@ package
       
       public function get isReloadable() : Boolean
       {
-         return true;
+         return false;
       }
       
       public function get config() : Object
