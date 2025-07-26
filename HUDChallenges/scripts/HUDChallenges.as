@@ -178,6 +178,8 @@ package
       
       private static const HUDTOOLS_MENU_HIDE:String = MOD_NAME + "_HIDE";
       
+      private static const HUDTOOLS_MENU_RELOAD_CONFIG:String = MOD_NAME + "_RELOAD_CONFIG";
+      
       private const MINERVA_TIMESTAMP:Number = 1725897600;
       
       private const MINERVA_TIMESTAMP_LIST:Number = 12;
@@ -453,6 +455,10 @@ package
          {
             if(parentItem == MOD_NAME)
             {
+               if(config && config.disableRealTimeEdit)
+               {
+                  this.hudTools.AddMenuItem(HUDTOOLS_MENU_RELOAD_CONFIG,"Reload Config",true,false,250);
+               }
                this.hudTools.AddMenuItem(HUDTOOLS_MENU_TOGGLE_VISIBILITY,"Toggle Visible",true,false,250);
                this.hudTools.AddMenuItem(HUDTOOLS_MENU_HIDE,"Force Hide",true,false,250);
             }
@@ -473,6 +479,11 @@ package
             else if(selectItem == HUDTOOLS_MENU_HIDE)
             {
                this.forceHide = !this.forceHide;
+            }
+            else if(selectItem == HUDTOOLS_MENU_RELOAD_CONFIG)
+            {
+               config.disableRealTimeEdit = false;
+               this.loadConfig();
             }
          }
          catch(e:Error)
