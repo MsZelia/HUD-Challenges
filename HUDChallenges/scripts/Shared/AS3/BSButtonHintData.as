@@ -13,7 +13,6 @@ package Shared.AS3
       public static const BUTTON_HINT_DATA_CHANGE:String = "ButtonHintDataChange";
       
       public static const EVENT_CONTROL_MAP_DATA:String = "ControlMapData";
-       
       
       private var _strButtonText:String;
       
@@ -458,3 +457,4 @@ package Shared.AS3
       }
    }
 }
+

@@ -2,7 +2,6 @@ package com.adobe.serialization.json
 {
    public class JSONTokenizer
    {
-       
       
       private var strict:Boolean;
       
@@ -90,7 +89,8 @@ package com.adobe.serialization.json
                this.parseError("Expecting \'null\' but found " + _loc3_);
                break;
             case "N":
-               if((_loc4_ = "N" + this.nextChar() + this.nextChar()) == "NaN")
+               _loc4_ = "N" + this.nextChar() + this.nextChar();
+               if(_loc4_ == "NaN")
                {
                   _loc5_ = JSONToken.create(JSONTokenType.NAN,NaN);
                   this.nextChar();
@@ -170,7 +170,8 @@ package com.adobe.serialization.json
          var _loc10_:int = param1.length;
          do
          {
-            if((_loc9_ = int(param1.indexOf("\\",_loc2_))) < 0)
+            _loc9_ = int(param1.indexOf("\\",_loc2_));
+            if(_loc9_ < 0)
             {
                _loc8_ += param1.substr(_loc2_);
                break;
@@ -197,7 +198,8 @@ package com.adobe.serialization.json
                   break;
                case "u":
                   _loc4_ = "";
-                  if((_loc5_ = _loc2_ + 4) > _loc10_)
+                  _loc5_ = _loc2_ + 4;
+                  if(_loc5_ > _loc10_)
                   {
                      this.parseError("Unexpected end of input.  Expecting 4 hex digits after \\u.");
                   }
@@ -421,3 +423,4 @@ package com.adobe.serialization.json
       }
    }
 }
+

@@ -4,7 +4,6 @@ package com.adobe.serialization.json
    {
       
       internal static const token:JSONToken = new JSONToken();
-       
       
       public var type:int;
       
@@ -25,3 +24,4 @@ package com.adobe.serialization.json
       }
    }
 }
+

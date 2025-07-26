@@ -10,7 +10,6 @@ package Shared.AS3
    
    public class BSScrollingListEntry extends MovieClip
    {
-       
       
       public var border:MovieClip;
       
@@ -185,3 +184,4 @@ package Shared.AS3
       }
    }
 }
+

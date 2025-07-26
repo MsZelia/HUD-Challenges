@@ -2,7 +2,6 @@ package Shared.AS3
 {
    public class BGSExternalInterface
    {
-       
       
       public function BGSExternalInterface()
       {
@@ -16,7 +15,8 @@ package Shared.AS3
          if(param1 != null)
          {
             _loc3_ = String(rest.shift());
-            if((_loc4_ = param1[_loc3_]) != null)
+            _loc4_ = param1[_loc3_];
+            if(_loc4_ != null)
             {
                _loc4_.apply(null,rest);
             }
@@ -32,3 +32,4 @@ package Shared.AS3
       }
    }
 }
+

@@ -6,7 +6,6 @@ package Shared.AS3.Data
    {
       
       private static var _instance:BSUIDataManager;
-       
       
       private var m_DataShuttleConnector:UIDataShuttleConnector;
       
@@ -39,8 +38,8 @@ package Shared.AS3.Data
          var _loc2_:UIDataFromClient = null;
          var _loc3_:* = null;
          var _loc4_:Array = null;
-         var _loc5_:BSUIDataManager;
-         if((_loc5_ = GetInstance()).m_DataShuttleConnector == null)
+         var _loc5_:BSUIDataManager = GetInstance();
+         if(_loc5_.m_DataShuttleConnector == null)
          {
             _loc5_.m_DataShuttleConnector = param1;
             if(_loc5_.m_TestConnector)
@@ -72,8 +71,8 @@ package Shared.AS3.Data
       
       public static function Subscribe(param1:String, param2:Function, param3:Boolean = false) : Function
       {
-         var _loc4_:UIDataFromClient;
-         if((_loc4_ = BSUIDataManager.GetDataFromClient(param1,true,param3)) != null)
+         var _loc4_:UIDataFromClient = BSUIDataManager.GetDataFromClient(param1,true,param3);
+         if(_loc4_ != null)
          {
             _loc4_.addEventListener(Event.CHANGE,param2);
             return param2;
@@ -97,8 +96,8 @@ package Shared.AS3.Data
       
       public static function Unsubscribe(param1:String, param2:Function, param3:Boolean = false) : void
       {
-         var _loc4_:UIDataFromClient;
-         if((_loc4_ = BSUIDataManager.GetDataFromClient(param1,true,param3)) != null)
+         var _loc4_:UIDataFromClient = BSUIDataManager.GetDataFromClient(param1,true,param3);
+         if(_loc4_ != null)
          {
             _loc4_.removeEventListener(Event.CHANGE,param2);
          }
@@ -109,8 +108,8 @@ package Shared.AS3.Data
          var _loc4_:UIDataShuttleConnector = null;
          var _loc5_:UIDataShuttleTestConnector = null;
          var _loc6_:UIDataFromClient = null;
-         var _loc7_:BSUIDataManager;
-         if((_loc7_ = GetInstance()).m_Providers[param1] == null && param2)
+         var _loc7_:BSUIDataManager = GetInstance();
+         if(_loc7_.m_Providers[param1] == null && param2)
          {
             _loc4_ = _loc7_.m_DataShuttleConnector;
             _loc5_ = _loc7_.m_TestConnector;
@@ -127,7 +126,8 @@ package Shared.AS3.Data
                }
                else
                {
-                  (_loc6_ = new UIDataFromClient(new Object())).isTest = true;
+                  _loc6_ = new UIDataFromClient(new Object());
+                  _loc6_.isTest = true;
                }
             }
             _loc7_.m_Providers[param1] = _loc6_;
@@ -158,7 +158,8 @@ package Shared.AS3.Data
                }
                else
                {
-                  (_loc6_ = new UIDataFromClient(new Object())).isTest = true;
+                  _loc6_ = new UIDataFromClient(new Object());
+                  _loc6_.isTest = true;
                }
             }
             _loc7_.m_Providers[param1] = _loc6_;
@@ -192,3 +193,4 @@ package Shared.AS3.Data
       }
    }
 }
+

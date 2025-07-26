@@ -6,7 +6,6 @@ package Shared.AS3.Data
    
    public class UsesEventDispatcherBackend implements IEventDispatcher
    {
-       
       
       private var m_Dispatcher:EventDispatcher;
       
@@ -75,3 +74,4 @@ package Shared.AS3.Data
       }
    }
 }
+

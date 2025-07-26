@@ -5,7 +5,6 @@ package Shared.AS3.Data
    
    public class TestProviderLoader extends URLLoader
    {
-       
       
       private var m_ProviderName:String;
       
@@ -35,3 +34,4 @@ package Shared.AS3.Data
       }
    }
 }
+

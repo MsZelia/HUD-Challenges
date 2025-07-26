@@ -18,7 +18,6 @@ package Shared.AS3.Events
       public static const PLATFORM_INVALID:uint = uint.MAX_VALUE;
       
       public static const PLATFORM_CHANGE:String = "SetPlatform";
-       
       
       internal var _uiPlatform:uint = 4294967295;
       
@@ -28,8 +27,6 @@ package Shared.AS3.Events
       
       public function PlatformChangeEvent(param1:uint, param2:Boolean, param3:uint)
       {
-         this._uiPlatform = 4294967295;
-         this._uiController = 4294967295;
          super(PLATFORM_CHANGE,true,true);
          this.uiPlatform = param1;
          this.bPS3Switch = param2;
@@ -72,3 +69,4 @@ package Shared.AS3.Events
       }
    }
 }
+

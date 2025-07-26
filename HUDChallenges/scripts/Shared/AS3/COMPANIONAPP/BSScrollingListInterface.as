@@ -50,7 +50,6 @@ package Shared.AS3.COMPANIONAPP
       public static const RADIO_RENDERER_LINKAGE_ID:String = "RadioItemRendererMc";
       
       public static const PIPBOY_MESSAGE_RENDERER_LINKAGE_ID:String = "PipboyMessageItemRenderer";
-       
       
       public function BSScrollingListInterface()
       {
@@ -158,3 +157,4 @@ package Shared.AS3.COMPANIONAPP
       }
    }
 }
+

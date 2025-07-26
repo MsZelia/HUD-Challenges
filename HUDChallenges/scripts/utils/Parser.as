@@ -2,7 +2,6 @@ package utils
 {
    public class Parser
    {
-       
       
       public function Parser()
       {
@@ -54,3 +53,4 @@ package utils
       }
    }
 }
+

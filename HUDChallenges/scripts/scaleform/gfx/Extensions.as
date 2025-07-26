@@ -7,6 +7,10 @@ package scaleform.gfx
    public final class Extensions
    {
       
+      public static var CLIK_addedToStageCallback:Function;
+      
+      public static var gfxProcessSound:Function;
+      
       public static const EDGEAA_INHERIT:uint = 0;
       
       public static const EDGEAA_ON:uint = 1;
@@ -16,11 +20,6 @@ package scaleform.gfx
       public static const EDGEAA_DISABLE:uint = 3;
       
       public static var isGFxPlayer:Boolean = false;
-      
-      public static var CLIK_addedToStageCallback:Function;
-      
-      public static var gfxProcessSound:Function;
-       
       
       public function Extensions()
       {
@@ -93,3 +92,4 @@ package scaleform.gfx
       }
    }
 }
+

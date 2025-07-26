@@ -2,7 +2,6 @@ package Shared.AS3.COMPANIONAPP
 {
    public class MobileScrollListProperties
    {
-       
       
       public var linkageId:String;
       
@@ -22,3 +21,4 @@ package Shared.AS3.COMPANIONAPP
       }
    }
 }
+

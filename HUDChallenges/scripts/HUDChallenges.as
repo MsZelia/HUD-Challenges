@@ -177,7 +177,6 @@ package
       private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
       
       private static const HUDTOOLS_MENU_HIDE:String = MOD_NAME + "_HIDE";
-       
       
       private const MINERVA_TIMESTAMP:Number = 1725897600;
       
@@ -275,15 +274,15 @@ package
       
       private var _events:Array;
       
-      private var _eventTimes:*;
+      private var _eventTimes:* = {};
       
-      private var challenges_tf:Array;
+      private var challenges_tf:Array = [];
       
       private var challenges_index:int = 0;
       
       private var yOffset:Number = 0;
       
-      private var separators:Array;
+      private var separators:Array = [];
       
       private var daily_minsTilRefresh:int = 0;
       
@@ -331,7 +330,7 @@ package
       
       private var nextAlign:Number = 0;
       
-      private var verdantSeasons:Array;
+      private var verdantSeasons:Array = [];
       
       private var language:String = "";
       
@@ -339,10 +338,6 @@ package
       
       public function HUDChallenges()
       {
-         this._eventTimes = {};
-         this.challenges_tf = [];
-         this.separators = [];
-         this.verdantSeasons = [];
          super();
          addEventListener(Event.ADDED_TO_STAGE,this.addedToStageHandler,false,0,true);
          this.HUDModeData = BSUIDataManager.GetDataFromClient("HUDModeData");
@@ -354,9 +349,6 @@ package
          this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
-         this.configTimer = new Timer(CONFIG_RELOAD_TIME);
-         this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig,false,0,true);
-         this.configTimer.start();
       }
       
       public static function toString(param1:Object) : String
@@ -413,6 +405,10 @@ package
                this.isHudMenu = false;
                BSUIDataManager.Subscribe("MenuStackData",this.updateIsMainMenu);
             }
+            this.loadConfig();
+            this.configTimer = new Timer(CONFIG_RELOAD_TIME);
+            this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig,false,0,true);
+            this.configTimer.start();
             trace(MOD_NAME + " added to stage: " + getQualifiedClassName(this.topLevel));
          }
          else
@@ -425,10 +421,7 @@ package
       
       public function removedFromStageHandler(param1:Event) : *
       {
-         if(!this.isHudMenu)
-         {
-            BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
-         }
+         BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
          BSUIDataManager.Unsubscribe("MessageEvents",this.onMessageEvent);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
@@ -466,13 +459,19 @@ package
       
       public function onSelectMenu(selectItem:String) : *
       {
-         if(selectItem == HUDTOOLS_MENU_TOGGLE_VISIBILITY)
+         try
          {
-            this.toggleVisibility = !this.toggleVisibility;
+            if(selectItem == HUDTOOLS_MENU_TOGGLE_VISIBILITY)
+            {
+               this.toggleVisibility = !this.toggleVisibility;
+            }
+            else if(selectItem == HUDTOOLS_MENU_HIDE)
+            {
+               this.forceHide = !this.forceHide;
+            }
          }
-         else if(selectItem == HUDTOOLS_MENU_HIDE)
+         catch(e:Error)
          {
-            this.forceHide = !this.forceHide;
          }
       }
       
@@ -498,7 +497,7 @@ package
       
       private function updateIsMainMenu(event:FromClientDataEvent) : void
       {
-         this.isInMainMenu = Boolean(event.data) && Boolean(event.data.menuStackA) && Boolean(event.data.menuStackA.some(function(x:*):*
+         this.isInMainMenu = Boolean(event) && Boolean(event.data) && Boolean(event.data.menuStackA) && Boolean(event.data.menuStackA.some(function(x:*):*
          {
             return x.menuName == MAIN_MENU;
          }));
@@ -608,9 +607,8 @@ package
                messageIndex++;
             }
          }
-         catch(e:Error)
+         catch(e:*)
          {
-            ShowHUDMessage("Error onMessageEvent: " + errorCode + ", " + e);
          }
       }
       
@@ -681,7 +679,7 @@ package
       
       public function get isReloadable() : Boolean
       {
-         return false;
+         return true;
       }
       
       public function get config() : Object
@@ -1705,3 +1703,4 @@ package
       }
    }
 }
+

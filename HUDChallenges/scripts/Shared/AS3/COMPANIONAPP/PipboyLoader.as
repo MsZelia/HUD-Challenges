@@ -7,7 +7,6 @@ package Shared.AS3.COMPANIONAPP
    
    public class PipboyLoader extends Loader
    {
-       
       
       private var _request:URLRequest;
       
@@ -48,3 +47,4 @@ package Shared.AS3.COMPANIONAPP
       }
    }
 }
+

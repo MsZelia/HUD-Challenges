@@ -5,6 +5,8 @@ package
    public class HUDChallengesConfig
    {
       
+      private static var _config:Object;
+      
       public static const STATE_HIDDEN:String = "hidden";
       
       public static const STATE_SHOWN:String = "shown";
@@ -38,9 +40,6 @@ package
       public static const DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT:* = "Verdant season active in {region} ({time} ago)";
       
       public static const DEFAULT_VERDANT_SEASON_ENDED_FORMAT:* = "Verdant season ended in {region} ({time} ago)";
-      
-      private static var _config:Object;
-       
       
       public function HUDChallengesConfig()
       {
@@ -345,3 +344,4 @@ package
       }
    }
 }
+

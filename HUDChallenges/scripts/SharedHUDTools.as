@@ -49,7 +49,6 @@ package
       public static const FORMATMENU:String = "FMTMENU";
       
       public static const BUILDMENU:String = "BUILDMENU";
-       
       
       private var modName:String = "";
       
@@ -73,7 +72,7 @@ package
       
       private var queueTimer:Timer;
       
-      private var queueArray:Array;
+      private var queueArray:Array = new Array();
       
       private var queueFlag:Boolean = true;
       
@@ -83,7 +82,6 @@ package
       
       public function SharedHUDTools(modname:String, hudmode:String = "")
       {
-         this.queueArray = new Array();
          var date:Date = new Date();
          if(hudmode == "")
          {
@@ -549,3 +547,4 @@ package
       }
    }
 }
+

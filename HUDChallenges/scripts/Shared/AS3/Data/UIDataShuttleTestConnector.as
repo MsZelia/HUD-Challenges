@@ -7,7 +7,6 @@ package Shared.AS3.Data
    
    public class UIDataShuttleTestConnector extends UIDataShuttleConnector
    {
-       
       
       public function UIDataShuttleTestConnector()
       {
@@ -17,8 +16,8 @@ package Shared.AS3.Data
       override public function Watch(param1:String, param2:UIDataFromClient = null) : UIDataFromClient
       {
          var _loc3_:UIDataFromClient = new UIDataFromClient(new Object());
-         var _loc4_:TestProviderLoader;
-         (_loc4_ = new TestProviderLoader(param1,_loc3_)).addEventListener(Event.COMPLETE,this.onLoadComplete);
+         var _loc4_:TestProviderLoader = new TestProviderLoader(param1,_loc3_);
+         _loc4_.addEventListener(Event.COMPLETE,this.onLoadComplete);
          _loc4_.addEventListener(IOErrorEvent.IO_ERROR,this.onLoadFailedPrimaryLocation);
          _loc4_.load(new URLRequest("Providers/" + param1 + ".json"));
          _loc3_.isTest = true;
@@ -56,3 +55,4 @@ package Shared.AS3.Data
       }
    }
 }
+

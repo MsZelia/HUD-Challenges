@@ -34,7 +34,6 @@ package Shared.AS3
       public static const PLAY_FOCUS_SOUND:String = "BSScrollingList::playFocusSound";
       
       public static const MOBILE_ITEM_PRESS:String = "BSScrollingList::mobileItemPress";
-       
       
       public var scrollList:MobileScrollList;
       
@@ -316,7 +315,7 @@ package Shared.AS3
       public function GetEntryFromClipIndex(param1:uint) : int
       {
          var _loc2_:BSScrollingListEntry = this.GetClipByIndex(param1);
-         return !!_loc2_ ? int(_loc2_.itemIndex) : -1;
+         return _loc2_ ? int(_loc2_.itemIndex) : -1;
       }
       
       public function onKeyDown(param1:KeyboardEvent) : *
@@ -476,7 +475,8 @@ package Shared.AS3
             }
             if(this.iSelectedIndex != -1)
             {
-               if((_loc11_ = this.FindClipForEntry(this.iSelectedIndex)) == null)
+               _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
+               if(_loc11_ == null)
                {
                   this.InvalidateData();
                   _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
@@ -942,8 +942,8 @@ package Shared.AS3
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc7_:int;
-         if((_loc7_ = this._filterer.EntryMatchesFilter(this.EntriesA[this.EntriesA.length - 1]) ? int(this.EntriesA.length - 1) : int(this._filterer.GetPrevFilterMatch(this.EntriesA.length - 1))) == int.MAX_VALUE)
+         var _loc7_:int = this._filterer.EntryMatchesFilter(this.EntriesA[this.EntriesA.length - 1]) ? int(this.EntriesA.length - 1) : int(this._filterer.GetPrevFilterMatch(this.EntriesA.length - 1));
+         if(_loc7_ == int.MAX_VALUE)
          {
             this.iMaxScrollPosition = 0;
          }
@@ -1201,3 +1201,4 @@ package Shared.AS3
       }
    }
 }
+

@@ -4,7 +4,6 @@ package Shared.AS3.Data
    
    public final class FromClientDataEvent extends Event
    {
-       
       
       private var m_FromClient:UIDataFromClient;
       
@@ -25,3 +24,4 @@ package Shared.AS3.Data
       }
    }
 }
+

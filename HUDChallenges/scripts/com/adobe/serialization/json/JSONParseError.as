@@ -2,7 +2,6 @@ package com.adobe.serialization.json
 {
    public class JSONParseError extends Error
    {
-       
       
       private var _location:int;
       
@@ -27,3 +26,4 @@ package com.adobe.serialization.json
       }
    }
 }
+

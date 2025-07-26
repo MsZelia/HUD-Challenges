@@ -2,7 +2,6 @@ package com.adobe.serialization.json
 {
    public class JSONDecoder
    {
-       
       
       private var strict:Boolean;
       
@@ -186,3 +185,4 @@ package com.adobe.serialization.json
       }
    }
 }
+

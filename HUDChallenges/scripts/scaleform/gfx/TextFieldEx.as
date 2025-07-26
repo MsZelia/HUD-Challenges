@@ -27,7 +27,6 @@ package scaleform.gfx
       public static const VAUTOSIZE_CENTER:String = "center";
       
       public static const VAUTOSIZE_BOTTOM:String = "bottom";
-       
       
       public function TextFieldEx()
       {
@@ -132,3 +131,4 @@ package scaleform.gfx
       }
    }
 }
+

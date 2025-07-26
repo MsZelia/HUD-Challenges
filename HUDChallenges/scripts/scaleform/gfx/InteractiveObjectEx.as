@@ -4,7 +4,6 @@ package scaleform.gfx
    
    public class InteractiveObjectEx extends DisplayObjectEx
    {
-       
       
       public function InteractiveObjectEx()
       {
@@ -30,3 +29,4 @@ package scaleform.gfx
       }
    }
 }
+

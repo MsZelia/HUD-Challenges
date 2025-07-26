@@ -4,7 +4,6 @@ package com.adobe.serialization.json
    
    public class JSONEncoder
    {
-       
       
       private var jsonString:String;
       
@@ -27,11 +26,11 @@ package com.adobe.serialization.json
          }
          if(param1 is Number)
          {
-            return !!isFinite(param1 as Number) ? param1.toString() : "null";
+            return isFinite(param1 as Number) ? param1.toString() : "null";
          }
          if(param1 is Boolean)
          {
-            return !!param1 ? "true" : "false";
+            return param1 ? "true" : "false";
          }
          if(param1 is Array)
          {
@@ -154,3 +153,4 @@ package com.adobe.serialization.json
       }
    }
 }
+
