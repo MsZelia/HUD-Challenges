@@ -339,10 +339,10 @@ package
       
       public function HUDChallenges()
       {
-         this.verdantSeasons = [];
          this._eventTimes = {};
          this.challenges_tf = [];
          this.separators = [];
+         this.verdantSeasons = [];
          super();
          addEventListener(Event.ADDED_TO_STAGE,this.addedToStageHandler,false,0,true);
          this.HUDModeData = BSUIDataManager.GetDataFromClient("HUDModeData");
@@ -425,6 +425,11 @@ package
       
       public function removedFromStageHandler(param1:Event) : *
       {
+         if(!this.isHudMenu)
+         {
+            BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
+         }
+         BSUIDataManager.Unsubscribe("MessageEvents",this.onMessageEvent);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -493,10 +498,10 @@ package
       
       private function updateIsMainMenu(event:FromClientDataEvent) : void
       {
-         this.isInMainMenu = event.data && event.data.menuStackA && event.data.menuStackA.some(function(x:*):*
+         this.isInMainMenu = Boolean(event.data) && Boolean(event.data.menuStackA) && Boolean(event.data.menuStackA.some(function(x:*):*
          {
             return x.menuName == MAIN_MENU;
-         });
+         }));
       }
       
       private function onMessageEvent(event:FromClientDataEvent) : void
@@ -981,7 +986,7 @@ package
          }
          applyConfig(challenges_tf[challenges_index]);
          challenges_tf[challenges_index].text = text;
-         challenges_index++;
+         ++challenges_index;
       }
       
       public function drawBackground() : void
@@ -1632,7 +1637,7 @@ package
          try
          {
             t1 = Number(getTimer());
-            this.visible = !this.forceHide && this.isValidHUDMode() ^ this.toggleVisibility;
+            this.visible = !this.forceHide && Boolean(this.isValidHUDMode() ^ this.toggleVisibility);
             this.scoreBar = null;
             this.xpBar = null;
             if(!this.visible)
