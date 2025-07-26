@@ -405,10 +405,8 @@ package
                this.isHudMenu = false;
                BSUIDataManager.Subscribe("MenuStackData",this.updateIsMainMenu);
             }
+            this.initConfigTimer();
             this.loadConfig();
-            this.configTimer = new Timer(CONFIG_RELOAD_TIME);
-            this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig,false,0,true);
-            this.configTimer.start();
             trace(MOD_NAME + " added to stage: " + getQualifiedClassName(this.topLevel));
          }
          else
@@ -440,6 +438,13 @@ package
          {
             this.hudtools.Shutdown();
          }
+      }
+      
+      public function initConfigTimer() : void
+      {
+         this.configTimer = new Timer(CONFIG_RELOAD_TIME);
+         this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig,false,0,true);
+         this.configTimer.start();
       }
       
       public function onBuildMenu(parentItem:String = null) : *
