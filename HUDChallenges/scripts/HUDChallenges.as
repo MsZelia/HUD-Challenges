@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.7";
+      public static const MOD_VERSION:String = "1.1.8";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -361,6 +361,72 @@ package
       public static function ShowHUDMessage(param1:String) : void
       {
          GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
+      }
+      
+      public static function FormatCountdownTimeString(param1:Number) : String
+      {
+         var timeString:* = "";
+         if(param1 < 0)
+         {
+            timeString = "T+";
+            param1 = Math.abs(param1);
+         }
+         else
+         {
+            timeString = "T-";
+         }
+         var remainingTime:Number = 0;
+         var nDays:Number = Math.floor(param1 / 86400);
+         remainingTime = param1 % 86400;
+         var nHours:Number = Math.floor(remainingTime / 3600);
+         remainingTime = param1 % 3600;
+         var nMinutes:Number = Math.floor(remainingTime / 60);
+         remainingTime = param1 % 60;
+         var nSeconds:Number = Math.floor(remainingTime);
+         var isSet:Boolean = false;
+         if(nDays > 0)
+         {
+            timeString += GlobalFunc.PadNumber(nDays,2);
+            isSet = true;
+         }
+         if(nDays > 0 || nHours > 0)
+         {
+            if(isSet)
+            {
+               timeString += ":";
+            }
+            else
+            {
+               isSet = true;
+            }
+            timeString += GlobalFunc.PadNumber(nHours,2);
+         }
+         if(nDays > 0 || nHours > 0 || nMinutes > 0)
+         {
+            if(isSet)
+            {
+               timeString += ":";
+            }
+            else
+            {
+               isSet = true;
+            }
+            timeString += GlobalFunc.PadNumber(nMinutes,2);
+         }
+         if(nDays > 0 || nHours > 0 || nMinutes > 0 || nSeconds > 0)
+         {
+            if(isSet)
+            {
+               timeString += ":";
+            }
+            else if(nDays == 0 && nHours == 0 && nMinutes == 0)
+            {
+               timeString += "0:";
+            }
+            timeString += GlobalFunc.PadNumber(nSeconds,2);
+            isSet = true;
+         }
+         return isSet ? timeString : "T-0:00";
       }
       
       public static function FormatTimeStringShort(param1:Number) : String
@@ -1604,8 +1670,14 @@ package
          {
             config.formats[eventType] = HUDChallengesConfig.DEFAULT_EVENT_FORMAT;
          }
+         var isCountdown:Boolean = false;
          var timeSeconds:Number = _eventTimes[event.id].time + (getTimer() - _eventTimes[event.id].timestamp) / 1000;
-         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation).replace(STRING_PARTICIPANTS,event.participants);
+         if(config.countdownTimerForEvents.enabled && config.countdownTimerForEvents.events[event.name] != null && config.countdownTimerForEvents.events[event.name] > 0)
+         {
+            timeSeconds = config.countdownTimerForEvents.events[event.name] - timeSeconds;
+            isCountdown = true;
+         }
+         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,isCountdown ? FormatCountdownTimeString(timeSeconds) : GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation).replace(STRING_PARTICIPANTS,event.participants);
       }
       
       public function drawBar(bar:Object, barConfig:Object, barColorName:String) : void

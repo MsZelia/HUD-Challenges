@@ -266,6 +266,28 @@ package
          {
             config.showOnlyTrackedChallenges = {};
          }
+         if(!config.countdownTimerForEvents)
+         {
+            config.countdownTimerForEvents = {"enabled":false};
+         }
+         else
+         {
+            config.countdownTimerForEvents.enabled = Boolean(config.countdownTimerForEvents.enabled);
+            if(!config.countdownTimerForEvents.events)
+            {
+               config.countdownTimerForEvents.events = {};
+            }
+            else
+            {
+               for(event in config.countdownTimerForEvents.events)
+               {
+                  if(isNaN(config.countdownTimerForEvents.events[event]))
+                  {
+                     config.countdownTimerForEvents.events[event] = 0;
+                  }
+               }
+            }
+         }
          if(!config.displayData)
          {
             config.displayData = [];
