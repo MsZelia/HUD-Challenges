@@ -268,7 +268,8 @@ package
          }
          if(!config.countdownTimerForEvents)
          {
-            config.countdownTimerForEvents = {"enabled":false};
+            config.countdownTimerForEvents = {};
+            config.countdownTimerForEvents.enabled = false;
          }
          else
          {
@@ -276,16 +277,6 @@ package
             if(!config.countdownTimerForEvents.events)
             {
                config.countdownTimerForEvents.events = {};
-            }
-            else
-            {
-               for(event in config.countdownTimerForEvents.events)
-               {
-                  if(isNaN(config.countdownTimerForEvents.events[event]))
-                  {
-                     config.countdownTimerForEvents.events[event] = 0;
-                  }
-               }
             }
          }
          if(!config.displayData)
