@@ -45,6 +45,12 @@ package
       
       private static const DATA_POSITION_Y:String = "positionY";
       
+      private static const DATA_Y_SPACING:String = "ySpacing";
+      
+      private static const DATA_ALIGN:String = "textAlign";
+      
+      private static const DATA_SIZE:String = "textSize";
+      
       private static const STRING_TEXT:String = "{text}";
       
       private static const STRING_TIME:String = "{time}";
@@ -330,7 +336,13 @@ package
       
       private var nextX:Number = 0;
       
-      private var nextAlign:Number = 0;
+      private var nextYSpacing:Number = 0;
+      
+      private var nextTextSize:Number = 0;
+      
+      private var nextFormat:TextFormat = null;
+      
+      private var nextTextAlign:String = "";
       
       private var verdantSeasons:Array = [];
       
@@ -991,6 +1003,10 @@ package
       {
          this.nextY = config.y;
          this.nextX = config.x;
+         this.nextYSpacing = config.ySpacing;
+         this.nextTextSize = config.textSize;
+         this.nextTextAlign = config.textAlign;
+         this.nextFormat = null;
          this.separators = [];
          this.graphics.clear();
          this.challenges_index = 0;
@@ -1046,14 +1062,26 @@ package
          {
             if(config.anchor == "bottom")
             {
-               tf.y = nextY - LastDisplayTextfield.height - config.ySpacing - yOffset;
+               tf.y = nextY - LastDisplayTextfield.height - this.nextYSpacing - yOffset;
             }
             else
             {
-               tf.y = nextY + LastDisplayTextfield.height + config.ySpacing + yOffset;
+               tf.y = nextY + LastDisplayTextfield.height + this.nextYSpacing + yOffset;
             }
             nextY = tf.y;
             yOffset = 0;
+         }
+         if(this.nextFormat == null && (this.nextTextSize != config.textSize || this.nextTextAlign != config.textAlign))
+         {
+            this.nextFormat = new TextFormat();
+            if(this.nextTextSize != config.textSize)
+            {
+               this.nextFormat.size = this.nextTextSize;
+            }
+            if(this.nextTextAlign != config.textAlign)
+            {
+               this.nextFormat.align = this.nextTextAlign;
+            }
          }
          tf.visible = true;
       }
@@ -1066,6 +1094,10 @@ package
          }
          applyConfig(challenges_tf[challenges_index]);
          challenges_tf[challenges_index].text = text;
+         if(this.nextFormat != null)
+         {
+            challenges_tf[challenges_index].setTextFormat(this.nextFormat);
+         }
          ++challenges_index;
       }
       
@@ -1158,7 +1190,7 @@ package
             }
             else
             {
-               y = LastDisplayTextfield.y + LastDisplayTextfield.height + config.ySpacing / 2 + yOffset;
+               y = LastDisplayTextfield.y + LastDisplayTextfield.height + this.nextYSpacing / 2 + yOffset;
             }
             yOffset += height;
             separators.push({
@@ -1580,15 +1612,33 @@ package
                               }
                               break;
                            case DATA_POSITION_Y:
-                              if(!isNaN(parts[1]))
+                              if(parts.length > 1 && !isNaN(parts[1]))
                               {
                                  nextY = parts[1];
                               }
                               break;
                            case DATA_POSITION_X:
-                              if(!isNaN(parts[1]))
+                              if(parts.length > 1 && !isNaN(parts[1]))
                               {
                                  nextX = parts[1];
+                              }
+                              break;
+                           case DATA_Y_SPACING:
+                              if(parts.length > 1 && !isNaN(parts[1]))
+                              {
+                                 nextYSpacing = parts[1];
+                              }
+                              break;
+                           case DATA_SIZE:
+                              if(parts.length > 1 && !isNaN(parts[1]))
+                              {
+                                 nextTextSize = parts[1];
+                              }
+                              break;
+                           case DATA_ALIGN:
+                              if(parts.length > 1 && ["left","center","right"].indexOf(parts[1].toLowerCase()) != -1)
+                              {
+                                 nextTextAlign = parts[1].toLowerCase();
                               }
                               break;
                            case "showHUDChildrenOf":
