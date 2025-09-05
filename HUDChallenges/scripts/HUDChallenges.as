@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.8";
+      public static const MOD_VERSION:String = "1.1.9";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -94,6 +94,10 @@ package
       private static const STRING_EVENTS_EXPIRE:String = "{eventsExpireTime}";
       
       private static const STRING_EVENTS_PROGRESS:String = "{eventsProgress}";
+      
+      private static const STRING_SEASONAL_EXPIRE:String = "{seasonalExpireTime}";
+      
+      private static const STRING_TIME_ZERO:String = "00:00";
       
       private static const STRING_CODE_ALPHA:String = "{codeAlpha}";
       
@@ -292,23 +296,25 @@ package
       
       private var separators:Array = [];
       
-      private var daily_minsTilRefresh:int = 0;
+      private var daily_secsTilRefresh:Number = 0;
       
-      private var daily_hoursTilRefresh:int = 0;
+      private var weekly_secsTilRefresh:Number = 0;
       
-      private var weekly_daysTilRefresh:int = 0;
+      private var monthly_secsTilRefresh:Number = 0;
       
-      private var monthly_minsTilRefresh:int = 0;
+      private var event_secsTilRefresh:Number = 0;
       
-      private var monthly_hoursTilRefresh:int = 0;
+      private var seasonal_secsTilRefresh:Number = 0;
       
-      private var monthly_daysTilRefresh:int = 0;
+      private var daily_TilRefresh:String = "00:00";
       
-      private var event_minsTilRefresh:int = 0;
+      private var weekly_TilRefresh:String = "00:00";
       
-      private var event_hoursTilRefresh:int = 0;
+      private var monthly_TilRefresh:String = "00:00";
       
-      private var event_daysTilRefresh:int = 0;
+      private var event_TilRefresh:String = "00:00";
+      
+      private var seasonal_TilRefresh:String = "00:00";
       
       private var daily_progress:String = "0/0";
       
@@ -441,6 +447,42 @@ package
          return isSet ? timeString : "T-0:00";
       }
       
+      public static function FormatTimeStringLong(param1:Number) : String
+      {
+         var remainingTime:Number = 0;
+         var nDays:Number = Math.floor(param1 / 86400);
+         remainingTime = param1 % 86400;
+         var nHours:Number = Math.floor(remainingTime / 3600);
+         remainingTime = param1 % 3600;
+         var nMinutes:Number = Math.floor(remainingTime / 60);
+         remainingTime = param1 % 60;
+         var nSeconds:Number = Math.floor(remainingTime);
+         var isSet:Boolean = false;
+         var timeString:* = "";
+         if(nDays > 0)
+         {
+            timeString = GlobalFunc.PadNumber(nDays,2);
+            isSet = true;
+         }
+         if(nHours > 0)
+         {
+            if(isSet)
+            {
+               timeString += ":";
+            }
+            else
+            {
+               isSet = true;
+            }
+            timeString += GlobalFunc.PadNumber(nHours,2);
+         }
+         if(isSet)
+         {
+            timeString += ":";
+         }
+         return timeString + GlobalFunc.PadNumber(nMinutes,2) + ":" + GlobalFunc.PadNumber(nSeconds,2);
+      }
+      
       public static function FormatTimeStringShort(param1:Number) : String
       {
          var remainingTime:Number = 0;
@@ -460,7 +502,7 @@ package
          {
             timeString += ":";
          }
-         return timeString + (GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2));
+         return timeString + GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2);
       }
       
       public function addedToStageHandler(param1:Event) : *
@@ -813,15 +855,11 @@ package
                return;
             }
             t1 = Number(getTimer());
-            this.daily_minsTilRefresh = Math.max(int(param1.data.daily_minsTilRefresh),0);
-            this.daily_hoursTilRefresh = Math.max(int(param1.data.daily_hoursTilRefresh),0);
-            this.weekly_daysTilRefresh = Math.max(int(param1.data.weekly_daysTilRefresh),0);
-            this.monthly_minsTilRefresh = Math.max(int(param1.data.monthly_minsTilRefresh),0);
-            this.monthly_hoursTilRefresh = Math.max(int(param1.data.monthly_hoursTilRefresh),0);
-            this.monthly_daysTilRefresh = Math.max(int(param1.data.monthly_daysTilRefresh),0);
-            this.event_minsTilRefresh = Math.max(int(param1.data.event_minsTilRefresh),0);
-            this.event_hoursTilRefresh = Math.max(int(param1.data.event_hoursTilRefresh),0);
-            this.event_daysTilRefresh = Math.max(int(param1.data.event_daysTilRefresh),0);
+            this.daily_secsTilRefresh = param1.data.daily_secsTilRefresh;
+            this.weekly_secsTilRefresh = param1.data.weekly_secsTilRefresh;
+            this.monthly_secsTilRefresh = param1.data.monthly_secsTilRefresh;
+            this.event_secsTilRefresh = param1.data.event_secsTilRefresh;
+            this.seasonal_secsTilRefresh = param1.data.seasonal_secsTilRefresh;
             challenges = {};
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in param1.data.categories)
@@ -1225,21 +1263,31 @@ package
             var color:Number = Parser.parseNumber(parts[1],getCustomColor(parts[1]));
             var text:String = parts[2];
             text = text.replace("/COLON/",":");
+            var now:Number = new Date().getTime() / 1000;
             if(text.indexOf(STRING_DAILY_EXPIRE) != -1)
             {
-               text = text.replace(STRING_DAILY_EXPIRE,GlobalFunc.PadNumber(daily_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(daily_minsTilRefresh,2));
+               this.daily_TilRefresh = FormatTimeStringLong(Math.max(this.daily_secsTilRefresh - now,0));
+               text = text.replace(STRING_DAILY_EXPIRE,this.daily_TilRefresh);
             }
             if(text.indexOf(STRING_WEEKLY_EXPIRE) != -1)
             {
-               text = text.replace(STRING_WEEKLY_EXPIRE,weekly_daysTilRefresh + ":" + GlobalFunc.PadNumber(daily_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(daily_minsTilRefresh,2));
+               this.weekly_TilRefresh = FormatTimeStringLong(Math.max(this.weekly_secsTilRefresh - now,0));
+               text = text.replace(STRING_WEEKLY_EXPIRE,this.weekly_TilRefresh);
             }
             if(text.indexOf(STRING_MONTHLY_EXPIRE) != -1)
             {
-               text = text.replace(STRING_MONTHLY_EXPIRE,monthly_daysTilRefresh + ":" + GlobalFunc.PadNumber(monthly_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(monthly_minsTilRefresh,2));
+               this.monthly_TilRefresh = FormatTimeStringLong(Math.max(this.monthly_secsTilRefresh - now,0));
+               text = text.replace(STRING_MONTHLY_EXPIRE,this.monthly_TilRefresh);
             }
             if(text.indexOf(STRING_EVENTS_EXPIRE) != -1)
             {
-               text = text.replace(STRING_EVENTS_EXPIRE,event_daysTilRefresh + ":" + GlobalFunc.PadNumber(event_hoursTilRefresh,2) + ":" + GlobalFunc.PadNumber(event_minsTilRefresh,2));
+               this.event_TilRefresh = FormatTimeStringLong(Math.max(this.event_secsTilRefresh - now,0));
+               text = text.replace(STRING_EVENTS_EXPIRE,this.event_TilRefresh);
+            }
+            if(text.indexOf(STRING_SEASONAL_EXPIRE) != -1)
+            {
+               this.seasonal_TilRefresh = FormatTimeStringLong(Math.max(this.seasonal_secsTilRefresh - now,0));
+               text = text.replace(STRING_SEASONAL_EXPIRE,this.seasonal_TilRefresh);
             }
             text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress).replace(STRING_EVENTS_PROGRESS,event_progress);
             displayMessage(text);
