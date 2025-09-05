@@ -1387,17 +1387,26 @@ package
                         {
                            var rewards:int = 0;
                            var rewardsClaimed:int = 0;
-                           if(miniSeasonData.miniSeasonPageDataA && miniSeasonData.miniSeasonPageDataA.length > 0 && miniSeasonData.miniSeasonPageDataA[0] && miniSeasonData.miniSeasonPageDataA[0].pageTileDataA)
+                           if(miniSeasonData.miniSeasonPageDataA && miniSeasonData.miniSeasonPageDataA.length > 0)
                            {
-                              var i:int = 0;
-                              rewards = int(miniSeasonData.miniSeasonPageDataA[0].pageTileDataA.length);
-                              while(i < rewards)
+                              var page:int = 0;
+                              while(page < miniSeasonData.miniSeasonPageDataA.length)
                               {
-                                 if(miniSeasonData.miniSeasonPageDataA[0].pageTileDataA[i] && miniSeasonData.miniSeasonPageDataA[0].pageTileDataA[i].bHasBeenClaimed)
+                                 var pageData:Object = miniSeasonData.miniSeasonPageDataA[page].pageTileDataA;
+                                 if(pageData)
                                  {
-                                    rewardsClaimed++;
+                                    rewards += int(pageData.length);
+                                    var i:int = 0;
+                                    while(i < pageData.length)
+                                    {
+                                       if(pageData[i] && pageData[i].bHasBeenClaimed)
+                                       {
+                                          rewardsClaimed++;
+                                       }
+                                       i++;
+                                    }
                                  }
-                                 i++;
+                                 page++;
                               }
                            }
                            if(!config.miniSeason.hideIfRewardsClaimed || rewards == 0 || rewards != rewardsClaimed)
