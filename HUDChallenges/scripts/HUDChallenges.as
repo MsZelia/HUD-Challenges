@@ -97,6 +97,8 @@ package
       
       private static const STRING_SEASONAL_EXPIRE:String = "{seasonalExpireTime}";
       
+      private static const STRING_SEASONAL_PROGRESS:String = "{seasonalProgress}";
+      
       private static const STRING_TIME_ZERO:String = "00:00";
       
       private static const STRING_CODE_ALPHA:String = "{codeAlpha}";
@@ -118,6 +120,8 @@ package
       private static const CHALLENGE_TYPE_MONTHLY:uint = 3;
       
       private static const CHALLENGE_TYPE_EVENTS:uint = 4;
+      
+      private static const CHALLENGE_TYPE_SEASONAL:uint = 5;
       
       private static const ACTIVITY_TYPE_PUBLIC_EVENT:uint = 1;
       
@@ -323,6 +327,8 @@ package
       private var monthly_progress:String = "0/0";
       
       private var event_progress:String = "0/0";
+      
+      private var seasonal_progress:String = "0/0";
       
       private var scoreBar:Object;
       
@@ -916,6 +922,10 @@ package
                   {
                      this.event_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
                   }
+                  else if(category.type == CHALLENGE_TYPE_SEASONAL)
+                  {
+                     this.seasonal_progress = category.challenges.length - challenges[challengeType].length - fo1st_disabledChallenges + "/" + category.challenges.length;
+                  }
                }
             }
             _challenges = challenges;
@@ -1289,7 +1299,7 @@ package
                this.seasonal_TilRefresh = FormatTimeStringLong(Math.max(this.seasonal_secsTilRefresh - now,0));
                text = text.replace(STRING_SEASONAL_EXPIRE,this.seasonal_TilRefresh);
             }
-            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress).replace(STRING_EVENTS_PROGRESS,event_progress);
+            text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress).replace(STRING_EVENTS_PROGRESS,event_progress).replace(STRING_SEASONAL_PROGRESS,seasonal_progress);
             displayMessage(text);
             LastDisplayTextfield.textColor = color;
          }
