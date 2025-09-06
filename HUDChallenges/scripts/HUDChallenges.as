@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.1.9";
+      public static const MOD_VERSION:String = "1.2.0";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -467,26 +467,9 @@ package
          var timeString:* = "";
          if(nDays > 0)
          {
-            timeString = GlobalFunc.PadNumber(nDays,2);
-            isSet = true;
+            timeString = GlobalFunc.PadNumber(nDays,2) + ":";
          }
-         if(nHours > 0)
-         {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else
-            {
-               isSet = true;
-            }
-            timeString += GlobalFunc.PadNumber(nHours,2);
-         }
-         if(isSet)
-         {
-            timeString += ":";
-         }
-         return timeString + GlobalFunc.PadNumber(nMinutes,2) + ":" + GlobalFunc.PadNumber(nSeconds,2);
+         return timeString + GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2) + ":" + GlobalFunc.PadNumber(nSeconds,2);
       }
       
       public static function FormatTimeStringShort(param1:Number) : String
