@@ -1414,9 +1414,9 @@ package
                      applyColor(dataField);
                      break;
                   case "showSeasonEndTime":
-                     if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonDataA && this.SeasonData.data.allSeasonDataA.length > 0 && this.SeasonData.data.allSeasonDataA[0])
+                     if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonData)
                      {
-                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,FormatTimeStringShort(Number(this.SeasonData.data.allSeasonDataA[0].uSeasonEndTime - date.getTime() / 1000))));
+                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,FormatTimeStringShort(Number(this.SeasonData.data.allSeasonData.uEndTimeSec - date.getTime() / 1000))));
                         applyColor(dataField);
                      }
                      break;
