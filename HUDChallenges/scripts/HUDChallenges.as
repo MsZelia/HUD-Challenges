@@ -1608,13 +1608,21 @@ package
                         applyColor(dataField);
                         if(iWeeksFromTimeStamp == 0)
                         {
-                           displayMessage("WARNING: Rollover week, last week\'s codes:");
-                           applyColor(dataField);
+                           if(config.anchor == "top")
+                           {
+                              displayMessage("WARNING: Rollover week, last week\'s codes:");
+                              applyColor(dataField);
+                           }
                            codeAlpha = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 24,8)),8);
                            codeBravo = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 16,8)),8);
                            codeCharlie = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 8,8)),8);
                            displayMessage(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,"00:00"));
                            applyColor(dataField);
+                           if(config.anchor == "bottom")
+                           {
+                              displayMessage("WARNING: Rollover week, last week\'s codes:");
+                              applyColor(dataField);
+                           }
                         }
                      }
                      break;
