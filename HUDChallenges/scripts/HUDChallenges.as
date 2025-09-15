@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.0";
+      public static const MOD_VERSION:String = "1.2.1";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -108,6 +108,8 @@ package
       private static const STRING_CODE_CHARLIE:String = "{codeCharlie}";
       
       private static const STRING_REGION:String = "{region}";
+      
+      private static const STRING_XP:String = "{xp}";
       
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
@@ -286,6 +288,8 @@ package
       
       private var HUDMessageProvider:*;
       
+      private var UniversalRewardData:*;
+      
       private var _challenges:Object;
       
       private var _events:Array;
@@ -374,6 +378,7 @@ package
          this.SeasonWidgetData = BSUIDataManager.GetDataFromClient("SeasonWidgetData");
          this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
+         this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
       }
       
@@ -1495,6 +1500,13 @@ package
                            }
                            i--;
                         }
+                     }
+                     break;
+                  case "showRaidXP":
+                     if(this.UniversalRewardData.data && this.UniversalRewardData.data.xp)
+                     {
+                        displayMessage(config.formats.showRaidXP.replace(STRING_XP,this.UniversalRewardData.data.xp));
+                        applyColor(dataField);
                      }
                      break;
                   case "showXPBar":

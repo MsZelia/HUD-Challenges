@@ -21,6 +21,8 @@ package
       
       public static const DEFAULT_XP_FORMAT:* = "{text} [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
       
+      public static const DEFAULT_RAID_XP_FORMAT:* = "Raid XP: {xp}";
+      
       public static const DEFAULT_MINERVA_AVAILABLE_FORMAT:* = "Minerva is at {location} for {time}";
       
       public static const DEFAULT_MINERVA_NOT_AVAILABLE_FORMAT:* = "Minerva will be at {location} in {time}";
@@ -93,6 +95,7 @@ package
             config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
+            config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
          }
          else
          {
@@ -159,6 +162,10 @@ package
             if(!config.formats.showSeasonEndTime)
             {
                config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
+            }
+            if(!config.formats.showRaidXP)
+            {
+               config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
             }
          }
          if(!config.xpBar)
