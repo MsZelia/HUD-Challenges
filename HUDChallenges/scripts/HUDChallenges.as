@@ -827,7 +827,11 @@ package
                               "text":challenge.text,
                               "currentValue":challenge.currentValue,
                               "thresholdValue":challenge.thresholdValue,
-                              "isTracked":challenge.isTracked
+                              "isTracked":challenge.isTracked,
+                              "subChallenges":(config.showSubChallenges ? challenge.subChallenges.filter(function(sub:Object):Boolean
+                              {
+                                 return sub.currentValue < sub.thresholdValue;
+                              }) : [])
                            });
                         }
                         else
@@ -1248,6 +1252,15 @@ package
                   if(!applyEventChallengeColor(challenge.text))
                   {
                      applyColor(groupName);
+                  }
+                  if(config.showSubChallenges && challenge.subChallenges.length > 0)
+                  {
+                     var challengeColor:uint = LastDisplayTextfield.textColor;
+                     for each(sub in challenge.subChallenges)
+                     {
+                        displayMessage(formatChallenge(groupName,sub));
+                        LastDisplayTextfield.textColor = challengeColor;
+                     }
                   }
                }
             }
