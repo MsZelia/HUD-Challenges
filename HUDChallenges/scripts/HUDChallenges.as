@@ -828,7 +828,7 @@ package
                               "currentValue":challenge.currentValue,
                               "thresholdValue":challenge.thresholdValue,
                               "isTracked":challenge.isTracked,
-                              "subChallenges":(config.showSubChallenges ? challenge.subChallenges.filter(function(sub:Object):Boolean
+                              "subChallenges":(Boolean(config.showSubChallenges[challengeType]) ? challenge.subChallenges.filter(function(sub:Object):Boolean
                               {
                                  return sub.currentValue < sub.thresholdValue;
                               }) : [])
@@ -1253,7 +1253,7 @@ package
                   {
                      applyColor(groupName);
                   }
-                  if(config.showSubChallenges && challenge.subChallenges.length > 0)
+                  if(Boolean(config.showSubChallenges[groupName]) && challenge.subChallenges.length > 0)
                   {
                      var challengeColor:uint = LastDisplayTextfield.textColor;
                      for each(sub in challenge.subChallenges)

@@ -82,7 +82,6 @@ package
          config.offsetUTC = Parser.parseNumber(config.offsetUTC,0);
          config.toggleVisibilityHotkey = Parser.parsePositiveNumber(config.toggleVisibilityHotkey,0);
          config.forceHideHotkey = Parser.parsePositiveNumber(config.forceHideHotkey,0);
-         config.showSubChallenges = Boolean(config.showSubChallenges);
          if(!config.formats)
          {
             config.formats = {};
@@ -294,6 +293,10 @@ package
          if(!config.showOnlyTrackedChallenges)
          {
             config.showOnlyTrackedChallenges = {};
+         }
+         if(!config.showSubChallenges)
+         {
+            config.showSubChallenges = {};
          }
          if(!config.countdownTimerForEvents)
          {
