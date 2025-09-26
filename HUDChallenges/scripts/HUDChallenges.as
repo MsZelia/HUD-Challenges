@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.1";
+      public static const MOD_VERSION:String = "1.2.2";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -110,6 +110,14 @@ package
       private static const STRING_REGION:String = "{region}";
       
       private static const STRING_XP:String = "{xp}";
+      
+      private static const STRING_DAYS:String = "{d}";
+      
+      private static const STRING_HOURS:String = "{h}";
+      
+      private static const STRING_MINUTES:String = "{m}";
+      
+      private static const STRING_SECONDS:String = "{s}";
       
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
@@ -392,72 +400,6 @@ package
          GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
       }
       
-      public static function FormatCountdownTimeString(param1:Number) : String
-      {
-         var timeString:* = "";
-         if(param1 < 0)
-         {
-            timeString = "T+";
-            param1 = Math.abs(param1);
-         }
-         else
-         {
-            timeString = "T-";
-         }
-         var remainingTime:Number = 0;
-         var nDays:Number = Math.floor(param1 / 86400);
-         remainingTime = param1 % 86400;
-         var nHours:Number = Math.floor(remainingTime / 3600);
-         remainingTime = param1 % 3600;
-         var nMinutes:Number = Math.floor(remainingTime / 60);
-         remainingTime = param1 % 60;
-         var nSeconds:Number = Math.floor(remainingTime);
-         var isSet:Boolean = false;
-         if(nDays > 0)
-         {
-            timeString += GlobalFunc.PadNumber(nDays,2);
-            isSet = true;
-         }
-         if(nDays > 0 || nHours > 0)
-         {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else
-            {
-               isSet = true;
-            }
-            timeString += GlobalFunc.PadNumber(nHours,2);
-         }
-         if(nDays > 0 || nHours > 0 || nMinutes > 0)
-         {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else
-            {
-               isSet = true;
-            }
-            timeString += GlobalFunc.PadNumber(nMinutes,2);
-         }
-         if(nDays > 0 || nHours > 0 || nMinutes > 0 || nSeconds > 0)
-         {
-            if(isSet)
-            {
-               timeString += ":";
-            }
-            else if(nDays == 0 && nHours == 0 && nMinutes == 0)
-            {
-               timeString += "0:";
-            }
-            timeString += GlobalFunc.PadNumber(nSeconds,2);
-            isSet = true;
-         }
-         return isSet ? timeString : "T-0:00";
-      }
-      
       public static function FormatTimeStringLong(param1:Number) : String
       {
          var remainingTime:Number = 0;
@@ -468,7 +410,6 @@ package
          var nMinutes:Number = Math.floor(remainingTime / 60);
          remainingTime = param1 % 60;
          var nSeconds:Number = Math.floor(remainingTime);
-         var isSet:Boolean = false;
          var timeString:* = "";
          if(nDays > 0)
          {
@@ -485,18 +426,53 @@ package
          var nHours:Number = Math.floor(remainingTime / 3600);
          remainingTime = param1 % 3600;
          var nMinutes:Number = Math.floor(remainingTime / 60);
-         var isSet:Boolean = false;
          var timeString:* = "";
          if(nDays > 0)
          {
-            timeString = GlobalFunc.PadNumber(nDays,2);
-            isSet = true;
-         }
-         if(isSet)
-         {
-            timeString += ":";
+            timeString = GlobalFunc.PadNumber(nDays,2) + ":";
          }
          return timeString + GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2);
+      }
+      
+      public function FormatCountdownTimeString(param1:Number) : String
+      {
+         var timeString:* = "";
+         if(param1 < 0)
+         {
+            timeString = "T+";
+            param1 = Math.abs(param1);
+         }
+         else
+         {
+            timeString = "T-";
+         }
+         return timeString + FormatTimeStringCustom(param1);
+      }
+      
+      public function FormatTimeStringCustom(param1:Number) : String
+      {
+         var remainingTime:Number = 0;
+         var nDays:Number = Math.floor(param1 / 86400);
+         remainingTime = param1 % 86400;
+         var nHours:Number = Math.floor(remainingTime / 3600);
+         remainingTime = param1 % 3600;
+         var nMinutes:Number = Math.floor(remainingTime / 60);
+         remainingTime = param1 % 60;
+         var nSeconds:Number = Math.floor(remainingTime);
+         var timeString:* = "";
+         if(nDays > 0)
+         {
+            timeString = config.formats.timeLong.replace(STRING_DAYS,nDays).replace(STRING_HOURS,GlobalFunc.PadNumber(nHours,2));
+         }
+         else if(nHours > 0)
+         {
+            timeString = config.formats.timeMid.replace(STRING_DAYS,"").replace(STRING_HOURS,GlobalFunc.PadNumber(nHours,2));
+         }
+         else
+         {
+            timeString = config.formats.timeShort.replace(STRING_DAYS,"").replace(STRING_HOURS,"");
+         }
+         return timeString.replace(STRING_MINUTES,GlobalFunc.PadNumber(nMinutes,2)).replace(STRING_SECONDS,GlobalFunc.PadNumber(nSeconds,2));
       }
       
       public function addedToStageHandler(param1:Event) : *
@@ -1264,27 +1240,27 @@ package
             var now:Number = new Date().getTime() / 1000;
             if(text.indexOf(STRING_DAILY_EXPIRE) != -1)
             {
-               this.daily_TilRefresh = FormatTimeStringLong(Math.max(this.daily_secsTilRefresh - now,0));
+               this.daily_TilRefresh = FormatTimeStringCustom(Math.max(this.daily_secsTilRefresh - now,0));
                text = text.replace(STRING_DAILY_EXPIRE,this.daily_TilRefresh);
             }
             if(text.indexOf(STRING_WEEKLY_EXPIRE) != -1)
             {
-               this.weekly_TilRefresh = FormatTimeStringLong(Math.max(this.weekly_secsTilRefresh - now,0));
+               this.weekly_TilRefresh = FormatTimeStringCustom(Math.max(this.weekly_secsTilRefresh - now,0));
                text = text.replace(STRING_WEEKLY_EXPIRE,this.weekly_TilRefresh);
             }
             if(text.indexOf(STRING_MONTHLY_EXPIRE) != -1)
             {
-               this.monthly_TilRefresh = FormatTimeStringLong(Math.max(this.monthly_secsTilRefresh - now,0));
+               this.monthly_TilRefresh = FormatTimeStringCustom(Math.max(this.monthly_secsTilRefresh - now,0));
                text = text.replace(STRING_MONTHLY_EXPIRE,this.monthly_TilRefresh);
             }
             if(text.indexOf(STRING_EVENTS_EXPIRE) != -1)
             {
-               this.event_TilRefresh = FormatTimeStringLong(Math.max(this.event_secsTilRefresh - now,0));
+               this.event_TilRefresh = FormatTimeStringCustom(Math.max(this.event_secsTilRefresh - now,0));
                text = text.replace(STRING_EVENTS_EXPIRE,this.event_TilRefresh);
             }
             if(text.indexOf(STRING_SEASONAL_EXPIRE) != -1)
             {
-               this.seasonal_TilRefresh = FormatTimeStringLong(Math.max(this.seasonal_secsTilRefresh - now,0));
+               this.seasonal_TilRefresh = FormatTimeStringCustom(Math.max(this.seasonal_secsTilRefresh - now,0));
                text = text.replace(STRING_SEASONAL_EXPIRE,this.seasonal_TilRefresh);
             }
             text = text.replace(STRING_DAILY_PROGRESS,daily_progress).replace(STRING_WEEKLY_PROGRESS,weekly_progress).replace(STRING_MONTHLY_PROGRESS,monthly_progress).replace(STRING_EVENTS_PROGRESS,event_progress).replace(STRING_SEASONAL_PROGRESS,seasonal_progress);
@@ -1383,7 +1359,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showLastConfigUpdate":
-                     displayMessage("ConfigUpdate: " + GlobalFunc.FormatTimeString(this.timeSinceLastConfigUpdate) + " ago");
+                     displayMessage("ConfigUpdate: " + FormatTimeStringCustom(this.timeSinceLastConfigUpdate) + " ago");
                      applyColor(dataField);
                      break;
                   case "showLastEventsUpdate":
@@ -1395,7 +1371,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showElapsedTime":
-                     displayMessage("ElapsedTime: " + GlobalFunc.FormatTimeString(this.elapsedTime));
+                     displayMessage("ElapsedTime: " + FormatTimeStringCustom(this.elapsedTime));
                      applyColor(dataField);
                      break;
                   case "showHUDMode":
@@ -1415,13 +1391,13 @@ package
                      applyColor(dataField);
                      break;
                   case "showUTCTime":
-                     displayMessage("UTC: " + GlobalFunc.FormatTimeString(utc));
+                     displayMessage("UTC: " + FormatTimeStringCustom(utc));
                      applyColor(dataField);
                      break;
                   case "showSeasonEndTime":
                      if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonData)
                      {
-                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.allSeasonData.uEndTimeSec != 0 ? FormatTimeStringShort(Number(this.SeasonData.data.allSeasonData.uEndTimeSec - date.getTime() / 1000)) : "00:00"));
+                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.allSeasonData.uEndTimeSec != 0 ? FormatTimeStringCustom(Number(this.SeasonData.data.allSeasonData.uEndTimeSec - date.getTime() / 1000)) : "00:00"));
                         applyColor(dataField);
                      }
                      break;
@@ -1486,12 +1462,12 @@ package
                            var timeDelta:int = utcSeconds - vSeason.time;
                            if(vSeason.active)
                            {
-                              displayMessage(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeDelta)));
+                              displayMessage(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)));
                               applyColor("verdantSeasonActive");
                            }
                            else if(timeDelta < config.verdantSeason.hideEndedSeasonAfter)
                            {
-                              displayMessage(config.verdantSeason.endedText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,GlobalFunc.FormatTimeString(timeDelta)));
+                              displayMessage(config.verdantSeason.endedText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)));
                               applyColor("verdantSeasonEnded");
                            }
                            else
@@ -1595,12 +1571,12 @@ package
                         }
                         if(isAvailable)
                         {
-                           displayMessage(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringShort(arriveLeaveTime)));
+                           displayMessage(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
                            applyColor("minervaAvailable");
                         }
                         else
                         {
-                           displayMessage(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringShort(arriveLeaveTime)));
+                           displayMessage(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
                            applyColor("minervaNotAvailable");
                         }
                      }
@@ -1616,7 +1592,7 @@ package
                         var codeAlpha:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24,8)),8);
                         var codeBravo:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 8,8)),8);
                         var codeCharlie:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 16,8)),8);
-                        displayMessage(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,FormatTimeStringShort(expireTime)));
+                        displayMessage(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,FormatTimeStringCustom(expireTime)));
                         applyColor(dataField);
                         if(iWeeksFromTimeStamp == 0)
                         {
@@ -1648,7 +1624,7 @@ package
                            var timeUntilEvent:Number = config.eventTimer.eventTimestamps[i] * 60 - timeThisHour;
                            if(timeThisHour < config.eventTimer.eventTimestamps[i] * 60 && timeUntilEvent < config.eventTimer.showWithDurationBelowMinutes * 60)
                            {
-                              displayMessage(config.eventTimer.text.replace(STRING_TIME,GlobalFunc.FormatTimeString(timeUntilEvent)));
+                              displayMessage(config.eventTimer.text.replace(STRING_TIME,FormatTimeStringCustom(timeUntilEvent)));
                               applyColor(dataField);
                            }
                            i++;
@@ -1801,7 +1777,7 @@ package
             timeSeconds = config.countdownTimerForEvents.events[event.name] - timeSeconds;
             isCountdown = true;
          }
-         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,isCountdown ? FormatCountdownTimeString(timeSeconds) : GlobalFunc.FormatTimeString(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation).replace(STRING_PARTICIPANTS,event.participants);
+         return config.formats[eventType].replace(STRING_TEXT,event.name).replace(STRING_TIME,isCountdown ? FormatCountdownTimeString(timeSeconds) : FormatTimeStringCustom(timeSeconds)).replace(STRING_TIME_IN_SECONDS,Math.floor(timeSeconds)).replace(STRING_TIME_IN_MINUTES,Math.floor(timeSeconds / 60)).replace(STRING_MUTATION,event.mutation).replace(STRING_PARTICIPANTS,event.participants);
       }
       
       public function drawBar(bar:Object, barConfig:Object, barColorName:String) : void

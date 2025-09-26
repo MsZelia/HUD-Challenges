@@ -43,6 +43,12 @@ package
       
       public static const DEFAULT_VERDANT_SEASON_ENDED_FORMAT:* = "Verdant season ended in {region} ({time} ago)";
       
+      public static const DEFAULT_TIME_FORMAT_LONG:* = "{d}:{h}:{m}:{s}";
+      
+      public static const DEFAULT_TIME_FORMAT_MID:* = "{h}:{m}:{s}";
+      
+      public static const DEFAULT_TIME_FORMAT_SHORT:* = "{m}:{s}";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -96,6 +102,9 @@ package
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
             config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
+            config.formats.timeLong = DEFAULT_TIME_FORMAT_LONG;
+            config.formats.timeMid = DEFAULT_TIME_FORMAT_MID;
+            config.formats.timeShort = DEFAULT_TIME_FORMAT_SHORT;
          }
          else
          {
@@ -166,6 +175,18 @@ package
             if(!config.formats.showRaidXP)
             {
                config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
+            }
+            if(!config.formats.timeLong)
+            {
+               config.formats.timeLong = DEFAULT_TIME_FORMAT_LONG;
+            }
+            if(!config.formats.timeMid)
+            {
+               config.formats.timeMid = DEFAULT_TIME_FORMAT_MID;
+            }
+            if(!config.formats.timeShort)
+            {
+               config.formats.timeShort = DEFAULT_TIME_FORMAT_SHORT;
             }
          }
          if(!config.xpBar)
