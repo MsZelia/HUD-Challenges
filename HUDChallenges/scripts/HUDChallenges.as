@@ -400,40 +400,6 @@ package
          GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
       }
       
-      public static function FormatTimeStringLong(param1:Number) : String
-      {
-         var remainingTime:Number = 0;
-         var nDays:Number = Math.floor(param1 / 86400);
-         remainingTime = param1 % 86400;
-         var nHours:Number = Math.floor(remainingTime / 3600);
-         remainingTime = param1 % 3600;
-         var nMinutes:Number = Math.floor(remainingTime / 60);
-         remainingTime = param1 % 60;
-         var nSeconds:Number = Math.floor(remainingTime);
-         var timeString:* = "";
-         if(nDays > 0)
-         {
-            timeString = GlobalFunc.PadNumber(nDays,2) + ":";
-         }
-         return timeString + GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2) + ":" + GlobalFunc.PadNumber(nSeconds,2);
-      }
-      
-      public static function FormatTimeStringShort(param1:Number) : String
-      {
-         var remainingTime:Number = 0;
-         var nDays:Number = Math.floor(param1 / 86400);
-         remainingTime = param1 % 86400;
-         var nHours:Number = Math.floor(remainingTime / 3600);
-         remainingTime = param1 % 3600;
-         var nMinutes:Number = Math.floor(remainingTime / 60);
-         var timeString:* = "";
-         if(nDays > 0)
-         {
-            timeString = GlobalFunc.PadNumber(nDays,2) + ":";
-         }
-         return timeString + GlobalFunc.PadNumber(nHours,2) + ":" + GlobalFunc.PadNumber(nMinutes,2);
-      }
-      
       public function FormatCountdownTimeString(param1:Number) : String
       {
          var timeString:* = "";
