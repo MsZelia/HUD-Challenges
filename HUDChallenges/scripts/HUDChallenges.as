@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.2";
+      public static const MOD_VERSION:String = "1.2.3";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -196,6 +196,10 @@ package
          "name":"fishing",
          "type":2,
          "category":9
+      },{
+         "name":"burning_springs",
+         "type":2,
+         "category":10
       }];
       
       private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
@@ -800,7 +804,7 @@ package
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in param1.data.categories)
             {
-               if(false)
+               if(config && config.debugCats)
                {
                   displayMessage(category.text + ": " + category.type + " " + category.category);
                }

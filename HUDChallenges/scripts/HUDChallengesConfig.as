@@ -96,6 +96,7 @@ package
             config.formats.social = DEFAULT_CHALLENGE_FORMAT;
             config.formats.world = DEFAULT_CHALLENGE_FORMAT;
             config.formats.fishing = DEFAULT_CHALLENGE_FORMAT;
+            config.formats.burning_springs = DEFAULT_CHALLENGE_FORMAT;
             config.formats.mutatedEvent = DEFAULT_MUTATED_EVENT_FORMAT;
             config.formats.publicEvent = DEFAULT_EVENT_FORMAT;
             config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
@@ -151,6 +152,10 @@ package
             if(!config.formats.fishing)
             {
                config.formats.fishing = DEFAULT_CHALLENGE_FORMAT;
+            }
+            if(!config.formats.burning_springs)
+            {
+               config.formats.burning_springs = DEFAULT_CHALLENGE_FORMAT;
             }
             if(!config.formats.mutatedEvent)
             {
