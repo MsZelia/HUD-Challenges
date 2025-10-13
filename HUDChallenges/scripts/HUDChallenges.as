@@ -1509,12 +1509,12 @@ package
          return date;
       }
       
-      public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, weekDay:int) : Date
+      public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, weekDay:int, n:int = 0) : Date
       {
          var returnValue:Date = GetFirstDayOfMonth(weekDay,currentDate.month,currentDate.fullYear);
-         if(returnValue.date < currentDate.date || returnValue <= currentDate)
+         if((returnValue.date < currentDate.date || returnValue <= currentDate) && n < 2)
          {
-            return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),weekDay);
+            return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),weekDay,n + 1);
          }
          return returnValue;
       }
