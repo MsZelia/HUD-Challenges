@@ -119,6 +119,16 @@ package
       
       private static const STRING_SECONDS:String = "{s}";
       
+      private static const STRING_MONTH:String = "{month}";
+      
+      private static const STRING_FISH:String = "{fish}";
+      
+      private static const STRING_REGION1:String = "{region1}";
+      
+      private static const STRING_REGION2:String = "{region2}";
+      
+      private static const STRING_CAUGHT:String = "{caught}";
+      
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
       private static const MAIN_MENU:String = "MainMenu";
@@ -208,6 +218,14 @@ package
       
       private static const HUDTOOLS_MENU_RELOAD_CONFIG:String = MOD_NAME + "_RELOAD_CONFIG";
       
+      private static const MONTHS_NAMES:Array = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      
+      private static const REGION_INITIALS:Array = ["AH","BS","CB","TF","TM","SD","SV","TV"];
+      
+      private static const REGION_NAMES:Array = ["The Ash Heap","Burning Springs","Cranberry Bog","The Forest","The Mire","Savage Divide","Skyline Valley","Toxic Valley"];
+      
+      private static const FISH_NAMES:Array = ["Banded Axolotl","Charcoal Axolotl","Clay Axolotl","Dotted Axolotl","Pink Axolotl","Purple Axolotl","Scaled Axolotl","Shadow Axolotl","Speckled Axolotl","Spotted Axolotl","Stone Axolotl","Striped Axolotl"];
+      
       private const MINERVA_TIMESTAMP:Number = 1725897600;
       
       private const MINERVA_TIMESTAMP_LIST:Number = 12;
@@ -262,6 +280,76 @@ package
       
       private const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
       
+      private var FISHING_SEASONS:Array = [{
+         "month":0,
+         "fish":1,
+         "region1":5,
+         "region2":6
+      },{
+         "month":1,
+         "fish":4,
+         "region1":2,
+         "region2":3
+      },{
+         "month":2,
+         "fish":2,
+         "region1":6,
+         "region2":7
+      },{
+         "month":3,
+         "fish":3,
+         "region1":0,
+         "region2":4
+      },{
+         "month":4,
+         "fish":5,
+         "region1":2,
+         "region2":6
+      },{
+         "month":5,
+         "fish":0,
+         "region1":4,
+         "region2":7
+      },{
+         "month":6,
+         "fish":6,
+         "region1":3,
+         "region2":0
+      },{
+         "month":7,
+         "fish":11,
+         "region1":4,
+         "region2":6
+      },{
+         "month":8,
+         "fish":7,
+         "region1":0,
+         "region2":7
+      },{
+         "month":9,
+         "fish":9,
+         "region1":5,
+         "region2":7
+      },{
+         "month":10,
+         "fish":8,
+         "region1":2,
+         "region2":3
+      },{
+         "month":11,
+         "fish":10,
+         "region1":0,
+         "region2":7
+      }];
+      
+      private var MONTHS_LOCALIZED:Array = new Array(12);
+      
+      private var REGION_LOCALIZED:Array = new Array(8);
+      
+      private var FISH_LOCALIZED:Array = new Array(12);
+      
+      private var FISH_CAUGHT:Array = new Array(12);
+      
       private var _lastRecentActivitiesUpdateTime:Number = 0;
       
       private var _lastChallengeUpdateTime:Number = 0;
@@ -301,6 +389,8 @@ package
       private var HUDMessageProvider:*;
       
       private var UniversalRewardData:*;
+      
+      private var RegionNamesData:*;
       
       private var _challenges:Object;
       
@@ -391,6 +481,7 @@ package
          this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
+         this.RegionNamesData = BSUIDataManager.GetDataFromClient("RegionNamesData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
       }
       
@@ -1320,6 +1411,110 @@ package
          }
       }
       
+      public function setFishLocalized(param1:Object) : void
+      {
+         var filter:Object = {};
+         filter.type = 2;
+         filter.category = 9;
+         var challengeID:int = 8390365;
+         if(param1 && param1.data && param1.data.categories)
+         {
+            for each(var category in param1.data.categories)
+            {
+               if(filter.type == category.type && filter.category == category.category)
+               {
+                  for each(var challenge in category.challenges)
+                  {
+                     if(challenge.ID == challengeID)
+                     {
+                        var i:int = 0;
+                        var subChallenges:Object = challenge.subChallenges;
+                        while(i < subChallenges.length)
+                        {
+                           var text:String = subChallenges[i].text;
+                           text = text.substring(text.indexOf("(") + 1);
+                           var split:Array = text.split(") ");
+                           MONTHS_LOCALIZED[i] = split[0];
+                           FISH_LOCALIZED[i] = split[1];
+                           FISHING_SEASONS[i].fish = i;
+                           FISH_CAUGHT[i] = Boolean(subChallenges[i].currentValue == subChallenges[i].thresholdValue);
+                           i++;
+                        }
+                     }
+                  }
+               }
+            }
+            if(!MONTHS_LOCALIZED[0])
+            {
+               MONTHS_LOCALIZED = MONTHS_NAMES;
+            }
+         }
+      }
+      
+      public function setRegionsLocalized(param1:Object) : void
+      {
+         if(param1 && param1.data && param1.data.MarkerData)
+         {
+            for each(var markerData in this.RegionNamesData.data.MarkerData)
+            {
+               var text:String = markerData.text;
+               if(text.indexOf(">") != -1 && text.indexOf("<") != -1)
+               {
+                  var regionLocale:String = text.split(">")[1].split("<")[0];
+                  if(regionLocale)
+                  {
+                     var rsplit:Array = regionLocale.split("_");
+                     if(rsplit.length > 1)
+                     {
+                        var initials:String = rsplit[1].charAt(0) + rsplit[2].charAt(0);
+                        var match:int = int(REGION_INITIALS.indexOf(initials));
+                        REGION_LOCALIZED[REGION_INITIALS.indexOf(initials)] = regionLocale;
+                     }
+                  }
+               }
+            }
+         }
+         else if(!REGION_LOCALIZED[0])
+         {
+            REGION_LOCALIZED = REGION_NAMES;
+         }
+      }
+      
+      public function GetFirstDayOfMonth(dayOfTheWeek:int, month:int, year:int) : Date
+      {
+         var tzOffset:Number = new Date().getTimezoneOffset() / 60;
+         var offset:Number = Number(config.fishingSeason.offsetHours);
+         var comment:String = "Fishing season reset / First Tuesday of each month at 12PM EST";
+         var comment2:String = "(tzOffset -4) UTC 0 / 4PM - EST 4 / 12PM - PST 7 / 9AM";
+         var date:Date = new Date(year,month,1,12 - (offset + tzOffset - 4),0);
+         date.date += (7 + dayOfTheWeek - date.day) % 7;
+         return date;
+      }
+      
+      public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, day:int) : Date
+      {
+         var returnValue:Date = GetFirstDayOfMonth(day,currentDate.month,currentDate.fullYear);
+         if(returnValue.date < currentDate.date || returnValue <= currentDate)
+         {
+            return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),day);
+         }
+         return returnValue;
+      }
+      
+      public function GetFirstWeekDay(weekDay:int, month:int, year:int) : Date
+      {
+         return GetFirstDayOfMonth(weekDay,month,year);
+      }
+      
+      public function GetFirstNextFirstWeekDay(weekDay:int, date:Date = null) : Date
+      {
+         if(date == null)
+         {
+            date = new Date();
+         }
+         return GetFirstNextFirstDayOfTheWeek(date,weekDay);
+      }
+      
       public function displayData(ddata:Array) : void
       {
          var data:Array = ddata.concat();
@@ -1458,6 +1653,51 @@ package
                               this.verdantSeasons.splice(i,1);
                            }
                            i--;
+                        }
+                     }
+                     break;
+                  case "showFishingSeason":
+                     if(config.fishingSeason)
+                     {
+                        setRegionsLocalized(this.RegionNamesData);
+                        setFishLocalized(this.ChallengeData);
+                        var now:Number = date.getTime() / 1000;
+                        var fishingNextDate:Date = GetFirstNextFirstWeekDay(2,date);
+                        var fishingStartDate:Date = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
+                        var fishingEndDate:Date = new Date(fishingNextDate.time - 60 * 1000);
+                        var dateFormat:String = config.fishingSeason.dateFormat;
+                        var fishingTime:String = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - now,0));
+                        var month:int = fishingStartDate.month;
+                        var fishingMonth:String = MONTHS_LOCALIZED[FISHING_SEASONS[month].month];
+                        var fishingFish:String = FISH_LOCALIZED[FISHING_SEASONS[month].fish];
+                        var fishingRegion1:String = REGION_LOCALIZED[FISHING_SEASONS[month].region1];
+                        var fishingRegion2:String = REGION_LOCALIZED[FISHING_SEASONS[month].region2];
+                        var fishCaught:String = "";
+                        fishCaught = Boolean(config.fishingSeason.caught) && Boolean(FISH_CAUGHT[month]) ? config.fishingSeason.caught[1] : config.fishingSeason.caught[0];
+                        if(config.fishingSeason.debug)
+                        {
+                           displayMessage("fishingNextDate: " + fishingNextDate);
+                           displayMessage("fishingStartDate: " + fishingStartDate);
+                           displayMessage("fishingEndDate: " + fishingEndDate);
+                           displayMessage("dateFormat: " + dateFormat);
+                           displayMessage("fishingTime: " + fishingTime);
+                           displayMessage("month: " + month);
+                           displayMessage("fishingMonth: " + fishingMonth);
+                           displayMessage("fishingFish: " + fishingFish);
+                           displayMessage("fishingRegion1: " + fishingRegion1);
+                           displayMessage("fishingRegion2: " + fishingRegion2);
+                           displayMessage("fishCaught: " + fishCaught);
+                        }
+                        for(var key in config.fishingSeason)
+                        {
+                           if(key.indexOf("text") >= 0)
+                           {
+                              if(config.fishingSeason[key])
+                              {
+                                 displayMessage(config.fishingSeason[key].replace(STRING_MONTH,fishingMonth).replace(STRING_FISH,fishingFish).replace(STRING_REGION1,fishingRegion1).replace(STRING_REGION2,fishingRegion2).replace(STRING_TIME,fishingTime).replace(STRING_CAUGHT,fishCaught));
+                                 applyColor(dataField);
+                              }
+                           }
                         }
                      }
                      break;

@@ -49,6 +49,12 @@ package
       
       public static const DEFAULT_TIME_FORMAT_SHORT:* = "{m}:{s}";
       
+      public static const DEFAULT_FISHING_SEASON_TEXT1_FORMAT:* = "{month} fishing season ends in {time}";
+      
+      public static const DEFAULT_FISHING_SEASON_TEXT2_FORMAT:* = "{caught} {fish} - {region1} / {region2}";
+      
+      public static const DEFAULT_FISHING_SEASON_CAUGHT:* = ["Ø","¬"];
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -294,6 +300,21 @@ package
             config.verdantSeason.hideEndedSeasonAfter = Parser.parseNumber(config.verdantSeason.hideEndedSeasonAfter,30);
             config.verdantSeason.activeText = Boolean(config.verdantSeason.activeText) ? config.verdantSeason.activeText : DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT;
             config.verdantSeason.endedText = Boolean(config.verdantSeason.endedText) ? config.verdantSeason.endedText : DEFAULT_VERDANT_SEASON_ENDED_FORMAT;
+         }
+         if(!config.fishingSeason)
+         {
+            config.fishingSeason = {};
+            config.fishingSeason.text1 = DEFAULT_FISHING_SEASON_TEXT1_FORMAT;
+            config.fishingSeason.text2 = DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
+            config.fishingSeason.offsetHours = 0;
+            config.fishingSeason.caught = DEFAULT_FISHING_SEASON_CAUGHT;
+         }
+         else
+         {
+            config.fishingSeason.text1 = Boolean(config.fishingSeason.text1) ? config.fishingSeason.text1 : DEFAULT_FISHING_SEASON_TEXT1_FORMAT;
+            config.fishingSeason.text2 = Boolean(config.fishingSeason.text2) ? config.fishingSeason.text2 : DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
+            config.fishingSeason.offsetHours = Parser.parseNumber(config.fishingSeason.offsetHours,0);
+            config.fishingSeason.caught = Boolean(config.fishingSeason.caught) && config.fishingSeason.caught.length == 2 ? config.fishingSeason.caught : DEFAULT_FISHING_SEASON_CAUGHT;
          }
          if(!config.showOnlyTrackedChallenges)
          {
