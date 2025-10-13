@@ -1442,16 +1442,14 @@ package
                            {
                               text = text.substring(text.indexOf("(") + 1);
                               firstIndexOfBracket = int(text.indexOf(")"));
-                              MONTHS_LOCALIZED[i] = trim(text.substring(0,firstIndexOfBracket));
-                              FISH_LOCALIZED[i] = trim(text.substring(firstIndexOfBracket + 1));
                            }
                            else
                            {
                               text = text.substring(text.indexOf("（") + 1);
                               firstIndexOfBracket = int(text.indexOf("）"));
-                              MONTHS_LOCALIZED[i] = trim(text.substring(0,firstIndexOfBracket));
-                              FISH_LOCALIZED[i] = trim(text.substring(firstIndexOfBracket + 1));
                            }
+                           MONTHS_LOCALIZED[i] = trim(text.substring(0,firstIndexOfBracket));
+                           FISH_LOCALIZED[i] = trim(text.substring(firstIndexOfBracket + 1));
                            FISHING_SEASONS[i].fish = i;
                            FISH_CAUGHT[i] = Boolean(subChallenges[i].currentValue == subChallenges[i].thresholdValue);
                            i++;
@@ -1511,12 +1509,12 @@ package
          return date;
       }
       
-      public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, day:int) : Date
+      public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, weekDay:int) : Date
       {
-         var returnValue:Date = GetFirstDayOfMonth(day,currentDate.month,currentDate.fullYear);
+         var returnValue:Date = GetFirstDayOfMonth(weekDay,currentDate.month,currentDate.fullYear);
          if(returnValue.date < currentDate.date || returnValue <= currentDate)
          {
-            return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),day);
+            return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),weekDay);
          }
          return returnValue;
       }
@@ -1683,7 +1681,7 @@ package
                         setFishLocalized(this.ChallengeData);
                         var fishingNextDate:Date = GetFirstNextFirstWeekDay(2,date);
                         var fishingStartDate:Date = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
-                        var fishingEndDate:Date = new Date(fishingNextDate.time - 60 * 1000);
+                        var fishingEndDate:Date = new Date(fishingNextDate.time - 60000);
                         var dateFormat:String = config.fishingSeason.dateFormat;
                         var fishingTime:String = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - date.time / 1000,0));
                         var month:int = fishingStartDate.month;
