@@ -1411,6 +1411,11 @@ package
          }
       }
       
+      public function trim(str:String) : String
+      {
+         return str.replace(/^\s+|\s+$/g,"");
+      }
+      
       public function setFishLocalized(param1:Object) : void
       {
          var filter:Object = {};
@@ -1432,10 +1437,21 @@ package
                         while(i < subChallenges.length)
                         {
                            var text:String = subChallenges[i].text;
-                           text = text.substring(text.indexOf("(") + 1);
-                           var split:Array = text.split(") ");
-                           MONTHS_LOCALIZED[i] = split[0];
-                           FISH_LOCALIZED[i] = split[1];
+                           var firstIndexOfBracket:int = -1;
+                           if(text.indexOf("(") != -1)
+                           {
+                              text = text.substring(text.indexOf("(") + 1);
+                              firstIndexOfBracket = int(text.indexOf(")"));
+                              MONTHS_LOCALIZED[i] = trim(text.substring(0,firstIndexOfBracket));
+                              FISH_LOCALIZED[i] = trim(text.substring(firstIndexOfBracket + 1));
+                           }
+                           else
+                           {
+                              text = text.substring(text.indexOf("（") + 1);
+                              firstIndexOfBracket = int(text.indexOf("）"));
+                              MONTHS_LOCALIZED[i] = trim(text.substring(0,firstIndexOfBracket));
+                              FISH_LOCALIZED[i] = trim(text.substring(firstIndexOfBracket + 1));
+                           }
                            FISHING_SEASONS[i].fish = i;
                            FISH_CAUGHT[i] = Boolean(subChallenges[i].currentValue == subChallenges[i].thresholdValue);
                            i++;
@@ -1484,6 +1500,10 @@ package
       {
          var tzOffset:Number = new Date().getTimezoneOffset() / 60;
          var offset:Number = Number(config.fishingSeason.offsetHours);
+         if(config.fishingSeason.debug)
+         {
+            displayMessage("tzOffset: " + tzOffset);
+         }
          var comment:String = "Fishing season reset / First Tuesday of each month at 12PM EST";
          var comment2:String = "(tzOffset -4) UTC 0 / 4PM - EST 4 / 12PM - PST 7 / 9AM";
          var date:Date = new Date(year,month,1,12 - (offset + tzOffset - 4),0);
@@ -1661,12 +1681,11 @@ package
                      {
                         setRegionsLocalized(this.RegionNamesData);
                         setFishLocalized(this.ChallengeData);
-                        var now:Number = date.getTime() / 1000;
                         var fishingNextDate:Date = GetFirstNextFirstWeekDay(2,date);
                         var fishingStartDate:Date = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
                         var fishingEndDate:Date = new Date(fishingNextDate.time - 60 * 1000);
                         var dateFormat:String = config.fishingSeason.dateFormat;
-                        var fishingTime:String = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - now,0));
+                        var fishingTime:String = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - date.time / 1000,0));
                         var month:int = fishingStartDate.month;
                         var fishingMonth:String = MONTHS_LOCALIZED[FISHING_SEASONS[month].month];
                         var fishingFish:String = FISH_LOCALIZED[FISHING_SEASONS[month].fish];
