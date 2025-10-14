@@ -1512,7 +1512,7 @@ package
       public function GetFirstNextFirstDayOfTheWeek(currentDate:Date, weekDay:int, n:int = 0) : Date
       {
          var returnValue:Date = GetFirstDayOfMonth(weekDay,currentDate.month,currentDate.fullYear);
-         if((returnValue.date < currentDate.date || returnValue <= currentDate) && n < 2)
+         if((returnValue.date < currentDate.date || returnValue <= currentDate) && n < 12)
          {
             return GetFirstNextFirstDayOfTheWeek(new Date(currentDate.fullYear,currentDate.month + 1,1),weekDay,n + 1);
          }
