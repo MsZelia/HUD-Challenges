@@ -241,6 +241,7 @@ package
             config.minerva.notAvailableText = DEFAULT_MINERVA_NOT_AVAILABLE_FORMAT;
             config.minerva.offsetHours = 0;
             config.minerva.locations = DEFAULT_MINERVA_LOCATIONS;
+            config.minerva.hideIfNotAvailable = false;
          }
          else
          {
@@ -248,6 +249,7 @@ package
             config.minerva.notAvailableText = Boolean(config.minerva.notAvailableText) ? config.minerva.notAvailableText : DEFAULT_MINERVA_NOT_AVAILABLE_FORMAT;
             config.minerva.offsetHours = Parser.parseNumber(config.minerva.offsetHours,0);
             config.minerva.locations = Boolean(config.minerva.locations) && config.minerva.locations.length == 4 ? config.minerva.locations : DEFAULT_MINERVA_LOCATIONS;
+            config.minerva.hideIfNotAvailable = Boolean(config.minerva.hideIfNotAvailable);
          }
          if(!config.nuclearCodes)
          {
@@ -308,7 +310,7 @@ package
             config.fishingSeason.text2 = DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
             config.fishingSeason.offsetHours = 0;
             config.fishingSeason.caught = DEFAULT_FISHING_SEASON_CAUGHT;
-            config.fishingSeason.hideIfCaught = Boolean(config.fishingSeason.hideIfCaught);
+            config.fishingSeason.hideIfCaught = false;
          }
          else
          {

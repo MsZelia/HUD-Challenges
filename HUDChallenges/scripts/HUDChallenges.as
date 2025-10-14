@@ -1817,7 +1817,7 @@ package
                            displayMessage(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
                            applyColor("minervaAvailable");
                         }
-                        else
+                        else if(!config.minerva.hideIfNotAvailable)
                         {
                            displayMessage(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
                            applyColor("minervaNotAvailable");
