@@ -1705,7 +1705,7 @@ package
                            displayMessage("fishingRegion2: " + fishingRegion2);
                            displayMessage("fishCaught: " + fishCaught);
                         }
-                        if(!config.fishingSeason.hideIfCaught)
+                        if(!config.fishingSeason.hideIfCaught || !Boolean(FISH_CAUGHT[month]))
                         {
                            for(var key in config.fishingSeason)
                            {
