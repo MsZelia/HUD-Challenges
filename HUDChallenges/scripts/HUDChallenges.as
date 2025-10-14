@@ -364,6 +364,8 @@ package
       
       private var textFormat:TextFormat;
       
+      private var textFormatAlignment:TextFormat;
+      
       private var timer:Timer;
       
       private var configTimer:Timer;
@@ -1068,6 +1070,8 @@ package
          this.dummy_tf.visible = true;
          this.textFormat = new TextFormat(config.textFont,config.textSize,config.textColor);
          this.textFormat.align = config.textAlign;
+         this.textFormatAlignment = new TextFormat();
+         this.textFormatAlignment.align = config.textAlign;
          this.dummy_tf.defaultTextFormat = this.textFormat;
          this.dummy_tf.setTextFormat(this.textFormat);
          this.dummy_tf.filters = [new DropShadowFilter(2,45,0,1,1,1,1,BitmapFilterQuality.HIGH)];
@@ -1082,7 +1086,7 @@ package
          this.nextX = config.x;
          this.nextYSpacing = config.ySpacing;
          this.nextTextSize = config.textSize;
-         this.nextTextAlign = config.textAlign;
+         this.nextTextAlign = "";
          this.nextFormat = null;
          this.separators = [];
          this.graphics.clear();
@@ -1103,6 +1107,8 @@ package
                else
                {
                   challenge_tf.textColor = config.textColor;
+                  challenge_tf.defaultTextFormat = this.textFormatAlignment;
+                  challenge_tf.setTextFormat(this.textFormatAlignment);
                }
             }
          }
@@ -1148,14 +1154,14 @@ package
             nextY = tf.y;
             yOffset = 0;
          }
-         if(this.nextFormat == null && (this.nextTextSize != config.textSize || this.nextTextAlign != config.textAlign))
+         if(this.nextFormat == null && (this.nextTextSize != config.textSize || this.nextTextAlign != ""))
          {
             this.nextFormat = new TextFormat();
             if(this.nextTextSize != config.textSize)
             {
                this.nextFormat.size = this.nextTextSize;
             }
-            if(this.nextTextAlign != config.textAlign)
+            if(this.nextTextAlign != "")
             {
                this.nextFormat.align = this.nextTextAlign;
             }
