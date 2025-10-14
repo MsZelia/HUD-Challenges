@@ -308,6 +308,7 @@ package
             config.fishingSeason.text2 = DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
             config.fishingSeason.offsetHours = 0;
             config.fishingSeason.caught = DEFAULT_FISHING_SEASON_CAUGHT;
+            config.fishingSeason.hideIfCaught = Boolean(config.fishingSeason.hideIfCaught);
          }
          else
          {
@@ -315,6 +316,7 @@ package
             config.fishingSeason.text2 = Boolean(config.fishingSeason.text2) ? config.fishingSeason.text2 : DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
             config.fishingSeason.offsetHours = Parser.parseNumber(config.fishingSeason.offsetHours,0);
             config.fishingSeason.caught = Boolean(config.fishingSeason.caught) && config.fishingSeason.caught.length == 2 ? config.fishingSeason.caught : DEFAULT_FISHING_SEASON_CAUGHT;
+            config.fishingSeason.hideIfCaught = Boolean(config.fishingSeason.hideIfCaught);
          }
          if(!config.showOnlyTrackedChallenges)
          {

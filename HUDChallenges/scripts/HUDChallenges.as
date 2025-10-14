@@ -1705,14 +1705,17 @@ package
                            displayMessage("fishingRegion2: " + fishingRegion2);
                            displayMessage("fishCaught: " + fishCaught);
                         }
-                        for(var key in config.fishingSeason)
+                        if(!config.fishingSeason.hideIfCaught)
                         {
-                           if(key.indexOf("text") >= 0)
+                           for(var key in config.fishingSeason)
                            {
-                              if(config.fishingSeason[key])
+                              if(key.indexOf("text") >= 0)
                               {
-                                 displayMessage(config.fishingSeason[key].replace(STRING_MONTH,fishingMonth).replace(STRING_FISH,fishingFish).replace(STRING_REGION1,fishingRegion1).replace(STRING_REGION2,fishingRegion2).replace(STRING_TIME,fishingTime).replace(STRING_CAUGHT,fishCaught));
-                                 applyColor(dataField);
+                                 if(config.fishingSeason[key])
+                                 {
+                                    displayMessage(config.fishingSeason[key].replace(STRING_MONTH,fishingMonth).replace(STRING_FISH,fishingFish).replace(STRING_REGION1,fishingRegion1).replace(STRING_REGION2,fishingRegion2).replace(STRING_TIME,fishingTime).replace(STRING_CAUGHT,fishCaught));
+                                    applyColor(dataField);
+                                 }
                               }
                            }
                         }
