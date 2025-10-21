@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.3";
+      public static const MOD_VERSION:String = "1.2.4";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -469,6 +469,10 @@ package
       private var language:String = "";
       
       private var hudTools:SharedHUDTools;
+      
+      private var miniSeasonRewards:int = 0;
+      
+      private var miniSeasonRewardsClaimed:int = 0;
       
       public function HUDChallenges()
       {
@@ -1606,29 +1610,28 @@ package
                   case "showMiniSeasonTime":
                      if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonData)
                      {
-                        if(this.SeasonData.data.allSeasonData.szBeginTime != "")
+                        var seasonData:Object = this.SeasonData.data.allSeasonData;
+                        if(seasonData.szBeginTime != "")
                         {
-                           var rewards:int = 0;
-                           var rewardsClaimed:int = 0;
-                           if(false)
+                           if(seasonData.iSeasonType == 1)
                            {
-                              var miniSeasonData:Object = this.SeasonData.data.allSeasonDataA[0].miniSeasonDataA;
-                              var TODO:String = "API for miniseasons changed, check next miniseason";
-                              if(miniSeasonData.miniSeasonPageDataA && miniSeasonData.miniSeasonPageDataA.length > 0)
+                              this.miniSeasonRewards = 0;
+                              this.miniSeasonRewardsClaimed = 0;
+                              if(seasonData.seasonPageDataA && seasonData.seasonPageDataA.length > 0)
                               {
                                  var page:int = 0;
-                                 while(page < miniSeasonData.miniSeasonPageDataA.length)
+                                 while(page < seasonData.seasonPageDataA.length)
                                  {
-                                    var pageData:Object = miniSeasonData.miniSeasonPageDataA[page].pageTileDataA;
+                                    var pageData:Object = seasonData.seasonPageDataA[page].pageTileDataA;
                                     if(pageData)
                                     {
-                                       rewards += int(pageData.length);
+                                       this.miniSeasonRewards += int(pageData.length);
                                        var i:int = 0;
                                        while(i < pageData.length)
                                        {
                                           if(pageData[i] && pageData[i].bHasBeenClaimed)
                                           {
-                                             rewardsClaimed++;
+                                             ++this.miniSeasonRewardsClaimed;
                                           }
                                           i++;
                                        }
@@ -1637,15 +1640,15 @@ package
                                  }
                               }
                            }
-                           if(!config.miniSeason.hideIfRewardsClaimed || rewards == 0 || rewards != rewardsClaimed)
+                           if(!config.miniSeason.hideIfRewardsClaimed || this.miniSeasonRewards == 0 || this.miniSeasonRewards != this.miniSeasonRewardsClaimed)
                            {
-                              displayMessage(config.miniSeason.activeText.replace(STRING_TIME,this.SeasonData.data.allSeasonData.szEndTime).replace(STRING_CURRENT_VALUE,rewardsClaimed).replace(STRING_THRESHOLD_VALUE,rewards));
+                              displayMessage(config.miniSeason.activeText.replace(STRING_TIME,seasonData.szEndTime).replace(STRING_CURRENT_VALUE,this.miniSeasonRewardsClaimed).replace(STRING_THRESHOLD_VALUE,this.miniSeasonRewards));
                               applyColor("miniSeasonActive");
                            }
                         }
                         else if(!config.miniSeason.hideIfInactive)
                         {
-                           displayMessage(config.miniSeason.inactiveText.replace(STRING_TIME,this.SeasonData.data.allSeasonData.szBeginTime));
+                           displayMessage(config.miniSeason.inactiveText.replace(STRING_TIME,seasonData.szBeginTime));
                            applyColor("miniSeasonInactive");
                         }
                      }
