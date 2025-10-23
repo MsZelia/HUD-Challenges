@@ -520,6 +520,10 @@ package
       
       public function FormatTimeStringCustom(param1:Number) : String
       {
+         if(isNaN(param1))
+         {
+            return STRING_TIME_ZERO;
+         }
          var remainingTime:Number = 0;
          var nDays:Number = Math.floor(param1 / 86400);
          remainingTime = param1 % 86400;
