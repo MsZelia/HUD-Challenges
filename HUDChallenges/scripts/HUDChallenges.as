@@ -129,6 +129,8 @@ package
       
       private static const STRING_CAUGHT:String = "{caught}";
       
+      private static const STRING_END_TIME:String = "{endTime}";
+      
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
       private static const MAIN_MENU:String = "MainMenu";
@@ -885,12 +887,14 @@ package
          var category:Object;
          var filter:Object;
          var challenge:Object;
+         var now:Number;
          try
          {
             if(!config)
             {
                return;
             }
+            now = new Date().getTime() / 1000;
             t1 = Number(getTimer());
             this.daily_secsTilRefresh = param1.data.daily_secsTilRefresh;
             this.weekly_secsTilRefresh = param1.data.weekly_secsTilRefresh;
@@ -928,6 +932,7 @@ package
                               "text":challenge.text,
                               "currentValue":challenge.currentValue,
                               "thresholdValue":challenge.thresholdValue,
+                              "endTime":(challenge.endTime != null && challenge.endTime.lo != 0 ? challenge.endTime.lo - now : 0),
                               "isTracked":challenge.isTracked,
                               "subChallenges":(Boolean(config.showSubChallenges[challengeType]) ? challenge.subChallenges.filter(function(sub:Object):Boolean
                               {
@@ -2001,7 +2006,7 @@ package
          {
             config.formats[groupName] = HUDChallengesConfig.DEFAULT_CHALLENGE_FORMAT;
          }
-         return config.formats[groupName].replace(STRING_TEXT,challenge.text).replace(STRING_THRESHOLD_VALUE,challenge.thresholdValue).replace(STRING_CURRENT_VALUE,challenge.currentValue);
+         return config.formats[groupName].replace(STRING_TEXT,challenge.text).replace(STRING_THRESHOLD_VALUE,challenge.thresholdValue).replace(STRING_CURRENT_VALUE,challenge.currentValue).replace(STRING_END_TIME,FormatTimeStringCustom(challenge.endTime));
       }
       
       public function formatEvent(eventType:String, event:Object) : String
