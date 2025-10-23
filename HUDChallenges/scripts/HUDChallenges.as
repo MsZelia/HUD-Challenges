@@ -936,7 +936,7 @@ package
                               "text":challenge.text,
                               "currentValue":challenge.currentValue,
                               "thresholdValue":challenge.thresholdValue,
-                              "endTime":(challenge.endTime != null && challenge.endTime.lo != 0 ? challenge.endTime.lo - now : 0),
+                              "endTime":(challenge.endTime && challenge.endTime.lo > 0 ? challenge.endTime.lo - now : 0),
                               "isTracked":challenge.isTracked,
                               "subChallenges":(Boolean(config.showSubChallenges[challengeType]) ? challenge.subChallenges.filter(function(sub:Object):Boolean
                               {
