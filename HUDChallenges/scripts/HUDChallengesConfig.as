@@ -306,16 +306,38 @@ package
          if(!config.fishingSeason)
          {
             config.fishingSeason = {};
-            config.fishingSeason.text1 = DEFAULT_FISHING_SEASON_TEXT1_FORMAT;
-            config.fishingSeason.text2 = DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
+            config.fishingSeason.text = DEFAULT_FISHING_SEASON_TEXT1_FORMAT + "\n" + DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
             config.fishingSeason.offsetHours = 0;
             config.fishingSeason.caught = DEFAULT_FISHING_SEASON_CAUGHT;
             config.fishingSeason.hideIfCaught = false;
          }
          else
          {
-            config.fishingSeason.text1 = Boolean(config.fishingSeason.text1) ? config.fishingSeason.text1 : DEFAULT_FISHING_SEASON_TEXT1_FORMAT;
-            config.fishingSeason.text2 = Boolean(config.fishingSeason.text1) ? config.fishingSeason.text2 : DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
+            var lines:int = 0;
+            var fishText:String = "";
+            for(var key in config.fishingSeason)
+            {
+               if(key.indexOf("text") >= 0)
+               {
+                  if(config.fishingSeason[key])
+                  {
+                     if(lines > 0)
+                     {
+                        fishText += "\n";
+                     }
+                     fishText += config.fishingSeason[key];
+                     lines++;
+                  }
+               }
+            }
+            if(lines > 0)
+            {
+               config.fishingSeason.text = fishText;
+            }
+            else
+            {
+               config.fishingSeason.text = DEFAULT_FISHING_SEASON_TEXT1_FORMAT + "\n" + DEFAULT_FISHING_SEASON_TEXT2_FORMAT;
+            }
             config.fishingSeason.offsetHours = Parser.parseNumber(config.fishingSeason.offsetHours,0);
             config.fishingSeason.caught = Boolean(config.fishingSeason.caught) && config.fishingSeason.caught.length == 2 ? config.fishingSeason.caught : DEFAULT_FISHING_SEASON_CAUGHT;
             config.fishingSeason.hideIfCaught = Boolean(config.fishingSeason.hideIfCaught);

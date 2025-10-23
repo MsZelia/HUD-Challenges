@@ -1543,6 +1543,16 @@ package
          return GetFirstNextFirstDayOfTheWeek(date,weekDay);
       }
       
+      public function splitDisplayLine(text:String, color:String) : void
+      {
+         var split:Array = text.split("\n");
+         for(line in split)
+         {
+            displayMessage(split[line]);
+            applyColor(color);
+         }
+      }
+      
       public function displayData(ddata:Array) : void
       {
          var data:Array = ddata.concat();
@@ -1642,14 +1652,12 @@ package
                            }
                            if(!config.miniSeason.hideIfRewardsClaimed || this.miniSeasonRewards == 0 || this.miniSeasonRewards != this.miniSeasonRewardsClaimed)
                            {
-                              displayMessage(config.miniSeason.activeText.replace(STRING_TIME,seasonData.szEndTime).replace(STRING_CURRENT_VALUE,this.miniSeasonRewardsClaimed).replace(STRING_THRESHOLD_VALUE,this.miniSeasonRewards));
-                              applyColor("miniSeasonActive");
+                              splitDisplayLine(config.miniSeason.activeText.replace(STRING_TIME,seasonData.szEndTime).replace(STRING_CURRENT_VALUE,this.miniSeasonRewardsClaimed).replace(STRING_THRESHOLD_VALUE,this.miniSeasonRewards),"miniSeasonActive");
                            }
                         }
                         else if(!config.miniSeason.hideIfInactive)
                         {
-                           displayMessage(config.miniSeason.inactiveText.replace(STRING_TIME,seasonData.szBeginTime));
-                           applyColor("miniSeasonInactive");
+                           splitDisplayLine(config.miniSeason.inactiveText.replace(STRING_TIME,seasonData.szBeginTime),"miniSeasonInactive");
                         }
                      }
                      break;
@@ -1667,13 +1675,11 @@ package
                            var timeDelta:int = utcSeconds - vSeason.time;
                            if(vSeason.active)
                            {
-                              displayMessage(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)));
-                              applyColor("verdantSeasonActive");
+                              splitDisplayLine(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)),"verdantSeasonActive");
                            }
                            else if(timeDelta < config.verdantSeason.hideEndedSeasonAfter)
                            {
-                              displayMessage(config.verdantSeason.endedText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)));
-                              applyColor("verdantSeasonEnded");
+                              splitDisplayLine(config.verdantSeason.endedText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)),"verdantSeasonEnded");
                            }
                            else
                            {
@@ -1716,17 +1722,7 @@ package
                         }
                         if(!config.fishingSeason.hideIfCaught || !Boolean(FISH_CAUGHT[month]))
                         {
-                           for(var key in config.fishingSeason)
-                           {
-                              if(key.indexOf("text") >= 0)
-                              {
-                                 if(config.fishingSeason[key])
-                                 {
-                                    displayMessage(config.fishingSeason[key].replace(STRING_MONTH,fishingMonth).replace(STRING_FISH,fishingFish).replace(STRING_REGION1,fishingRegion1).replace(STRING_REGION2,fishingRegion2).replace(STRING_TIME,fishingTime).replace(STRING_CAUGHT,fishCaught));
-                                    applyColor(dataField);
-                                 }
-                              }
-                           }
+                           splitDisplayLine(config.fishingSeason.text.replace(STRING_MONTH,fishingMonth).replace(STRING_FISH,fishingFish).replace(STRING_REGION1,fishingRegion1).replace(STRING_REGION2,fishingRegion2).replace(STRING_TIME,fishingTime).replace(STRING_CAUGHT,fishCaught),dataField);
                         }
                      }
                      break;
@@ -1823,13 +1819,11 @@ package
                         }
                         if(isAvailable)
                         {
-                           displayMessage(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
-                           applyColor("minervaAvailable");
+                           splitDisplayLine(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaAvailable");
                         }
                         else if(!config.minerva.hideIfNotAvailable)
                         {
-                           displayMessage(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)));
-                           applyColor("minervaNotAvailable");
+                           splitDisplayLine(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaNotAvailable");
                         }
                      }
                      break;
@@ -1844,8 +1838,7 @@ package
                         var codeAlpha:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24,8)),8);
                         var codeBravo:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 8,8)),8);
                         var codeCharlie:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 16,8)),8);
-                        displayMessage(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,FormatTimeStringCustom(expireTime)));
-                        applyColor(dataField);
+                        splitDisplayLine(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,FormatTimeStringCustom(expireTime)),dataField);
                         if(iWeeksFromTimeStamp == 0)
                         {
                            if(config.anchor == "top")
@@ -1856,8 +1849,7 @@ package
                            codeAlpha = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 24,8)),8);
                            codeBravo = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 16,8)),8);
                            codeCharlie = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 8,8)),8);
-                           displayMessage(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,"00:00"));
-                           applyColor(dataField);
+                           splitDisplayLine(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,"00:00"),dataField);
                            if(config.anchor == "bottom")
                            {
                               displayMessage("WARNING: Rollover week, last week\'s codes:");
