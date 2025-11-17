@@ -1832,13 +1832,16 @@ package
                         {
                            list++;
                         }
-                        if(isAvailable)
+                        if(config.minerva.showLists.indexOf(list) != -1)
                         {
-                           splitDisplayLine(config.minerva.availableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaAvailable");
-                        }
-                        else if(!config.minerva.hideIfNotAvailable)
-                        {
-                           splitDisplayLine(config.minerva.notAvailableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaNotAvailable");
+                           if(isAvailable)
+                           {
+                              splitDisplayLine(config.minerva.availableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaAvailable");
+                           }
+                           else if(!config.minerva.hideIfNotAvailable)
+                           {
+                              splitDisplayLine(config.minerva.notAvailableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaNotAvailable");
+                           }
                         }
                      }
                      break;

@@ -29,6 +29,8 @@ package
       
       public static const DEFAULT_MINERVA_LOCATIONS:* = ["Foundation","Crater","Fort Atlas","Whitesprings"];
       
+      public static const DEFAULT_MINERVA_LISTS:* = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
+      
       public static const DEFAULT_NUCLEAR_CODES_TEXT_FORMAT:* = "A:{codeAlpha}  B:{codeBravo}  C:{codeCharlie} ({time})";
       
       public static const DEFAULT_EVENT_TIMER_TEXT_FORMAT:* = "Next public event in: {time}";
@@ -242,6 +244,7 @@ package
             config.minerva.offsetHours = 0;
             config.minerva.locations = DEFAULT_MINERVA_LOCATIONS;
             config.minerva.hideIfNotAvailable = false;
+            config.minerva.showLists = DEFAULT_MINERVA_LISTS;
          }
          else
          {
@@ -250,6 +253,7 @@ package
             config.minerva.offsetHours = Parser.parseNumber(config.minerva.offsetHours,0);
             config.minerva.locations = Boolean(config.minerva.locations) && config.minerva.locations.length == 4 ? config.minerva.locations : DEFAULT_MINERVA_LOCATIONS;
             config.minerva.hideIfNotAvailable = Boolean(config.minerva.hideIfNotAvailable);
+            config.minerva.showLists = Boolean(config.minerva.showLists) ? config.minerva.showLists : DEFAULT_MINERVA_LISTS;
          }
          if(!config.nuclearCodes)
          {
