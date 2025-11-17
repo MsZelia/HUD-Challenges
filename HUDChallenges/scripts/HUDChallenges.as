@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.4";
+      public static const MOD_VERSION:String = "1.2.5";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -56,6 +56,8 @@ package
       private static const STRING_TIME:String = "{time}";
       
       private static const STRING_LOCATION:String = "{location}";
+      
+      private static const STRING_LIST:String = "{list}";
       
       private static const STRING_MUTATION:String = "{mutation}";
       
@@ -1826,13 +1828,17 @@ package
                                  arriveLeaveTime = thisWeekMondayTimestamp + SECONDS_IN_WEEK - utcWithOffset;
                               }
                         }
+                        if(nthWeek != 3 && !isAvailable)
+                        {
+                           list++;
+                        }
                         if(isAvailable)
                         {
-                           splitDisplayLine(config.minerva.availableText.replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaAvailable");
+                           splitDisplayLine(config.minerva.availableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaAvailable");
                         }
                         else if(!config.minerva.hideIfNotAvailable)
                         {
-                           splitDisplayLine(config.minerva.notAvailableText.replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaNotAvailable");
+                           splitDisplayLine(config.minerva.notAvailableText.replace(STRING_LIST,list).replace(STRING_LOCATION,config.minerva.locations[nthWeek != 3 ? (location + 1) % 4 : location]).replace(STRING_TIME,FormatTimeStringCustom(arriveLeaveTime)),"minervaNotAvailable");
                         }
                      }
                      break;
