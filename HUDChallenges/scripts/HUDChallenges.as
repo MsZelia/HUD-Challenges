@@ -669,6 +669,10 @@ package
             {
                return;
             }
+            if(config.debugKeys)
+            {
+               displayMessage("keyDown: " + event.keyCode + " - " + Buttons.getButtonKey(event.keyCode));
+            }
             this.handleKey(event);
          }
          catch(e:Error)
