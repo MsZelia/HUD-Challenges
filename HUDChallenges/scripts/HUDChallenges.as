@@ -478,6 +478,8 @@ package
       
       private var miniSeasonRewardsClaimed:int = 0;
       
+      private var isKeyDownDetected:Object = {};
+      
       public function HUDChallenges()
       {
          super();
@@ -571,6 +573,8 @@ package
             {
                this.isHudMenu = false;
                BSUIDataManager.Subscribe("MenuStackData",this.updateIsMainMenu);
+               stage.addEventListener(KeyboardEvent.KEY_DOWN,this.keyDownHandler,false,0,true);
+               stage.addEventListener(KeyboardEvent.KEY_UP,this.keyUpHandler,false,0,true);
             }
             this.initConfigTimer();
             this.loadConfig();
@@ -581,7 +585,6 @@ package
             trace(MOD_NAME + " not added to stage: " + getQualifiedClassName(this.topLevel));
             ShowHUDMessage("Not added to stage: " + getQualifiedClassName(this.topLevel));
          }
-         stage.addEventListener(KeyboardEvent.KEY_DOWN,this.keyDownHandler,false,0,true);
       }
       
       public function removedFromStageHandler(param1:Event) : *
@@ -592,6 +595,7 @@ package
          if(stage)
          {
             stage.removeEventListener(KeyboardEvent.KEY_DOWN,this.keyDownHandler);
+            stage.removeEventListener(KeyboardEvent.KEY_UP,this.keyUpHandler);
          }
          if(this.configTimer)
          {
@@ -658,14 +662,46 @@ package
       
       public function keyDownHandler(event:Event) : void
       {
-         if(!config || !challenges_tf)
+         try
          {
-            return;
+            this.isKeyDownDetected[event.keyCode] = true;
+            if(!config || !challenges_tf)
+            {
+               return;
+            }
+            this.handleKey(event);
          }
-         if(config.debugKeys)
+         catch(e:Error)
          {
-            displayMessage("keyDown: " + event.keyCode);
+            displayMessage("Error keyDownHandler: " + e);
          }
+      }
+      
+      public function keyUpHandler(event:Event) : void
+      {
+         try
+         {
+            if(!config || !challenges_tf)
+            {
+               return;
+            }
+            if(config.debugKeys)
+            {
+               displayMessage("keyUp (kd:" + Boolean(this.isKeyDownDetected[event.keyCode]) + "): " + event.keyCode + " - " + Buttons.getButtonKey(event.keyCode));
+            }
+            if(!this.isKeyDownDetected[event.keyCode])
+            {
+               this.handleKey(event);
+            }
+         }
+         catch(e:Error)
+         {
+            displayMessage("Error keyUpHandler: " + e);
+         }
+      }
+      
+      private function handleKey(event:Event) : void
+      {
          if(event.keyCode == config.toggleVisibilityHotkey)
          {
             this.toggleVisibility = !this.toggleVisibility;
@@ -678,10 +714,16 @@ package
       
       private function updateIsMainMenu(event:FromClientDataEvent) : void
       {
-         this.isInMainMenu = Boolean(event) && Boolean(event.data) && Boolean(event.data.menuStackA) && Boolean(event.data.menuStackA.some(function(x:*):*
+         try
          {
-            return x.menuName == MAIN_MENU;
-         }));
+            this.isInMainMenu = Boolean(event) && Boolean(event.data) && Boolean(event.data.menuStackA) && Boolean(event.data.menuStackA.some(function(x:*):*
+            {
+               return x.menuName == MAIN_MENU;
+            }));
+         }
+         catch(e:Error)
+         {
+         }
       }
       
       private function onMessageEvent(event:FromClientDataEvent) : void

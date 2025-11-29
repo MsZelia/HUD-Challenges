@@ -1,6 +1,6 @@
 package
 {
-   import utils.Parser;
+   import utils.*;
    
    public class HUDChallengesConfig
    {
@@ -88,8 +88,8 @@ package
          config.textBlendMode = Boolean(config.textBlendMode) ? config.textBlendMode.toLowerCase() : "normal";
          config.refresh = Parser.parseNumber(config.refresh,1000);
          config.offsetUTC = Parser.parseNumber(config.offsetUTC,0);
-         config.toggleVisibilityHotkey = Parser.parsePositiveNumber(config.toggleVisibilityHotkey,0);
-         config.forceHideHotkey = Parser.parsePositiveNumber(config.forceHideHotkey,0);
+         config.toggleVisibilityHotkey = Buttons.parseValue(config.toggleVisibilityHotkey);
+         config.forceHideHotkey = Buttons.parseValue(config.forceHideHotkey);
          if(!config.formats)
          {
             config.formats = {};
