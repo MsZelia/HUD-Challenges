@@ -7,11 +7,11 @@
 	"width": 400,
 	"textSize": 18,
 	/* Some of the working fonts:
-	"$76HandwrittenNeat_Font", "$76HandwrittenIlliterate", "$BerlinDemi", "$BRODY",
-	"$Brush_Script_Std", "$ChowderHead", "$ConsoleFont", "$DebugTextFont", "$DotMatrix_Font",
-	"$evaScript_Font", "$Futura_Bold", "$HandwrittenFont", "$KiddieCocktails", "$Leiascript_Font",
-	"$MAIN_Font", "$MAIN_Font_Bold", "$MAIN_Font_Light", "$NixieTube_Font", "$Portico_Font_Regular",
-	"$Slate_Mobile", "$Terminal_Font", "$Typewriter_Font" */
+	"$76HandwrittenNeat_Font", "$76HandwrittenIlliterate", "$Adventure_Font", "$BerlinDemi", "$BRODY",
+	"$Brush_Script_Std", "$ChowderHead", "$ConsoleFont", "$DebugTextFont", "$DotMatrix_Font", "$evaScript_Font",
+	"$Futura_Bold", "$Futura_Bold_Oblique", "$Futura_Medium_Oblique", "$HandwrittenFont", "$KiddieCocktails",
+	"$Leiascript_Font", "$MAIN_Font", "$MAIN_Font_Bold", "$MAIN_Font_Light", "$NixieTube_Font",
+	"$Portico_Font_Regular", "$Slate_Mobile", "$Terminal_Font", "$Typewriter_Font" */
 	"textFont": "$MAIN_Font",
 	"textAlign": "right", /* left, center, right */
 	"textColor": "0xffffff",
@@ -39,8 +39,8 @@
 	
 	// OVERLAY MOD LOADER ONLY SETTINGS - Improved Social Menu 1.0.4+
 	"debugKeys": false,
-	"toggleVisibilityHotkey": 107,
-	"forceHideHotkey": 109, // Update 1.1.7
+	"toggleVisibilityHotkey": 0,
+	"forceHideHotkey": "N-", // Update 1.1.7
 	
 	
 	
@@ -123,8 +123,9 @@
 	"minerva": { // Update 1.0.4
 		"offsetHours": 0,
 		"hideIfNotAvailable": false,
-		"availableText": "Minerva is at {location} for {time}",
-		"notAvailableText": "Minerva will be at {location} in {time}",
+		"showLists": [1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16, 17,18,19,20, 21,22,23,24],
+		"availableText": "Minerva is at {location} for {time} (List{list})",
+		"notAvailableText": "Minerva will be at {location} in {time} (List{list})",
 		"locations": ["Foundation","Crater","Fort Atlas","Whitesprings"]
 	},
 	
@@ -409,12 +410,12 @@
 	
 	/* HUD Modes:
 	"ActivateTypeMode", "All", "AutoVanity", "CampPlacement", "ContainerMode", "CrosshairAndActivateOnly",
-	"DeathRespawnMode", "DefaultScopeMenu", "DialogueMode", "EndOfMatch", "FurnitureEnterExit",
-	"InsideMemory", "InspectMode", "IronSights", "LegendaryPerksMode", "LockpickingMode", "MapMenu",
-	"MessageMode", "MovementDisabled", "NoHud", "PauseMode", "PerksMode", "Pipboy", "PowerArmor",
-	"RadialMenu", "SelfieMode", "SitWaitMode", "SpectatorMode", "TerminalMode", "VATS", "VATSPlayback",
-	"VertibirdMode", "WorkshopMode", "WorkshopNoCrosshairMode",
+	"DeathRespawnMode", "DialogueMode", "EndOfMatch", "FurnitureEnterExit", "InsideMemory", "InspectMode",
+	"IronSights", "LegendaryPerksMode", "LockpickingMode", "MapMenu", 	"MessageMode", "MovementDisabled",
+	"NoHud", "PauseMode", "PerksMode", "Pipboy", "PowerArmor", 	"RadialMenu", "SelfieMode", "SitWaitMode",
+	"SpectatorMode", "TerminalMode", "VATS", "VATSPlayback", "VertibirdMode", "WorkshopMode"
 	"Fishing"
+	"WorkshopNoCrosshairMode"
 	"DefaultScopeMenu", "CameraScopeMenu"
 	"Loading", "MainMenu"
 	
