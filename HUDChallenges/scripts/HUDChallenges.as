@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.5";
+      public static const MOD_VERSION:String = "1.2.6";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -479,6 +479,8 @@ package
       private var miniSeasonRewardsClaimed:int = 0;
       
       private var isKeyDownDetected:Object = {};
+      
+      private var regionsLocalized:Boolean = false;
       
       public function HUDChallenges()
       {
@@ -1489,7 +1491,7 @@ package
          filter.type = 2;
          filter.category = 9;
          var challengeID:int = 8390365;
-         if(param1 && param1.data && param1.data.categories)
+         if(param1 && param1.data && param1.data.categories && param1.data.categories.length)
          {
             for each(var category in param1.data.categories)
             {
@@ -1534,7 +1536,7 @@ package
       
       public function setRegionsLocalized(param1:Object) : void
       {
-         if(param1 && param1.data && param1.data.MarkerData)
+         if(!this.regionsLocalized && param1 && param1.data && param1.data.MarkerData && param1.data.MarkerData.length)
          {
             for each(var markerData in this.RegionNamesData.data.MarkerData)
             {
@@ -1549,11 +1551,12 @@ package
                      {
                         var initials:String = rsplit[1].charAt(0) + rsplit[2].charAt(0);
                         var match:int = int(REGION_INITIALS.indexOf(initials));
-                        REGION_LOCALIZED[REGION_INITIALS.indexOf(initials)] = regionLocale;
+                        REGION_LOCALIZED[REGION_INITIALS.indexOf(initials)] = GlobalFunc.LocalizeFormattedString(regionLocale);
                      }
                   }
                }
             }
+            this.regionsLocalized = true;
          }
          else if(!REGION_LOCALIZED[0])
          {
