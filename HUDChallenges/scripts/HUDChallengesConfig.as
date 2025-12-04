@@ -57,6 +57,8 @@ package
       
       public static const DEFAULT_FISHING_SEASON_CAUGHT:* = ["Ø","¬"];
       
+      public static const DEFAULT_EVENT_NOTIFY_SOUND:String = "BabylonUIEndGameOverseerRankGained";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -365,6 +367,30 @@ package
             if(!config.countdownTimerForEvents.events)
             {
                config.countdownTimerForEvents.events = {};
+            }
+         }
+         if(!config.eventSoundNotify)
+         {
+            config.eventSoundNotify = {};
+            config.eventSoundNotify.enabled = false;
+         }
+         else
+         {
+            config.eventSoundNotify.enabled = Boolean(config.eventSoundNotify.enabled);
+            config.eventSoundNotify.defaultSound = Boolean(config.eventSoundNotify.defaultSound) ? String(config.eventSoundNotify.defaultSound) : DEFAULT_EVENT_NOTIFY_SOUND;
+            if(!config.eventSoundNotify.events)
+            {
+               config.eventSoundNotify.events = {};
+            }
+            else
+            {
+               for(event in config.eventSoundNotify.events)
+               {
+                  if(config.eventSoundNotify.events[event] === true)
+                  {
+                     config.eventSoundNotify.events[event] = DEFAULT_EVENT_NOTIFY_SOUND;
+                  }
+               }
             }
          }
          if(!config.displayData)
