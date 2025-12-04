@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.7";
+      public static const MOD_VERSION:String = "1.2.8";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -1052,7 +1052,7 @@ package
                      "name":activity.name,
                      "type":activity.type
                   });
-                  if(_eventTimes[activity.id] == null || _eventTimes[activity.id].time != activity.time)
+                  if(_eventTimes[activity.id] == null)
                   {
                      _eventTimes[activity.id] = {
                         "time":activity.time,
@@ -1062,6 +1062,13 @@ package
                      {
                         GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
                      }
+                  }
+                  else if(_eventTimes[activity.id].time != activity.time)
+                  {
+                     _eventTimes[activity.id] = {
+                        "time":activity.time,
+                        "timestamp":getTimer()
+                     };
                   }
                   if(activity.type == ACTIVITY_TYPE_MUTATED_EVENT)
                   {
