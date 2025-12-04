@@ -34,6 +34,10 @@ package Shared.AS3
       
       private var _bButtonFlashing:Boolean;
       
+      private var m_DispatchEvent:String;
+      
+      private var m_UserEvent:String;
+      
       private var _hasSecondaryButton:Boolean;
       
       private var _strSecondaryPCKey:String;
@@ -43,6 +47,8 @@ package Shared.AS3
       private var _strSecondaryPSNButton:String;
       
       private var _secondaryButtonCallback:Function;
+      
+      private var m_DisabledButtonCallback:Function;
       
       private var m_CanHold:Boolean = false;
       
@@ -60,13 +66,16 @@ package Shared.AS3
       
       public var onAnnounceDataChange:Function;
       
+      public var onTextClickDisabled:Function;
+      
       public var onTextClick:Function;
       
       public var onSecondaryButtonClick:Function;
       
-      public function BSButtonHintData(param1:String, param2:String, param3:String, param4:String, param5:uint, param6:Function)
+      public function BSButtonHintData(param1:String, param2:String, param3:String, param4:String, param5:uint, param6:Function, param7:String = "", param8:String = "")
       {
          this.onAnnounceDataChange = this.onAnnounceDataChange_Impl;
+         this.onTextClickDisabled = this.onTextClickDisabled_Impl;
          this.onTextClick = this.onTextClick_Impl;
          this.onSecondaryButtonClick = this.onSecondaryButtonClick_Impl;
          super();
@@ -79,11 +88,14 @@ package Shared.AS3
          this._bButtonDisabled = false;
          this._bButtonVisible = true;
          this._bButtonFlashing = false;
+         this.m_DispatchEvent = param7;
+         this.m_UserEvent = param8;
          this._hasSecondaryButton = false;
          this._strSecondaryPCKey = "";
          this._strSecondaryPSNButton = "";
          this._strSecondaryXenonButton = "";
          this._secondaryButtonCallback = null;
+         this.m_DisabledButtonCallback = null;
          this._strDynamicMovieClipName = "";
          this._isWarning = false;
       }
@@ -106,6 +118,16 @@ package Shared.AS3
       public function get Justification() : uint
       {
          return this._uiJustification;
+      }
+      
+      public function get DispatchEvent() : String
+      {
+         return this.m_DispatchEvent;
+      }
+      
+      public function get UserEvent() : String
+      {
+         return this.m_UserEvent;
       }
       
       public function get SecondaryPCKey() : String
@@ -397,11 +419,36 @@ package Shared.AS3
          this._secondaryButtonCallback = param1;
       }
       
+      public function get disabledButtonCallback() : Function
+      {
+         return this.m_DisabledButtonCallback;
+      }
+      
+      public function set disabledButtonCallback(param1:Function) : *
+      {
+         this.m_DisabledButtonCallback = param1;
+      }
+      
+      private function onTextClickDisabled_Impl() : void
+      {
+         if(this.m_DisabledButtonCallback is Function)
+         {
+            this.m_DisabledButtonCallback();
+         }
+      }
+      
       private function onTextClick_Impl() : void
       {
          if(this._callbackFunction is Function)
          {
-            this._callbackFunction.call();
+            if(this.m_DispatchEvent != "")
+            {
+               this._callbackFunction.call(null,this.m_DispatchEvent);
+            }
+            else
+            {
+               this._callbackFunction.call();
+            }
          }
       }
       
@@ -433,7 +480,7 @@ package Shared.AS3
             {
                if(param2[_loc4_].userEventName == this.userEventMapping)
                {
-                  _loc3_ = String(param2[_loc4_].buttonName);
+                  _loc3_ = param2[_loc4_].buttonName;
                   break;
                }
                _loc4_++;

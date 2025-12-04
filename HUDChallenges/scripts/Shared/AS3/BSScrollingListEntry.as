@@ -17,6 +17,8 @@ package Shared.AS3
       
       public var Sizer_mc:MovieClip;
       
+      public var HitTarget_mc:MovieClip;
+      
       protected var _clipIndex:uint;
       
       protected var _clipRow:uint;
@@ -35,21 +37,28 @@ package Shared.AS3
       
       public var ORIG_TEXT_COLOR:Number;
       
-      protected var _HasDynamicHeight:Boolean;
+      protected var _HasDynamicHeight:Boolean = false;
       
       public function BSScrollingListEntry()
       {
          super();
          Extensions.enabled = true;
-         this.ORIG_BORDER_HEIGHT = this.border != null ? Number(this.border.height) : Number(0);
-         this.ORIG_BORDER_WIDTH = this.border != null ? Number(this.border.width) : Number(0);
-         this.ORIG_TEXT_COLOR = this.textField != null ? Number(this.textField.textColor) : Number(16777163);
-         this._HasDynamicHeight = true;
+         this.ORIG_BORDER_HEIGHT = this.border != null ? this.border.height : 0;
+         this.ORIG_BORDER_WIDTH = this.border != null ? this.border.width : 0;
+         this.ORIG_TEXT_COLOR = this.textField != null ? this.textField.textColor : 16777163;
          if(this.textField != null)
          {
             this.textField.mouseEnabled = false;
+            if(this.textField.multiline)
+            {
+               this._HasDynamicHeight = true;
+            }
          }
-         if(this.Sizer_mc)
+         if(this.HitTarget_mc)
+         {
+            this.hitArea = this.HitTarget_mc;
+         }
+         else if(this.Sizer_mc)
          {
             this.hitArea = this.Sizer_mc;
          }
@@ -137,16 +146,16 @@ package Shared.AS3
       protected function SetColorTransform(param1:Object, param2:Boolean) : *
       {
          var _loc3_:ColorTransform = param1.transform.colorTransform;
-         _loc3_.redOffset = param2 ? Number(-255) : Number(0);
-         _loc3_.greenOffset = param2 ? Number(-255) : Number(0);
-         _loc3_.blueOffset = param2 ? Number(-255) : Number(0);
+         _loc3_.redOffset = param2 ? -255 : 0;
+         _loc3_.greenOffset = param2 ? -255 : 0;
+         _loc3_.blueOffset = param2 ? -255 : 0;
          param1.transform.colorTransform = _loc3_;
       }
       
       public function SetEntryText(param1:Object, param2:String) : *
       {
-         var _loc3_:Number = NaN;
-         if(this.textField != null && param1 != null && param1.hasOwnProperty("text"))
+         var _loc3_:Number = Number(NaN);
+         if(this.textField != null && param1 != null && Boolean(param1.hasOwnProperty("text")))
          {
             if(param2 == BSScrollingList.TEXT_OPTION_SHRINK_TO_FIT)
             {
@@ -164,13 +173,13 @@ package Shared.AS3
             }
             else
             {
-               GlobalFunc.SetText(this.textField,"",true);
+               GlobalFunc.SetText(this.textField," ",true);
             }
-            this.textField.textColor = this.selected ? uint(0) : uint(this.ORIG_TEXT_COLOR);
+            this.textField.textColor = this.selected ? 0 : uint(this.ORIG_TEXT_COLOR);
          }
          if(this.border != null)
          {
-            this.border.alpha = this.selected ? Number(GlobalFunc.SELECTED_RECT_ALPHA) : Number(0);
+            this.border.alpha = this.selected ? GlobalFunc.SELECTED_RECT_ALPHA : 0;
             if(this.textField != null && param2 == BSScrollingList.TEXT_OPTION_MULTILINE && this.textField.numLines > 1)
             {
                _loc3_ = this.textField.y - this.border.y;

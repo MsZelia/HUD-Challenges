@@ -5,7 +5,9 @@ package Shared.AS3
    import Mobile.ScrollList.MobileScrollList;
    import Shared.AS3.COMPANIONAPP.BSScrollingListInterface;
    import Shared.AS3.COMPANIONAPP.CompanionAppMode;
+   import Shared.AS3.Events.CustomEvent;
    import Shared.AS3.Events.PlatformChangeEvent;
+   import Shared.GlobalFunc;
    import flash.display.MovieClip;
    import flash.events.Event;
    import flash.events.KeyboardEvent;
@@ -23,6 +25,14 @@ package Shared.AS3
       
       public static const TEXT_OPTION_MULTILINE:String = "Multi-Line";
       
+      public static const MOUSEWHEEL_SCROLL_DISTANCE_CTRLSHIFT:uint = 9;
+      
+      public static const MOUSEWHEEL_SCROLL_DISTANCE_CTRL:uint = 6;
+      
+      public static const MOUSEWHEEL_SCROLL_DISTANCE_SHIFT:uint = 3;
+      
+      public static const MOUSEWHEEL_SCROLL_DISTANCE_BASE:uint = 1;
+      
       public static const SELECTION_CHANGE:String = "BSScrollingList::selectionChange";
       
       public static const ITEM_PRESS:String = "BSScrollingList::itemPress";
@@ -32,6 +42,10 @@ package Shared.AS3
       public static const LIST_ITEMS_CREATED:String = "BSScrollingList::listItemsCreated";
       
       public static const PLAY_FOCUS_SOUND:String = "BSScrollingList::playFocusSound";
+      
+      public static const TOP_EDGE_BOUNCE:String = "BSScrollingList::TopEdgeBounce";
+      
+      public static const BOTTOM_EDGE_BOUNCE:String = "BSScrollingList::BottomEdgeBounce";
       
       public static const MOBILE_ITEM_PRESS:String = "BSScrollingList::mobileItemPress";
       
@@ -44,6 +58,8 @@ package Shared.AS3
       public var ScrollUp:MovieClip;
       
       public var ScrollDown:MovieClip;
+      
+      public var Mask_mc:MovieClip;
       
       protected var EntriesA:Array;
       
@@ -79,6 +95,16 @@ package Shared.AS3
       
       protected var bInitialized:Boolean;
       
+      protected var m_LastNavDirection:int = -1;
+      
+      protected var m_NavChangeFromInput:Boolean = false;
+      
+      protected var m_AnimatedArrows:Boolean = false;
+      
+      protected var m_Active:Boolean = true;
+      
+      protected var bSilentSelectionMode:Boolean = false;
+      
       protected var strTextOption:String;
       
       protected var bDisableSelection:Boolean;
@@ -93,9 +119,13 @@ package Shared.AS3
       
       protected var bUpdated:Boolean;
       
-      private var fBorderHeight:Number = 0;
+      protected var bEnableScrollWrap:Boolean = false;
       
-      private var _DisplayNumListItems:uint = 0;
+      protected var m_AllowMouseOver:Boolean = true;
+      
+      protected var fBorderHeight:Number = 0;
+      
+      protected var _DisplayNumListItems:uint = 0;
       
       public function BSScrollingList()
       {
@@ -113,6 +143,7 @@ package Shared.AS3
          this.bMouseDrivenNav = false;
          this.bReverseList = false;
          this.bUpdated = false;
+         this.bSilentSelectionMode = false;
          this.bInitialized = false;
          if(loaderInfo != null)
          {
@@ -133,6 +164,7 @@ package Shared.AS3
          }
          this.fBorderHeight = this.border.height;
          this.EntryHolder_mc = new MovieClip();
+         this.EntryHolder_mc.name = "EntryHolder_mc";
          this.addChildAt(this.EntryHolder_mc,this.getChildIndex(this.border) + 1);
          this.iSelectedIndex = -1;
          this.iScrollPosition = 0;
@@ -195,10 +227,16 @@ package Shared.AS3
       
       protected function onStageDestruct(param1:Event) : *
       {
-         var _loc2_:BSScrollingListEntry = null;
-         stage.removeEventListener(PlatformChangeEvent.PLATFORM_CHANGE,this.onSetPlatform);
+         var _loc3_:BSScrollingListEntry = null;
+         if(stage)
+         {
+            stage.removeEventListener(PlatformChangeEvent.PLATFORM_CHANGE,this.onSetPlatform);
+         }
+         if(loaderInfo)
+         {
+            loaderInfo.removeEventListener(Event.INIT,this.onComponentInit);
+         }
          removeEventListener(ListFilterer.FILTER_CHANGE,this.onFilterChange);
-         loaderInfo.removeEventListener(Event.INIT,this.onComponentInit);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.onStageDestruct);
          removeEventListener(KeyboardEvent.KEY_DOWN,this.onKeyDown);
          removeEventListener(KeyboardEvent.KEY_UP,this.onKeyUp);
@@ -211,13 +249,13 @@ package Shared.AS3
          {
             this.ScrollDown.removeEventListener(MouseEvent.CLICK,this.onScrollArrowClick);
          }
-         var _loc3_:uint = 0;
-         while(_loc3_ < this.EntryHolder_mc.numChildren)
+         var _loc2_:uint = 0;
+         while(_loc2_ < this.EntryHolder_mc.numChildren)
          {
-            _loc2_ = this.GetClipByIndex(_loc3_);
-            _loc2_.removeEventListener(MouseEvent.MOUSE_OVER,this.onEntryRollover);
-            _loc2_.removeEventListener(MouseEvent.CLICK,this.onEntryPress);
-            _loc3_++;
+            _loc3_ = this.GetClipByIndex(_loc2_);
+            _loc3_.removeEventListener(MouseEvent.MOUSE_OVER,this.onEntryRollover);
+            _loc3_.removeEventListener(MouseEvent.CLICK,this.onEntryPress);
+            _loc2_++;
          }
          if(this.needMobileScrollList)
          {
@@ -254,14 +292,17 @@ package Shared.AS3
       public function onEntryRollover(param1:Event) : *
       {
          var _loc2_:* = undefined;
-         this.bMouseDrivenNav = true;
-         if(!this.bDisableInput && !this.bDisableSelection)
+         if(this.m_AllowMouseOver && this.uiPlatform == PlatformChangeEvent.PLATFORM_PC_KB_MOUSE)
          {
-            _loc2_ = this.iSelectedIndex;
-            this.doSetSelectedIndex((param1.currentTarget as BSScrollingListEntry).itemIndex);
-            if(_loc2_ != this.iSelectedIndex)
+            this.bMouseDrivenNav = true;
+            if(!this.bDisableInput && !this.bDisableSelection)
             {
-               dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
+               _loc2_ = this.iSelectedIndex;
+               this.doSetSelectedIndex((param1.currentTarget as BSScrollingListEntry).itemIndex);
+               if(_loc2_ != this.iSelectedIndex)
+               {
+                  dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
+               }
             }
          }
       }
@@ -285,31 +326,31 @@ package Shared.AS3
       
       public function FindClipForEntry(param1:int) : BSScrollingListEntry
       {
-         var _loc2_:* = undefined;
-         var _loc3_:BSScrollingListEntry = null;
+         var _loc4_:* = undefined;
+         var _loc5_:BSScrollingListEntry = null;
          if(!this.bUpdated)
          {
             trace("WARNING: FindClipForEntry will always fail to find a clip before Update() has been called at least once");
-            _loc2_ = new Error();
-            trace(_loc2_.getStackTrace());
+            _loc4_ = new Error();
+            trace(_loc4_.getStackTrace());
          }
          if(param1 == -1 || param1 == int.MAX_VALUE || param1 >= this.EntriesA.length)
          {
             return null;
          }
-         var _loc4_:BSScrollingListEntry = null;
-         var _loc5_:uint = 0;
-         while(_loc5_ < this.EntryHolder_mc.numChildren)
+         var _loc2_:BSScrollingListEntry = null;
+         var _loc3_:uint = 0;
+         while(_loc3_ < this.EntryHolder_mc.numChildren)
          {
-            _loc3_ = this.GetClipByIndex(_loc5_);
-            if(_loc3_.visible == true && _loc3_.itemIndex == param1)
+            _loc5_ = this.GetClipByIndex(_loc3_);
+            if(_loc5_.visible == true && _loc5_.itemIndex == param1)
             {
-               _loc4_ = _loc3_;
+               _loc2_ = _loc5_;
                break;
             }
-            _loc5_++;
+            _loc3_++;
          }
-         return _loc4_;
+         return _loc2_;
       }
       
       public function GetEntryFromClipIndex(param1:uint) : int
@@ -324,11 +365,13 @@ package Shared.AS3
          {
             if(param1.keyCode == Keyboard.UP)
             {
+               this.m_NavChangeFromInput = true;
                this.moveSelectionUp();
                param1.stopPropagation();
             }
             else if(param1.keyCode == Keyboard.DOWN)
             {
+               this.m_NavChangeFromInput = true;
                this.moveSelectionDown();
                param1.stopPropagation();
             }
@@ -346,49 +389,82 @@ package Shared.AS3
       
       public function onMouseWheel(param1:MouseEvent) : *
       {
-         var _loc2_:* = undefined;
+         var _loc2_:uint = 0;
+         var _loc3_:* = undefined;
+         var _loc4_:* = undefined;
          if(!this.bDisableInput && (!this.bDisableSelection || this.bAllowSelectionDisabledListNav) && this.iMaxScrollPosition > 0)
          {
-            _loc2_ = this.scrollPosition;
+            this.m_NavChangeFromInput = true;
+            _loc2_ = MOUSEWHEEL_SCROLL_DISTANCE_BASE;
+            if(param1.ctrlKey && param1.shiftKey)
+            {
+               _loc2_ = Math.min(MOUSEWHEEL_SCROLL_DISTANCE_CTRLSHIFT,this.numListItems_Inspectable);
+            }
+            else if(param1.ctrlKey)
+            {
+               _loc2_ = Math.min(MOUSEWHEEL_SCROLL_DISTANCE_CTRL,this.numListItems_Inspectable);
+            }
+            else if(param1.shiftKey)
+            {
+               _loc2_ = Math.min(MOUSEWHEEL_SCROLL_DISTANCE_SHIFT,this.numListItems_Inspectable);
+            }
+            _loc3_ = this.scrollPosition;
+            _loc4_ = _loc3_;
             if(param1.delta < 0)
             {
-               this.scrollPosition += 1;
+               _loc4_ = this.scrollPosition + _loc2_;
             }
             else if(param1.delta > 0)
             {
-               --this.scrollPosition;
+               _loc4_ = this.scrollPosition - _loc2_;
             }
+            this.scrollPosition = GlobalFunc.Clamp(_loc4_,0,this.iMaxScrollPosition);
             this.SetFocusUnderMouse();
             param1.stopPropagation();
-            if(_loc2_ != this.scrollPosition)
+            if(_loc3_ != this.scrollPosition)
             {
                dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
             }
          }
       }
       
-      private function SetFocusUnderMouse() : *
+      protected function SetFocusUnderMouse() : *
       {
-         var _loc1_:BSScrollingListEntry = null;
-         var _loc2_:MovieClip = null;
-         var _loc3_:Point = null;
-         var _loc4_:int = 0;
-         while(_loc4_ < this.iListItemsShown)
+         var _loc2_:BSScrollingListEntry = null;
+         var _loc3_:MovieClip = null;
+         var _loc4_:Point = null;
+         var _loc1_:int = 0;
+         while(_loc1_ < this.iListItemsShown)
          {
-            _loc1_ = this.GetClipByIndex(_loc4_);
-            _loc2_ = _loc1_.border;
-            _loc3_ = localToGlobal(new Point(mouseX,mouseY));
-            if(_loc1_.hitTestPoint(_loc3_.x,_loc3_.y,false))
+            _loc2_ = this.GetClipByIndex(_loc1_);
+            _loc3_ = _loc2_.border;
+            _loc4_ = localToGlobal(new Point(mouseX,mouseY));
+            if(_loc2_.hitTestPoint(_loc4_.x,_loc4_.y,false))
             {
-               this.selectedIndex = _loc1_.itemIndex;
+               this.selectedIndex = _loc2_.itemIndex;
             }
-            _loc4_++;
+            _loc1_++;
          }
+      }
+      
+      public function get lastNavDirection() : int
+      {
+         return this.m_LastNavDirection;
+      }
+      
+      public function get hasBeenUpdated() : Boolean
+      {
+         return this.bUpdated;
       }
       
       public function get mouseDrivenNav() : Boolean
       {
          return this.bMouseDrivenNav;
+      }
+      
+      public function set mouseDrivenNav(param1:Boolean) : void
+      {
+         this.bMouseDrivenNav = param1;
       }
       
       public function get filterer() : ListFilterer
@@ -437,32 +513,76 @@ package Shared.AS3
          return this.fShownItemsHeight;
       }
       
+      public function get enableScrollWrap() : Boolean
+      {
+         return this.bEnableScrollWrap;
+      }
+      
+      public function set enableScrollWrap(param1:Boolean) : *
+      {
+         this.bEnableScrollWrap = param1;
+      }
+      
+      public function get silentSelectionMode() : Boolean
+      {
+         return this.bSilentSelectionMode;
+      }
+      
+      public function setSilentSelectionMode(param1:Boolean) : void
+      {
+         if(this.bSilentSelectionMode != param1)
+         {
+            this.bSilentSelectionMode = param1;
+            this.refreshAllEntries();
+         }
+      }
+      
+      protected function refreshAllEntries() : void
+      {
+         var _loc2_:BSScrollingListEntry = null;
+         var _loc1_:uint = 0;
+         while(_loc1_ < this.EntriesA.length)
+         {
+            _loc2_ = this.FindClipForEntry(_loc1_);
+            if(_loc2_ == null)
+            {
+               this.InvalidateData();
+               _loc2_ = this.FindClipForEntry(_loc1_);
+            }
+            if(_loc2_ != null)
+            {
+               this.SetEntry(_loc2_,this.EntriesA[_loc1_]);
+            }
+            _loc1_++;
+         }
+      }
+      
       protected function doSetSelectedIndex(param1:int) : *
       {
-         var _loc2_:int = 0;
-         var _loc3_:BSScrollingListEntry = null;
-         var _loc4_:int = 0;
+         var _loc3_:int = 0;
+         var _loc4_:BSScrollingListEntry = null;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
          var _loc7_:int = 0;
-         var _loc8_:uint = 0;
-         var _loc9_:int = 0;
-         var _loc10_:uint = 0;
-         var _loc11_:BSScrollingListEntry = null;
+         var _loc8_:int = 0;
+         var _loc9_:uint = 0;
+         var _loc10_:int = 0;
+         var _loc11_:uint = 0;
+         var _loc2_:BSScrollingListEntry = null;
          if(!this.bDisableSelection && param1 != this.iSelectedIndex)
          {
-            _loc2_ = this.iSelectedIndex;
+            _loc3_ = this.iSelectedIndex;
             this.iSelectedIndex = param1;
             if(this.EntriesA.length == 0)
             {
                this.iSelectedIndex = -1;
             }
-            if(_loc2_ != -1 && _loc2_ < this.EntriesA.length)
+            if(_loc3_ != -1 && _loc3_ < this.EntriesA.length)
             {
-               _loc3_ = this.FindClipForEntry(_loc2_);
-               if(_loc3_ != null)
+               _loc4_ = this.FindClipForEntry(_loc3_);
+               if(_loc4_ != null)
                {
-                  this.SetEntry(_loc3_,this.EntriesA[_loc2_]);
+                  this.SetEntry(_loc4_,this.EntriesA[_loc3_]);
                }
             }
             if(this.iSelectedIndex != -1)
@@ -475,67 +595,68 @@ package Shared.AS3
             }
             if(this.iSelectedIndex != -1)
             {
-               _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
-               if(_loc11_ == null)
+               _loc2_ = this.FindClipForEntry(this.iSelectedIndex);
+               if(_loc2_ == null)
                {
                   this.InvalidateData();
-                  _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
+                  _loc2_ = this.FindClipForEntry(this.iSelectedIndex);
                }
-               if(this.iSelectedIndex != -1 && _loc2_ != this.iSelectedIndex)
+               if(this.iSelectedIndex != -1 && _loc3_ != this.iSelectedIndex)
                {
-                  if(_loc11_ != null)
+                  if(_loc2_ != null)
                   {
-                     this.SetEntry(_loc11_,this.EntriesA[this.iSelectedIndex]);
+                     this.SetEntry(_loc2_,this.EntriesA[this.iSelectedIndex]);
                   }
                   else if(this.iListItemsShown > 0)
                   {
-                     _loc4_ = this.GetEntryFromClipIndex(0);
-                     _loc5_ = this.GetEntryFromClipIndex(this.iListItemsShown - 1);
-                     _loc7_ = 0;
-                     if(this.iSelectedIndex < _loc4_)
+                     _loc5_ = this.GetEntryFromClipIndex(0);
+                     _loc6_ = this.GetEntryFromClipIndex(this.iListItemsShown - 1);
+                     _loc8_ = 0;
+                     if(this.iSelectedIndex < _loc5_)
                      {
-                        _loc6_ = _loc4_;
+                        _loc7_ = _loc5_;
                         do
                         {
-                           _loc6_ = this._filterer.GetPrevFilterMatch(_loc6_);
-                           _loc7_--;
+                           _loc7_ = this._filterer.GetPrevFilterMatch(_loc7_);
+                           _loc8_--;
                         }
-                        while(_loc6_ != this.iSelectedIndex && _loc6_ != -1 && _loc6_ != int.MAX_VALUE);
+                        while(_loc7_ != this.iSelectedIndex && _loc7_ != -1 && _loc7_ != int.MAX_VALUE);
                         
                      }
-                     else if(this.iSelectedIndex > _loc5_)
+                     else if(this.iSelectedIndex > _loc6_)
                      {
-                        _loc6_ = _loc5_;
+                        _loc7_ = _loc6_;
                         do
                         {
-                           _loc6_ = this._filterer.GetNextFilterMatch(_loc6_);
-                           _loc7_++;
+                           _loc7_ = this._filterer.GetNextFilterMatch(_loc7_);
+                           _loc8_++;
                         }
-                        while(_loc6_ != this.iSelectedIndex && _loc6_ != -1 && _loc6_ != int.MAX_VALUE);
+                        while(_loc7_ != this.iSelectedIndex && _loc7_ != -1 && _loc7_ != int.MAX_VALUE);
                         
                      }
-                     this.scrollPosition += _loc7_;
+                     this.scrollPosition += _loc8_;
                   }
                   if(this.textOption_Inspectable == TEXT_OPTION_MULTILINE)
                   {
-                     _loc8_ = 0;
-                     _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
-                     while(_loc8_ < this.uiNumListItems && _loc11_ != null && _loc11_.y + _loc11_.height > this.fListHeight)
+                     _loc9_ = 0;
+                     _loc2_ = this.FindClipForEntry(this.iSelectedIndex);
+                     while(_loc9_ < this.uiNumListItems && _loc2_ != null && _loc2_.y + _loc2_.height > this.fListHeight)
                      {
                         this.scrollPosition += 1;
-                        _loc11_ = this.FindClipForEntry(this.iSelectedIndex);
-                        _loc8_++;
+                        _loc2_ = this.FindClipForEntry(this.iSelectedIndex);
+                        _loc9_++;
                      }
-                     if(_loc8_ == this.uiNumListItems)
+                     if(_loc9_ > this.uiNumListItems)
                      {
                         throw new Error("Force-exited list selection loop before the selected entry could be fully scrolled on-screen.  Shouldn\'t be possible!");
                      }
                   }
                }
             }
-            if(_loc2_ != this.iSelectedIndex)
+            if(_loc3_ != this.iSelectedIndex)
             {
-               dispatchEvent(new Event(SELECTION_CHANGE,true,true));
+               dispatchEvent(new CustomEvent(SELECTION_CHANGE,{"navFromInput":this.m_NavChangeFromInput},true,true));
+               this.m_NavChangeFromInput = false;
             }
             if(this.needMobileScrollList)
             {
@@ -543,18 +664,18 @@ package Shared.AS3
                {
                   if(this.iSelectedIndex != -1)
                   {
-                     _loc9_ = this.selectedClipIndex;
-                     _loc10_ = 0;
-                     while(_loc10_ < this.scrollList.data.length)
+                     _loc10_ = this.selectedClipIndex;
+                     _loc11_ = 0;
+                     while(_loc11_ < this.scrollList.data.length)
                      {
-                        if(this.EntriesA[this.iSelectedIndex] == this.scrollList.data[_loc10_])
+                        if(this.EntriesA[this.iSelectedIndex] == this.scrollList.data[_loc11_])
                         {
-                           _loc9_ = int(_loc10_);
+                           _loc10_ = int(_loc11_);
                            break;
                         }
-                        _loc10_++;
+                        _loc11_++;
                      }
-                     this.scrollList.selectedIndex = _loc9_;
+                     this.scrollList.selectedIndex = _loc10_;
                   }
                   else
                   {
@@ -626,6 +747,21 @@ package Shared.AS3
       public function set textOption_Inspectable(param1:String) : *
       {
          this.strTextOption = param1;
+         if(this.strTextOption == TEXT_OPTION_MULTILINE && this.Mask_mc == null)
+         {
+            this.Mask_mc = new MovieClip();
+            this.Mask_mc.name = "MultilineMask_mc";
+            this.Mask_mc.graphics.clear();
+            this.Mask_mc.graphics.beginFill(16777215);
+            this.Mask_mc.graphics.drawRect(0,0,this.border.width,this.border.height);
+            this.Mask_mc.graphics.endFill();
+            this.addChildAt(this.Mask_mc,getChildIndex(this.EntryHolder_mc) + 1);
+            this.Mask_mc.x = this.border.x;
+            this.Mask_mc.y = this.border.y;
+            this.Mask_mc.mouseEnabled = false;
+            this.Mask_mc.alpha = 0;
+            this.EntryHolder_mc.mask = this.Mask_mc;
+         }
       }
       
       public function get verticalSpacing_Inspectable() : *
@@ -684,6 +820,11 @@ package Shared.AS3
          this.bAllowSelectionDisabledListNav = param1;
       }
       
+      public function set allowMouseOver(param1:Boolean) : void
+      {
+         this.m_AllowMouseOver = param1;
+      }
+      
       public function get reverseOrder() : Boolean
       {
          return this.bReverseOrder;
@@ -692,6 +833,16 @@ package Shared.AS3
       public function set reverseOrder(param1:Boolean) : *
       {
          this.bReverseOrder = param1;
+      }
+      
+      public function set AnimatedArrows(param1:Boolean) : void
+      {
+         this.m_AnimatedArrows = param1;
+      }
+      
+      public function get AnimatedArrows() : Boolean
+      {
+         return this.m_AnimatedArrows;
       }
       
       public function SetNumListItems(param1:uint) : *
@@ -714,19 +865,59 @@ package Shared.AS3
                   if(_loc3_ != null)
                   {
                      _loc3_.clipIndex = _loc2_;
+                     _loc3_.name = this._itemRendererClassName + _loc2_.toString();
                      _loc3_.addEventListener(MouseEvent.MOUSE_OVER,this.onEntryRollover);
                      _loc3_.addEventListener(MouseEvent.CLICK,this.onEntryPress);
                      this.EntryHolder_mc.addChild(_loc3_);
                   }
                   else
                   {
-                     trace("BSScrollingList::SetNumListItems -- List Entry Class is invalid or does not derive from BSScrollingListEntry.");
+                     trace("BSScrollingList::SetNumListItems -- List Entry Class " + this._itemRendererClassName + " is invalid or does not derive from BSScrollingListEntry.");
                   }
                   _loc2_++;
                }
                this.bInitialized = true;
                dispatchEvent(new Event(LIST_ITEMS_CREATED,true,true));
             }
+         }
+      }
+      
+      public function ToggleActiveState(param1:Boolean) : void
+      {
+         this.m_Active = param1;
+         if(Boolean(this.ScrollUp) && Boolean(this.ScrollDown))
+         {
+            if(this.m_AnimatedArrows)
+            {
+               this.animateArrows();
+            }
+            else
+            {
+               this.ScrollUp.visible = this.m_Active;
+               this.ScrollDown.visible = this.m_Active;
+            }
+         }
+      }
+      
+      protected function animateArrows() : void
+      {
+         this.ScrollUp.visible = true;
+         this.ScrollDown.visible = true;
+         if(this.scrollPosition > 0 && this.m_Active)
+         {
+            this.ScrollUp.gotoAndPlay("Active");
+         }
+         else
+         {
+            this.ScrollUp.gotoAndStop("Disabled");
+         }
+         if(this.scrollPosition < this.iMaxScrollPosition && this.m_Active)
+         {
+            this.ScrollDown.gotoAndPlay("Active");
+         }
+         else
+         {
+            this.ScrollDown.gotoAndStop("Disabled");
          }
       }
       
@@ -737,149 +928,153 @@ package Shared.AS3
       
       public function UpdateList() : *
       {
-         var _loc1_:BSScrollingListEntry = null;
-         var _loc2_:BSScrollingListEntry = null;
-         var _loc3_:Number = 0;
-         var _loc4_:Number;
-         var _loc5_:Number = _loc4_ = this._filterer.FindArrayIndexOfFilteredPosition(this.iScrollPosition);
-         var _loc6_:uint = 0;
-         while(_loc6_ < this.uiNumListItems)
+         var _loc6_:BSScrollingListEntry = null;
+         var _loc7_:BSScrollingListEntry = null;
+         var _loc1_:Number = 0;
+         var _loc2_:Number = this._filterer.FindArrayIndexOfFilteredPosition(this.iScrollPosition);
+         var _loc3_:Number = _loc2_;
+         var _loc4_:uint = 0;
+         while(_loc4_ < this.uiNumListItems)
          {
-            _loc1_ = this.GetClipByIndex(_loc6_);
-            if(_loc1_)
+            _loc6_ = this.GetClipByIndex(_loc4_);
+            if(_loc6_)
             {
-               _loc1_.visible = false;
-               _loc1_.itemIndex = int.MAX_VALUE;
+               _loc6_.visible = false;
+               _loc6_.itemIndex = int.MAX_VALUE;
             }
-            _loc6_++;
+            _loc4_++;
          }
-         var _loc7_:Vector.<Object> = new Vector.<Object>();
+         var _loc5_:Vector.<Object> = new Vector.<Object>();
          this.iListItemsShown = 0;
          if(this.needMobileScrollList)
          {
-            while(_loc5_ != int.MAX_VALUE && _loc5_ != -1 && _loc5_ < this.EntriesA.length && _loc3_ <= this.fListHeight)
+            while(_loc3_ != int.MAX_VALUE && _loc3_ != -1 && _loc3_ < this.EntriesA.length && _loc1_ <= this.fListHeight)
             {
-               _loc7_.push(this.EntriesA[_loc5_]);
-               _loc5_ = this._filterer.GetNextFilterMatch(_loc5_);
+               _loc5_.push(this.EntriesA[_loc3_]);
+               _loc3_ = this._filterer.GetNextFilterMatch(_loc3_);
             }
          }
-         while(_loc4_ != int.MAX_VALUE && _loc4_ != -1 && _loc4_ < this.EntriesA.length && this.iListItemsShown < this.uiNumListItems && _loc3_ <= this.fListHeight)
+         while(_loc2_ != int.MAX_VALUE && _loc2_ != -1 && _loc2_ < this.EntriesA.length && this.iListItemsShown < this.uiNumListItems && _loc1_ <= this.fListHeight)
          {
-            _loc2_ = this.GetClipByIndex(this.iListItemsShown);
-            if(_loc2_)
+            _loc7_ = this.GetClipByIndex(this.iListItemsShown);
+            if(_loc7_)
             {
-               this.SetEntry(_loc2_,this.EntriesA[_loc4_]);
-               _loc2_.itemIndex = _loc4_;
-               _loc2_.visible = !this.needMobileScrollList;
-               if(_loc2_.Sizer_mc)
+               this.SetEntry(_loc7_,this.EntriesA[_loc2_]);
+               _loc7_.itemIndex = _loc2_;
+               _loc7_.visible = !this.needMobileScrollList;
+               if(_loc7_.Sizer_mc)
                {
-                  _loc3_ += _loc2_.Sizer_mc.height;
+                  _loc1_ += _loc7_.Sizer_mc.height;
                }
                else
                {
-                  _loc3_ += _loc2_.height;
+                  _loc1_ += _loc7_.height;
                }
-               if(_loc3_ <= this.fListHeight && this.iListItemsShown < this.uiNumListItems)
+               if(_loc1_ <= this.fListHeight && this.iListItemsShown < this.uiNumListItems)
                {
-                  _loc3_ += this.fVerticalSpacing;
+                  _loc1_ += this.fVerticalSpacing;
                   ++this.iListItemsShown;
                }
                else if(this.textOption_Inspectable != TEXT_OPTION_MULTILINE)
                {
-                  _loc2_.itemIndex = int.MAX_VALUE;
-                  _loc2_.visible = false;
+                  _loc7_.itemIndex = int.MAX_VALUE;
+                  _loc7_.visible = false;
                }
                else
                {
                   ++this.iListItemsShown;
                }
             }
-            _loc4_ = this._filterer.GetNextFilterMatch(_loc4_);
+            _loc2_ = this._filterer.GetNextFilterMatch(_loc2_);
          }
          if(this.needMobileScrollList)
          {
-            this.setMobileScrollingListData(_loc7_);
+            this.setMobileScrollingListData(_loc5_);
          }
          this.PositionEntries();
-         if(this.ScrollUp != null)
+         if(Boolean(this.ScrollUp) && Boolean(this.ScrollDown))
          {
-            this.ScrollUp.visible = this.scrollPosition > 0;
-         }
-         if(this.ScrollDown != null)
-         {
-            this.ScrollDown.visible = this.scrollPosition < this.iMaxScrollPosition;
+            if(this.m_AnimatedArrows)
+            {
+               this.animateArrows();
+            }
+            else
+            {
+               this.ScrollUp.visible = this.scrollPosition > 0;
+               this.ScrollDown.visible = this.scrollPosition < this.iMaxScrollPosition;
+            }
          }
          this.bUpdated = true;
       }
       
       protected function PositionEntries() : *
       {
-         var _loc1_:BSScrollingListEntry = null;
-         var _loc2_:int = 0;
-         var _loc3_:Number = 0;
-         var _loc4_:Number = this.border.y;
-         var _loc5_:Number = 1;
+         var _loc3_:BSScrollingListEntry = null;
+         var _loc5_:int = 0;
+         var _loc1_:Number = 0;
+         var _loc2_:Number = this.border.y;
+         var _loc4_:Number = 1;
          if(this.reverseOrder)
          {
-            _loc5_ = -1;
+            _loc4_ = -1;
          }
          if(this.iListItemsShown > 0)
          {
             if(this.reverseOrder)
             {
-               _loc4_ = this.fBorderHeight;
-               _loc1_ = this.GetClipByIndex(_loc2_);
-               if(_loc1_.Sizer_mc)
+               _loc2_ = this.fBorderHeight;
+               _loc3_ = this.GetClipByIndex(_loc5_);
+               if(_loc3_.Sizer_mc)
                {
-                  _loc4_ -= _loc1_.Sizer_mc.height;
+                  _loc2_ -= _loc3_.Sizer_mc.height;
                }
                else
                {
-                  _loc4_ -= _loc1_.height;
+                  _loc2_ -= _loc3_.height;
                }
             }
-            _loc2_ = 0;
-            while(_loc2_ < this.iListItemsShown)
+            _loc5_ = 0;
+            while(_loc5_ < this.iListItemsShown)
             {
-               _loc1_ = this.GetClipByIndex(_loc2_);
-               _loc1_.y = _loc4_ + _loc3_ * _loc5_;
-               if(_loc1_.Sizer_mc)
+               _loc3_ = this.GetClipByIndex(_loc5_);
+               _loc3_.y = _loc2_ + _loc1_ * _loc4_;
+               if(_loc3_.Sizer_mc)
                {
-                  _loc3_ += _loc1_.Sizer_mc.height + this.fVerticalSpacing;
+                  _loc1_ += _loc3_.Sizer_mc.height + this.fVerticalSpacing;
                }
                else
                {
-                  _loc3_ += _loc1_.height + this.fVerticalSpacing;
+                  _loc1_ += _loc3_.height + this.fVerticalSpacing;
                }
-               _loc2_++;
+               _loc5_++;
             }
          }
-         this.fShownItemsHeight = _loc3_;
+         this.fShownItemsHeight = _loc1_;
       }
       
       public function InvalidateData() : *
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = this.bUpdated ? int(this.selectedClipIndex) : -1;
-         var _loc3_:Boolean = false;
+         var _loc7_:int = 0;
+         var _loc1_:int = this.bUpdated ? this.selectedClipIndex : -1;
+         var _loc2_:Boolean = false;
          this._filterer.filterArray = this.EntriesA;
-         var _loc4_:Object = this.border.getBounds(this);
-         var _loc5_:Point = new Point(_loc4_.x,_loc4_.y);
-         var _loc6_:Point = new Point(_loc4_.x + _loc4_.width,_loc4_.y + _loc4_.height);
+         var _loc3_:Object = this.border.getBounds(this);
+         var _loc4_:Point = new Point(_loc3_.x,_loc3_.y);
+         var _loc5_:Point = new Point(_loc3_.x + _loc3_.width,_loc3_.y + _loc3_.height);
+         this.localToGlobal(_loc4_);
          this.localToGlobal(_loc5_);
-         this.localToGlobal(_loc6_);
-         this.fListHeight = _loc6_.y - _loc5_.y;
+         this.fListHeight = _loc5_.y - _loc4_.y;
          this.CalculateMaxScrollPosition();
          if(this.iSelectedIndex >= this.EntriesA.length)
          {
             this.iSelectedIndex = this.EntriesA.length - 1;
-            _loc3_ = true;
+            _loc2_ = true;
          }
-         var _loc7_:* = false;
+         var _loc6_:* = false;
          if(!this._filterer.IsValidIndex(this.iSelectedIndex))
          {
-            _loc1_ = this._filterer.GetPrevFilterMatch(this.iSelectedIndex);
-            if(_loc1_ == int.MAX_VALUE)
+            _loc7_ = this._filterer.GetPrevFilterMatch(this.iSelectedIndex);
+            if(_loc7_ == int.MAX_VALUE)
             {
                if(this._filterer.GetNextFilterMatch(this.iSelectedIndex) == int.MAX_VALUE)
                {
@@ -888,9 +1083,9 @@ package Shared.AS3
             }
             else
             {
-               this.iSelectedIndex = _loc1_;
-               _loc3_ = true;
-               _loc7_ = true;
+               this.iSelectedIndex = _loc7_;
+               _loc2_ = true;
+               _loc6_ = true;
             }
          }
          if(this.iScrollPosition > this.iMaxScrollPosition)
@@ -898,13 +1093,13 @@ package Shared.AS3
             this.iScrollPosition = this.iMaxScrollPosition;
          }
          this.UpdateList();
-         if(_loc2_ != -1 && this.restoreListIndex_Inspectable && !this.needMobileScrollList && !_loc7_)
+         if(_loc1_ != -1 && this.restoreListIndex_Inspectable && !this.needMobileScrollList && !_loc6_)
          {
-            this.selectedClipIndex = _loc2_;
+            this.selectedClipIndex = _loc1_;
          }
-         else if(_loc3_)
+         else if(_loc2_)
          {
-            dispatchEvent(new Event(SELECTION_CHANGE,true,true));
+            dispatchEvent(new CustomEvent(SELECTION_CHANGE,{"navFromInput":false},true,true));
          }
       }
       
@@ -936,53 +1131,53 @@ package Shared.AS3
       
       protected function CalculateMaxScrollPosition() : *
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:int = 0;
+         var _loc2_:Number = Number(NaN);
          var _loc3_:int = 0;
          var _loc4_:int = 0;
          var _loc5_:int = 0;
          var _loc6_:int = 0;
-         var _loc7_:int = this._filterer.EntryMatchesFilter(this.EntriesA[this.EntriesA.length - 1]) ? int(this.EntriesA.length - 1) : int(this._filterer.GetPrevFilterMatch(this.EntriesA.length - 1));
-         if(_loc7_ == int.MAX_VALUE)
+         var _loc7_:int = 0;
+         var _loc1_:int = this._filterer.EntryMatchesFilter(this.EntriesA[this.EntriesA.length - 1]) ? int(this.EntriesA.length - 1) : this._filterer.GetPrevFilterMatch(this.EntriesA.length - 1);
+         if(_loc1_ == int.MAX_VALUE)
          {
             this.iMaxScrollPosition = 0;
          }
          else
          {
-            _loc1_ = this.GetEntryHeight(_loc7_);
-            _loc2_ = _loc7_;
-            _loc3_ = 1;
-            while(_loc2_ != int.MAX_VALUE && _loc1_ < this.fListHeight && _loc3_ < this.uiNumListItems)
+            _loc2_ = this.GetEntryHeight(_loc1_);
+            _loc3_ = _loc1_;
+            _loc4_ = 1;
+            while(_loc3_ != int.MAX_VALUE && _loc2_ < this.fListHeight && _loc4_ < this.uiNumListItems)
             {
-               _loc4_ = _loc2_;
-               _loc2_ = this._filterer.GetPrevFilterMatch(_loc2_);
-               if(_loc2_ != int.MAX_VALUE)
+               _loc5_ = _loc3_;
+               _loc3_ = this._filterer.GetPrevFilterMatch(_loc3_);
+               if(_loc3_ != int.MAX_VALUE)
                {
-                  _loc1_ += this.GetEntryHeight(_loc2_) + this.fVerticalSpacing;
-                  if(_loc1_ < this.fListHeight)
+                  _loc2_ += this.GetEntryHeight(_loc3_) + this.fVerticalSpacing;
+                  if(_loc2_ < this.fListHeight)
                   {
-                     _loc3_++;
+                     _loc4_++;
                   }
                   else
                   {
-                     _loc2_ = _loc4_;
+                     _loc3_ = _loc5_;
                   }
                }
             }
-            if(_loc2_ == int.MAX_VALUE)
+            if(_loc3_ == int.MAX_VALUE)
             {
                this.iMaxScrollPosition = 0;
             }
             else
             {
-               _loc5_ = 0;
-               _loc6_ = this._filterer.GetPrevFilterMatch(_loc2_);
-               while(_loc6_ != int.MAX_VALUE)
+               _loc6_ = 0;
+               _loc7_ = this._filterer.GetPrevFilterMatch(_loc3_);
+               while(_loc7_ != int.MAX_VALUE)
                {
-                  _loc5_++;
-                  _loc6_ = this._filterer.GetPrevFilterMatch(_loc6_);
+                  _loc6_++;
+                  _loc7_ = this._filterer.GetPrevFilterMatch(_loc7_);
                }
-               this.iMaxScrollPosition = _loc5_;
+               this.iMaxScrollPosition = _loc6_;
             }
          }
       }
@@ -993,7 +1188,7 @@ package Shared.AS3
          var _loc3_:Number = 0;
          if(_loc2_ != null)
          {
-            if(_loc2_.hasDynamicHeight)
+            if(_loc2_.hasDynamicHeight || this.textOption_Inspectable == TEXT_OPTION_MULTILINE)
             {
                this.SetEntry(_loc2_,this.EntriesA[param1]);
                if(_loc2_.Sizer_mc)
@@ -1007,7 +1202,7 @@ package Shared.AS3
             }
             else
             {
-               _loc3_ = _loc2_.defaultHeight;
+               _loc3_ = _loc2_.Sizer_mc ? _loc2_.Sizer_mc.height : _loc2_.defaultHeight;
             }
          }
          return _loc3_;
@@ -1015,19 +1210,40 @@ package Shared.AS3
       
       public function moveSelectionUp() : *
       {
-         var _loc1_:Number = NaN;
+         var _loc1_:Number = Number(NaN);
          var _loc2_:* = undefined;
          if(!this.bDisableSelection)
          {
+            _loc1_ = int.MAX_VALUE;
             if(this.selectedIndex > 0)
             {
                _loc1_ = this._filterer.GetPrevFilterMatch(this.selectedIndex);
+               if(this.bEnableScrollWrap && _loc1_ == int.MAX_VALUE)
+               {
+                  _loc1_ = this._filterer.GetPrevFilterMatch(this.EntriesA.length);
+               }
                if(_loc1_ != int.MAX_VALUE)
                {
                   this.selectedIndex = _loc1_;
                   this.bMouseDrivenNav = false;
+                  this.m_LastNavDirection = Keyboard.UP;
                   dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
                }
+            }
+            else if(this.bEnableScrollWrap)
+            {
+               _loc1_ = this._filterer.GetPrevFilterMatch(this.EntriesA.length);
+               if(_loc1_ != int.MAX_VALUE)
+               {
+                  this.selectedIndex = _loc1_;
+                  this.bMouseDrivenNav = false;
+                  this.m_LastNavDirection = Keyboard.UP;
+                  dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
+               }
+            }
+            else
+            {
+               dispatchEvent(new Event(TOP_EDGE_BOUNCE,true,true));
             }
          }
          else if(this.bAllowSelectionDisabledListNav)
@@ -1043,19 +1259,40 @@ package Shared.AS3
       
       public function moveSelectionDown() : *
       {
-         var _loc1_:Number = NaN;
+         var _loc1_:Number = Number(NaN);
          var _loc2_:* = undefined;
          if(!this.bDisableSelection)
          {
+            _loc1_ = int.MAX_VALUE;
             if(this.selectedIndex < this.EntriesA.length - 1)
             {
                _loc1_ = this._filterer.GetNextFilterMatch(this.selectedIndex);
+               if(this.bEnableScrollWrap && _loc1_ == int.MAX_VALUE)
+               {
+                  _loc1_ = this._filterer.GetNextFilterMatch(-1);
+               }
                if(_loc1_ != int.MAX_VALUE)
                {
                   this.selectedIndex = _loc1_;
                   this.bMouseDrivenNav = false;
+                  this.m_LastNavDirection = Keyboard.DOWN;
                   dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
                }
+            }
+            else if(this.bEnableScrollWrap)
+            {
+               _loc1_ = this._filterer.GetNextFilterMatch(-1);
+               if(_loc1_ != int.MAX_VALUE)
+               {
+                  this.selectedIndex = _loc1_;
+                  this.bMouseDrivenNav = false;
+                  this.m_LastNavDirection = Keyboard.DOWN;
+                  dispatchEvent(new Event(PLAY_FOCUS_SOUND,true,true));
+               }
+            }
+            else
+            {
+               dispatchEvent(new Event(BOTTOM_EDGE_BOUNCE,true,true));
             }
          }
          else if(this.bAllowSelectionDisabledListNav)
@@ -1083,20 +1320,29 @@ package Shared.AS3
       
       protected function SetEntry(param1:BSScrollingListEntry, param2:Object) : *
       {
-         if(param1 != null)
+         var aEntryClip:BSScrollingListEntry = param1;
+         var aEntryObject:Object = param2;
+         if(aEntryClip != null)
          {
-            param1.selected = param2 == this.selectedEntry;
-            param1.SetEntryText(param2,this.strTextOption);
+            aEntryClip.selected = this.bSilentSelectionMode ? false : aEntryObject == this.selectedEntry;
+            try
+            {
+               aEntryClip.SetEntryText(aEntryObject,this.strTextOption);
+            }
+            catch(e:Error)
+            {
+               trace("BSScrollingList::SetEntry -- SetEntryText error: " + e.getStackTrace());
+            }
          }
       }
       
       protected function onSetPlatform(param1:Event) : *
       {
          var _loc2_:PlatformChangeEvent = param1 as PlatformChangeEvent;
-         this.SetPlatform(_loc2_.uiPlatform,_loc2_.bPS3Switch,_loc2_.uiController);
+         this.SetPlatform(_loc2_.uiPlatform,_loc2_.bPS3Switch,_loc2_.uiController,_loc2_.uiKeyboard);
       }
       
-      public function SetPlatform(param1:uint, param2:Boolean, param3:uint) : *
+      public function SetPlatform(param1:uint, param2:Boolean, param3:uint, param4:uint) : *
       {
          this.uiPlatform = param1;
          this.uiController = this.uiController;
@@ -1105,9 +1351,9 @@ package Shared.AS3
       
       protected function createMobileScrollingList() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var _loc1_:Number = Number(NaN);
+         var _loc2_:Number = Number(NaN);
+         var _loc3_:Number = Number(NaN);
          var _loc4_:String = null;
          var _loc5_:Boolean = false;
          var _loc6_:Boolean = false;
@@ -1167,7 +1413,7 @@ package Shared.AS3
          {
             if(_loc4_ != this.iSelectedIndex)
             {
-               dispatchEvent(new Event(SELECTION_CHANGE,true,true));
+               dispatchEvent(new CustomEvent(SELECTION_CHANGE,{"navFromInput":true},true,true));
                if(this.scrollList.itemRendererLinkageId == BSScrollingListInterface.PIPBOY_MESSAGE_RENDERER_LINKAGE_ID)
                {
                   this.onItemPress();
