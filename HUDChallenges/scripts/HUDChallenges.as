@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.8";
+      public static const MOD_VERSION:String = "1.2.9";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -226,7 +226,7 @@ package
       
       private static const REGION_INITIALS:Array = ["AH","BS","CB","TF","TM","SD","SV","TV"];
       
-      private static const REGION_NAMES:Array = ["The Ash Heap","Burning Springs","Cranberry Bog","The Forest","The Mire","Savage Divide","Skyline Valley","Toxic Valley"];
+      private static const REGION_NAMES:Array = ["$REGION_ASH_HEAP","$REGION_BURNING_SPRINGS","$REGION_CRANBERRY_BOG","$REGION_THE_FOREST","$REGION_THE_MIRE","$REGION_SAVAGE_DIVIDE","$REGION_SKYLINE_VALLEY","$REGION_TOXIC_VALLEY"];
       
       private static const FISH_NAMES:Array = ["Banded Axolotl","Charcoal Axolotl","Clay Axolotl","Dotted Axolotl","Pink Axolotl","Purple Axolotl","Scaled Axolotl","Shadow Axolotl","Speckled Axolotl","Spotted Axolotl","Stone Axolotl","Striped Axolotl"];
       
@@ -1446,16 +1446,18 @@ package
       {
          if(eventType != null && eventType != "" && FILTER_EVENTS[eventType] != null)
          {
-            for each(event in _events)
+            var e:int = 0;
+            while(e < _events.length)
             {
-               if(FILTER_EVENTS[eventType] == event.type)
+               if(FILTER_EVENTS[eventType] == _events[e].type)
                {
-                  displayMessage(formatEvent(eventType,event));
-                  if(!applyEventChallengeColor(event.name))
+                  displayMessage(formatEvent(eventType,_events[e]));
+                  if(!applyEventChallengeColor(_events[e].name))
                   {
                      applyColor(eventType);
                   }
                }
+               e++;
             }
          }
       }
@@ -1547,31 +1549,14 @@ package
       
       public function setRegionsLocalized(param1:Object) : void
       {
-         if(!this.regionsLocalized && param1 && param1.data && param1.data.MarkerData && param1.data.MarkerData.length)
+         if(!REGION_LOCALIZED[0])
          {
-            for each(var markerData in this.RegionNamesData.data.MarkerData)
+            var i:int = 0;
+            while(i < REGION_NAMES.length)
             {
-               var text:String = markerData.text;
-               if(text.indexOf(">") != -1 && text.indexOf("<") != -1)
-               {
-                  var regionLocale:String = text.split(">")[1].split("<")[0];
-                  if(regionLocale)
-                  {
-                     var rsplit:Array = regionLocale.split("_");
-                     if(rsplit.length > 1)
-                     {
-                        var initials:String = rsplit[1].charAt(0) + rsplit[2].charAt(0);
-                        var match:int = int(REGION_INITIALS.indexOf(initials));
-                        REGION_LOCALIZED[REGION_INITIALS.indexOf(initials)] = GlobalFunc.LocalizeFormattedString(regionLocale);
-                     }
-                  }
-               }
+               REGION_LOCALIZED[i] = GlobalFunc.LocalizeFormattedString(REGION_NAMES[i]);
+               i++;
             }
-            this.regionsLocalized = true;
-         }
-         else if(!REGION_LOCALIZED[0])
-         {
-            REGION_LOCALIZED = REGION_NAMES;
          }
       }
       
