@@ -396,8 +396,6 @@ package
       
       private var UniversalRewardData:*;
       
-      private var RegionNamesData:*;
-      
       private var _challenges:Object;
       
       private var _events:Array;
@@ -495,7 +493,6 @@ package
          this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
-         this.RegionNamesData = BSUIDataManager.GetDataFromClient("RegionNamesData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
       }
       
@@ -1547,7 +1544,7 @@ package
          }
       }
       
-      public function setRegionsLocalized(param1:Object) : void
+      public function setRegionsLocalized() : void
       {
          if(!REGION_LOCALIZED[0])
          {
@@ -1748,7 +1745,7 @@ package
                   case "showFishingSeason":
                      if(config.fishingSeason)
                      {
-                        setRegionsLocalized(this.RegionNamesData);
+                        setRegionsLocalized();
                         setFishLocalized(this.ChallengeData);
                         var fishingNextDate:Date = GetFirstNextFirstWeekDay(2,date);
                         var fishingStartDate:Date = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
