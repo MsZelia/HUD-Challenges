@@ -124,8 +124,8 @@
 		"offsetHours": 0,
 		"hideIfNotAvailable": false,
 		"showLists": [1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16, 17,18,19,20, 21,22,23,24],
-		"availableText": "Minerva is at {location} for {time} (List{list})",
-		"notAvailableText": "Minerva will be at {location} in {time} (List{list})",
+		"availableText": "Minerva is at {location} for {time} (List {list})",
+		"notAvailableText": "Minerva will be at {location} in {time} (List {list})",
 		"locations": ["Foundation","Crater","Fort Atlas","Whitesprings"]
 	},
 	
@@ -166,6 +166,20 @@
 		//Any number of text lines can be added
 	},
 	
+	"siloCooldowns": { // Update 1.2.9
+		"debug": false,
+		"text": "Silo cooldowns: {siloCooldowns}",
+		"textSilo": "[{siloName}: {time}] ",
+		"siloNames": ["A", "B", "C"]
+	},
+	
+	"smiley": { // Update 1.2.9
+		"offsetHours": 0,
+		"hideIfVisitedThisWeek": false,
+		"notVisitedText": "Smiley not visited this week ({time} left)",
+		"visitedText": "Smiley visited this week ({gold}g {time} ago)"
+	},
+	
 	"showOnlyTrackedChallenges": { // Update 1.0.4
 		"daily": false,
 		"weekly": false,
@@ -203,6 +217,18 @@
 			"Event: Feed the People": 300,
 			"Event: Eviction Notice": 480,
 			"Event: Moonshine Jamboree": 540
+		}
+	},
+	
+	"eventSoundNotify": { // 1.2.7
+		"enabled": false,
+		"defaultSound": "BabylonUIEndGameOverseerRankGained",
+		"events": {
+			"Bounty Hunting: Head Hunt": "DLC04GauntletRaidersChantDeath",
+			"Event: Encryptid": "NPCRobotAssaultronSheepsquatchVoxBaaEyebot",
+			"Event: Eviction Notice": "QSTLC101Scream01",
+			"Event: Sinkhole Solutions": true,
+			"Event: Gearin' Up": true
 		}
 	},
 	
@@ -271,6 +297,10 @@
 	Update 1.2.3:
 	"showFishingSeason" - currently active axolotl fishing season, customize in "fishingSeason" field
 	
+	Update 1.2.9:
+	"showSmiley" - caps to gold trade with Smiley for current week, customize in "smiley" field
+	"showSiloCooldowns" - nuke silo cooldowns for current character, customize in "siloCooldowns" field
+	
 	Data will show in order in which it is listed here: */
 	"displayData": [
 		"showVersion",
@@ -291,8 +321,12 @@
 		"showFishingSeason",
 		"emptyspace:10",
 		
+		"showSmiley",
 		"showMinerva",
+		"emptyspace:10",
+		
 		"showNuclearCodes",
+		"showSiloCooldowns",
 		
 		//"showRaidXP",
 		//"showXPBar",
@@ -338,6 +372,8 @@
 	"verdantSeasonActive" and "verdantSeasonEnded" (Update 1.1.4)
 	
 	"showFishingSeason" (1.2.3)
+		
+	"showSiloCooldowns", "smileyNotVisited", "smileyVisited"  (1.2.9)
 	*/
 	"customColors":	{
 		"pink": "0xf7a0b5",
@@ -388,7 +424,12 @@
 		"verdantSeasonActive": "0xaaff77",
 		"verdantSeasonEnded": "0xff7777",
 		
-		"showFishingSeason": "0xffffff"
+		"showFishingSeason": "0xffffff",
+		
+		"showSiloCooldowns": "0xffaa55",
+		
+		"smileyNotVisited": "0xffee66",
+		"smileyVisited": "0xccaa22"
 	},
 	"customEventChallengeColors": { // Update 1.0.3
 		"gold star:": "0x66ff66",
@@ -417,6 +458,7 @@
 	"Fishing"
 	"WorkshopNoCrosshairMode"
 	"DefaultScopeMenu", "CameraScopeMenu"
+	"ExamineConfirmMode"
 	"Loading", "MainMenu"
 	
 	"All" is default HUD mode (non-power armor), not all of them */
@@ -425,7 +467,7 @@
 		"ActivateTypeMode",
 		"All",
 		"ContainerMode",
-		"InspectMode",
+		//"InspectMode",
 		"MapMenu",
 		"Pipboy",
 		"PowerArmor",
