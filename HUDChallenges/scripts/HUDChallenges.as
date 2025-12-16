@@ -249,29 +249,33 @@ package
          "y":0.65386
       }];
       
-      private const MINERVA_TIMESTAMP:Number = 1725897600;
+      private static const SMILEY_LOCALIZED:* = /(Smiley|Sonrisas|Śmieszek|Sorridente|Смайли|スマイリー|스마일리|诡异微笑|笑臉)/;
       
-      private const MINERVA_TIMESTAMP_LIST:Number = 12;
+      private static const SMILEY_TIMESTAMP:* = 1765767600;
       
-      private const SECONDS_IN_DAY:Number = 86400;
+      private static const MINERVA_TIMESTAMP:Number = 1725897600;
       
-      private const SECONDS_IN_WEEK:Number = 604800;
+      private static const MINERVA_TIMESTAMP_LIST:Number = 12;
       
-      private const SECONDS_IN_3_HOURS:Number = 10800;
+      private static const SECONDS_IN_DAY:Number = 86400;
       
-      private const SECONDS_IN_16_HOURS:Number = 57600;
+      private static const SECONDS_IN_WEEK:Number = 604800;
       
-      private const NUCLEAR_CODES_TIMESTAMP:Number = 1756944000;
+      private static const SECONDS_IN_3_HOURS:Number = 10800;
       
-      private const NUCLEAR_CODE:String = "541637043868811082732426759596495180575192177003190806867939409095473432331647559379360282810778955094715401111443821877916779364691188767941208455967179302025258814269177276827044468110327695103227736576310606400062697672011770547250771475542781784820187394508710628512203928480953520316121881244759217576230732515712821527170860849743383566941210521004030650247271357653739560950161553533035599790677901611816224935501489675767275314376925939786868368012821523123380706842763574955196113891651635036316223724782766254835288444104281553097772821648870563775422057503886394594102506014586374243351039404134580027461199236061903031218888719855527099941619644470636930406084300073370389262887831524870850600071317464224746158610523237625148760102369691000588753006715856385632986324143220526823172149341694997969441377674392568367817123764754380474534236837041387550556910676818592042632824753645717497075391179264053382463838145910561398408079133733215794908016006424983771496054605999511198577971550861719616682197346244081513184600679211054558936209425207196942090930903400898406659852492920791672676850102212076908994429639159931812270360855722162113257066671209529160686528387147275610606607843847076129070436818626587989650402606629849601530614";
+      private static const SECONDS_IN_16_HOURS:Number = 57600;
       
-      private const NUCLEAR_CODE_COMBINATIONS:int = 99999999;
+      private static const NUCLEAR_CODES_TIMESTAMP:Number = 1756944000;
       
-      private const VERDANT_SEASON_BEGIN:* = /It's a verdant season in .*! Enjoy the abundance!/;
+      private static const NUCLEAR_CODE:String = "541637043868811082732426759596495180575192177003190806867939409095473432331647559379360282810778955094715401111443821877916779364691188767941208455967179302025258814269177276827044468110327695103227736576310606400062697672011770547250771475542781784820187394508710628512203928480953520316121881244759217576230732515712821527170860849743383566941210521004030650247271357653739560950161553533035599790677901611816224935501489675767275314376925939786868368012821523123380706842763574955196113891651635036316223724782766254835288444104281553097772821648870563775422057503886394594102506014586374243351039404134580027461199236061903031218888719855527099941619644470636930406084300073370389262887831524870850600071317464224746158610523237625148760102369691000588753006715856385632986324143220526823172149341694997969441377674392568367817123764754380474534236837041387550556910676818592042632824753645717497075391179264053382463838145910561398408079133733215794908016006424983771496054605999511198577971550861719616682197346244081513184600679211054558936209425207196942090930903400898406659852492920791672676850102212076908994429639159931812270360855722162113257066671209529160686528387147275610606607843847076129070436818626587989650402606629849601530614";
       
-      private const VERDANT_SEASON_END:* = /The verdant season in .* has ended./;
+      private static const NUCLEAR_CODE_COMBINATIONS:int = 99999999;
       
-      private const VERDANT_SEASON_BEGIN_LOCALIZED:* = {
+      private static const VERDANT_SEASON_BEGIN:* = /It's a verdant season in .*! Enjoy the abundance!/;
+      
+      private static const VERDANT_SEASON_END:* = /The verdant season in .* has ended./;
+      
+      private static const VERDANT_SEASON_BEGIN_LOCALIZED:* = {
          "en":/It's a verdant season in .*! Enjoy the abundance!/,
          "es":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
          "esmx":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
@@ -287,7 +291,7 @@ package
          "zhhant":/.*已經到了繁茂季節！好好享受這片富饒吧！/
       };
       
-      private const VERDANT_SEASON_END_LOCALIZED:* = {
+      private static const VERDANT_SEASON_END_LOCALIZED:* = {
          "en":/The verdant season in .* has ended./,
          "es":/Ha terminado la temporada verde en .*./,
          "esmx":/Terminó la temporada verde en .*./,
@@ -303,7 +307,7 @@ package
          "zhhant":/.*的繁茂季節結束了。/
       };
       
-      private const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
+      private static const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
       
       private var FISHING_SEASONS:Array = [{
          "month":0,
@@ -513,6 +517,8 @@ package
       
       private var nukeTouchdownTimeStarted:Number = 0;
       
+      private var isInConversationWithSmiley:Boolean = false;
+      
       public function HUDChallenges()
       {
          super();
@@ -529,6 +535,7 @@ package
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
+         BSUIDataManager.Subscribe("DialogueData",this.onDialogueUpdate);
       }
       
       public static function toString(param1:Object) : String
@@ -871,6 +878,41 @@ package
          }
       }
       
+      private function onDialogueUpdate(event:FromClientDataEvent) : void
+      {
+         try
+         {
+            if(event.data && event.data.speakerName != null)
+            {
+               if(SMILEY_LOCALIZED.test(event.data.speakerName))
+               {
+                  this.isInConversationWithSmiley = true;
+               }
+               else if(this.isInConversationWithSmiley)
+               {
+                  this.isInConversationWithSmiley = false;
+                  if(!this.challengesFileData)
+                  {
+                     this.challengesFileData = {};
+                  }
+                  if(!this.challengesFileData.smileyTrades)
+                  {
+                     this.challengesFileData.smileyTrades = {};
+                  }
+                  this.challengesFileData.smileyTrades[characterName] = new Date().getTime() / 1000;
+                  if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
+                  {
+                     this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
+                  }
+               }
+            }
+         }
+         catch(e:*)
+         {
+            ShowHUDMessage("onDialogueUpdate error: " + e);
+         }
+      }
+      
       private function onMessageEvent(event:FromClientDataEvent) : void
       {
          var messageData:*;
@@ -1035,7 +1077,6 @@ package
       public function loadChallengesData() : void
       {
          var loaderComplete:Function;
-         var ioErrorHandler:Function;
          var url:URLRequest = null;
          var loader:URLLoader = null;
          try
@@ -1049,22 +1090,17 @@ package
                }
                catch(e:Error)
                {
-                  ShowHUDMessage("Error parsing challenges file: " + e);
+                  ShowHUDMessage("Error parsing challenges data file: " + e);
                }
-            };
-            ioErrorHandler = function(param1:*):void
-            {
-               ShowHUDMessage("Error loading challenges file: " + param1.text);
             };
             url = new URLRequest(CHALLENGES_DATA_FILE);
             loader = new URLLoader();
             loader.load(url);
             loader.addEventListener(Event.COMPLETE,loaderComplete,false,0,true);
-            loader.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler,false,0,true);
          }
          catch(e:Error)
          {
-            ShowHUDMessage("Error loading challenges file: " + e);
+            ShowHUDMessage("Error loading challenges data file: " + e);
          }
       }
       
@@ -2142,6 +2178,24 @@ package
                         if(siloCooldowns)
                         {
                            splitDisplayLine(config.siloCooldowns.text.replace(STRING_SILO_COOLDOWNS,siloCooldowns),dataField);
+                        }
+                     }
+                     break;
+                  case "showSmiley":
+                     if(this.challengesFileData && this.challengesFileData.smileyTrades)
+                     {
+                        utcWithOffset = utcSeconds + config.smiley.offsetHours * 3600;
+                        timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
+                        timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
+                        thisWeekMondayTimestamp = utcWithOffset - timeThisWeek;
+                        var lastTradeTimestamp:Number = this.challengesFileData.smileyTrades[characterName] != null ? Number(this.challengesFileData.smileyTrades[characterName]) : 0;
+                        if(thisWeekMondayTimestamp > lastTradeTimestamp)
+                        {
+                           splitDisplayLine(config.smiley.availableText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyAvailable");
+                        }
+                        else if(!config.smiley.hideIfTradedThisWeek)
+                        {
+                           splitDisplayLine(config.smiley.notAvailableText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)),"smileyNotAvailable");
                         }
                      }
                      break;
