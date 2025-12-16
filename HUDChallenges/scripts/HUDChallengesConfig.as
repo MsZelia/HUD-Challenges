@@ -375,14 +375,14 @@ package
          {
             config.smiley = {};
             config.smiley.offsetHours = 0;
-            config.smiley.hideIfTradedThisWeek = false;
+            config.smiley.hideIfVisitedThisWeek = false;
             config.smiley.visitedText = DEFAULT_SMILEY_VISITED_FORMAT;
             config.smiley.notVisitedText = DEFAULT_SMILEY_NOT_VISITED_FORMAT;
          }
          else
          {
             config.smiley.offsetHours = Parser.parseNumber(config.smiley.offsetHours,0);
-            config.smiley.hideIfTradedThisWeek = Boolean(config.smiley.hideIfTradedThisWeek);
+            config.smiley.hideIfVisitedThisWeek = Boolean(config.smiley.hideIfVisitedThisWeek);
             config.smiley.visitedText = Boolean(config.smiley.visitedText) ? config.smiley.visitedText : DEFAULT_SMILEY_VISITED_FORMAT;
             config.smiley.notVisitedText = Boolean(config.smiley.notVisitedText) ? config.smiley.notVisitedText : DEFAULT_SMILEY_NOT_VISITED_FORMAT;
          }

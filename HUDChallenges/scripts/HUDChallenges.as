@@ -2193,7 +2193,7 @@ package
                         {
                            splitDisplayLine(config.smiley.notVisitedText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyNotVisited");
                         }
-                        else if(!config.smiley.hideIfTradedThisWeek)
+                        else if(!config.smiley.hideIfVisitedThisWeek)
                         {
                            splitDisplayLine(config.smiley.visitedText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)),"smileyVisited");
                         }
