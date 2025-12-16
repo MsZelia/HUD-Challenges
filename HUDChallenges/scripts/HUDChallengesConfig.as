@@ -65,7 +65,7 @@ package
       
       public static const DEFAULT_SILO_NAMES:Array = ["A","B","C"];
       
-      public static const DEFAULT_SMILEY_VISITED_FORMAT:* = "Smiley visited this week ({time} ago)";
+      public static const DEFAULT_SMILEY_VISITED_FORMAT:* = "Smiley visited this week ({gold}g {time} ago)";
       
       public static const DEFAULT_SMILEY_NOT_VISITED_FORMAT:* = "Smiley not visited this week ({time} left)";
       

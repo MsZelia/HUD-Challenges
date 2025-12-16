@@ -139,6 +139,8 @@ package
       
       private static const STRING_SILO_COOLDOWNS:String = "{siloCooldowns}";
       
+      private static const STRING_GOLD:String = "{gold}";
+      
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
       private static const MAIN_MENU:String = "MainMenu";
@@ -251,7 +253,9 @@ package
       
       private static const SMILEY_LOCALIZED:* = /(Smiley|Sonrisas|Śmieszek|Sorridente|Смайли|スマイリー|스마일리|诡异微笑|笑臉)/;
       
-      private static const SMILEY_TIMESTAMP:* = 1765767600;
+      private static const SMILEY_TIMESTAMP:Number = 1765767600;
+      
+      private static const CURRENCY_TYPE_GOLD_BULLION:uint = 4;
       
       private static const MINERVA_TIMESTAMP:Number = 1725897600;
       
@@ -518,6 +522,8 @@ package
       private var nukeTouchdownTimeStarted:Number = 0;
       
       private var isInConversationWithSmiley:Boolean = false;
+      
+      private var goldBeforeConversationWithSmiley:int = 0;
       
       public function HUDChallenges()
       {
@@ -886,23 +892,35 @@ package
             {
                if(SMILEY_LOCALIZED.test(event.data.speakerName))
                {
-                  this.isInConversationWithSmiley = true;
+                  if(!this.isInConversationWithSmiley)
+                  {
+                     this.isInConversationWithSmiley = true;
+                     this.goldBeforeConversationWithSmiley = this.goldBullion;
+                  }
                }
                else if(this.isInConversationWithSmiley)
                {
                   this.isInConversationWithSmiley = false;
-                  if(!this.challengesFileData)
+                  if(this.goldBeforeConversationWithSmiley != this.goldBullion)
                   {
-                     this.challengesFileData = {};
-                  }
-                  if(!this.challengesFileData.smileyTrades)
-                  {
-                     this.challengesFileData.smileyTrades = {};
-                  }
-                  this.challengesFileData.smileyTrades[characterName] = new Date().getTime() / 1000;
-                  if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
-                  {
-                     this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
+                     if(!this.challengesFileData)
+                     {
+                        this.challengesFileData = {};
+                     }
+                     if(!this.challengesFileData.smileyTrades)
+                     {
+                        this.challengesFileData.smileyTrades = {};
+                     }
+                     if(!this.challengesFileData.smileyTrades[characterName])
+                     {
+                        this.challengesFileData.smileyTrades[characterName] = {};
+                     }
+                     this.challengesFileData.smileyTrades[characterName].time = new Date().getTime() / 1000;
+                     this.challengesFileData.smileyTrades[characterName].gold = this.goldBullion - this.goldBeforeConversationWithSmiley;
+                     if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
+                     {
+                        this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
+                     }
                   }
                }
             }
@@ -1149,6 +1167,23 @@ package
       public function get characterName() : String
       {
          return this.CharacterInfoData.data.name;
+      }
+      
+      public function get goldBullion() : int
+      {
+         if(this.CharacterInfoData.data && this.CharacterInfoData.data.currencies)
+         {
+            var i:int = 0;
+            while(i < this.CharacterInfoData.data.currencies.length)
+            {
+               if(this.CharacterInfoData.data.currencies[i].currencyType == CURRENCY_TYPE_GOLD_BULLION)
+               {
+                  return this.CharacterInfoData.data.currencies[i].currencyAmount;
+               }
+               i++;
+            }
+         }
+         return 0;
       }
       
       private function onChallengeDataUpdate(param1:*) : void
@@ -2188,14 +2223,15 @@ package
                         timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
                         timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
                         thisWeekMondayTimestamp = utcWithOffset - timeThisWeek;
-                        var lastTradeTimestamp:Number = this.challengesFileData.smileyTrades[characterName] != null ? Number(this.challengesFileData.smileyTrades[characterName]) : 0;
+                        var lastTradeTimestamp:Number = this.challengesFileData.smileyTrades[characterName] != null ? Number(this.challengesFileData.smileyTrades[characterName].time) : 0;
+                        var gold:int = int(this.challengesFileData.smileyTrades[characterName] != null ? this.challengesFileData.smileyTrades[characterName].gold : 0);
                         if(thisWeekMondayTimestamp > lastTradeTimestamp)
                         {
                            splitDisplayLine(config.smiley.notVisitedText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyNotVisited");
                         }
                         else if(!config.smiley.hideIfVisitedThisWeek)
                         {
-                           splitDisplayLine(config.smiley.visitedText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)),"smileyVisited");
+                           splitDisplayLine(config.smiley.visitedText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)).replace(STRING_GOLD,gold),"smileyVisited");
                         }
                      }
                      break;
