@@ -2191,11 +2191,11 @@ package
                         var lastTradeTimestamp:Number = this.challengesFileData.smileyTrades[characterName] != null ? Number(this.challengesFileData.smileyTrades[characterName]) : 0;
                         if(thisWeekMondayTimestamp > lastTradeTimestamp)
                         {
-                           splitDisplayLine(config.smiley.availableText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyAvailable");
+                           splitDisplayLine(config.smiley.notVisitedText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyNotVisited");
                         }
                         else if(!config.smiley.hideIfTradedThisWeek)
                         {
-                           splitDisplayLine(config.smiley.notAvailableText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)),"smileyNotAvailable");
+                           splitDisplayLine(config.smiley.visitedText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)),"smileyVisited");
                         }
                      }
                      break;

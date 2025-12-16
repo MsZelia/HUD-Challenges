@@ -65,6 +65,10 @@ package
       
       public static const DEFAULT_SILO_NAMES:Array = ["A","B","C"];
       
+      public static const DEFAULT_SMILEY_VISITED_FORMAT:* = "Smiley visited this week ({time} ago)";
+      
+      public static const DEFAULT_SMILEY_NOT_VISITED_FORMAT:* = "Smiley not visited this week ({time} left)";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -366,6 +370,21 @@ package
             config.siloCooldowns.text = Boolean(config.siloCooldowns.text) ? config.siloCooldowns.text : DEFAULT_SILO_COOLDOWNS_FORMAT;
             config.siloCooldowns.textSilo = Boolean(config.siloCooldowns.textSilo) ? config.siloCooldowns.textSilo : DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
             config.siloCooldowns.siloNames = Boolean(config.siloCooldowns.siloNames) && config.siloCooldowns.siloNames.length == 3 ? config.siloCooldowns.siloNames : DEFAULT_SILO_NAMES;
+         }
+         if(!config.smiley)
+         {
+            config.smiley = {};
+            config.smiley.offsetHours = 0;
+            config.smiley.hideIfTradedThisWeek = false;
+            config.smiley.visitedText = DEFAULT_SMILEY_VISITED_FORMAT;
+            config.smiley.notVisitedText = DEFAULT_SMILEY_NOT_VISITED_FORMAT;
+         }
+         else
+         {
+            config.smiley.offsetHours = Parser.parseNumber(config.smiley.offsetHours,0);
+            config.smiley.hideIfTradedThisWeek = Boolean(config.smiley.hideIfTradedThisWeek);
+            config.smiley.visitedText = Boolean(config.smiley.visitedText) ? config.smiley.visitedText : DEFAULT_SMILEY_VISITED_FORMAT;
+            config.smiley.notVisitedText = Boolean(config.smiley.notVisitedText) ? config.smiley.notVisitedText : DEFAULT_SMILEY_NOT_VISITED_FORMAT;
          }
          if(!config.showOnlyTrackedChallenges)
          {
