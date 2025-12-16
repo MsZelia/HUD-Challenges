@@ -29,6 +29,8 @@ package
       
       public static const CONFIG_FILE:String = "../HUDChallenges.json";
       
+      public static const CHALLENGES_DATA_FILE:String = "../ChallengeData.ini";
+      
       public static const CONFIG_RELOAD_TIME:uint = 10100;
       
       private static const DATA_SEPARATOR:String = "separator";
@@ -133,6 +135,10 @@ package
       
       private static const STRING_END_TIME:String = "{endTime}";
       
+      private static const STRING_SILO_NAME:String = "{siloName}";
+      
+      private static const STRING_SILO_COOLDOWNS:String = "{siloCooldowns}";
+      
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
       private static const MAIN_MENU:String = "MainMenu";
@@ -230,6 +236,19 @@ package
       
       private static const FISH_NAMES:Array = ["Banded Axolotl","Charcoal Axolotl","Clay Axolotl","Dotted Axolotl","Pink Axolotl","Purple Axolotl","Scaled Axolotl","Shadow Axolotl","Speckled Axolotl","Spotted Axolotl","Stone Axolotl","Striped Axolotl"];
       
+      private static const QUEST_ID_DEATH_FROM_ABOVE:uint = 2953065;
+      
+      private static const SILO_POSITIONS:Array = [{
+         "x":0.711506,
+         "y":0.446575
+      },{
+         "x":0.63562,
+         "y":0.143979
+      },{
+         "x":0.552305,
+         "y":0.65386
+      }];
+      
       private const MINERVA_TIMESTAMP:Number = 1725897600;
       
       private const MINERVA_TIMESTAMP_LIST:Number = 12;
@@ -237,6 +256,8 @@ package
       private const SECONDS_IN_DAY:Number = 86400;
       
       private const SECONDS_IN_WEEK:Number = 604800;
+      
+      private const SECONDS_IN_3_HOURS:Number = 10800;
       
       private const SECONDS_IN_16_HOURS:Number = 57600;
       
@@ -378,6 +399,8 @@ package
       
       private var lastConfig:String;
       
+      private var challengesFileData:Object = null;
+      
       private var HUDModeData:*;
       
       private var AccountInfoData:*;
@@ -480,6 +503,16 @@ package
       
       private var regionsLocalized:Boolean = false;
       
+      private var inTargetingMode:Boolean = false;
+      
+      private var lastTargetingModeEnded:Number = 0;
+      
+      private var isInSilo:int = -1;
+      
+      private var isDeathFromAboveActive:Boolean = false;
+      
+      private var nukeTouchdownTimeStarted:Number = 0;
+      
       public function HUDChallenges()
       {
          super();
@@ -494,6 +527,8 @@ package
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
+         BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
+         BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
       }
       
       public static function toString(param1:Object) : String
@@ -729,6 +764,113 @@ package
          }
       }
       
+      private function onMapMenuUpdate(event:FromClientDataEvent) : void
+      {
+         var i:int;
+         var j:int;
+         var xDiff:Number;
+         var yDiff:Number;
+         var distance:int;
+         try
+         {
+            if(event.data && event.data.inTargetingMode != null)
+            {
+               if(this.inTargetingMode && !event.data.inTargetingMode)
+               {
+                  this.lastTargetingModeEnded = new Date().getTime() / 1000;
+                  i = 0;
+                  while(i < event.data.MarkerData.length)
+                  {
+                     if(!event.data.MarkerData[i].text && event.data.MarkerData[i].markerType == "PlayerLocal")
+                     {
+                        j = 0;
+                        while(j < SILO_POSITIONS.length)
+                        {
+                           xDiff = event.data.MarkerData[i].x - SILO_POSITIONS[j].x;
+                           yDiff = event.data.MarkerData[i].y - SILO_POSITIONS[j].y;
+                           distance = int(Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2)) * 4096);
+                           if(distance < 20)
+                           {
+                              this.isInSilo = j;
+                              break;
+                           }
+                           j++;
+                        }
+                        if(j == SILO_POSITIONS.length)
+                        {
+                           this.isInSilo = -1;
+                        }
+                        break;
+                     }
+                     i++;
+                  }
+               }
+               this.inTargetingMode = event.data.inTargetingMode;
+            }
+         }
+         catch(e:*)
+         {
+            ShowHUDMessage("onMapMenuUpdate error: " + e);
+         }
+      }
+      
+      private function onQuestTrackerUpdate(event:FromClientDataEvent) : void
+      {
+         var i:int;
+         var quests:Array;
+         var nukeTouchdownTimeDelta:int;
+         try
+         {
+            if(event.data && event.data.quests && event.data.quests.length)
+            {
+               i = 0;
+               quests = event.data.quests;
+               while(i < quests.length)
+               {
+                  if(quests[i].questId == QUEST_ID_DEATH_FROM_ABOVE)
+                  {
+                     if(!this.isDeathFromAboveActive)
+                     {
+                        this.isDeathFromAboveActive = true;
+                        nukeTouchdownTimeDelta = 180 - quests[i].objectives[0].timer.total_time;
+                        this.nukeTouchdownTimeStarted = new Date().getTime() / 1000 - nukeTouchdownTimeDelta;
+                        if(this.isInSilo != -1 && this.nukeTouchdownTimeStarted - this.lastTargetingModeEnded < 45)
+                        {
+                           if(!this.challengesFileData)
+                           {
+                              this.challengesFileData = {};
+                           }
+                           if(!this.challengesFileData.siloCooldowns)
+                           {
+                              this.challengesFileData.siloCooldowns = {};
+                           }
+                           if(!this.challengesFileData.siloCooldowns[characterName])
+                           {
+                              this.challengesFileData.siloCooldowns[characterName] = {};
+                           }
+                           this.challengesFileData.siloCooldowns[characterName][isInSilo] = this.lastTargetingModeEnded;
+                           if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
+                           {
+                              this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
+                           }
+                        }
+                     }
+                     break;
+                  }
+                  i++;
+               }
+               if(i == quests.length)
+               {
+                  this.isDeathFromAboveActive = false;
+               }
+            }
+         }
+         catch(e:*)
+         {
+            ShowHUDMessage("onQuestTrackerUpdate error: " + e);
+         }
+      }
+      
       private function onMessageEvent(event:FromClientDataEvent) : void
       {
          var messageData:*;
@@ -884,6 +1026,46 @@ package
          {
             ShowHUDMessage("Error loading config: " + e);
          }
+         if(!this.challengesFileData)
+         {
+            this.loadChallengesData();
+         }
+      }
+      
+      public function loadChallengesData() : void
+      {
+         var loaderComplete:Function;
+         var ioErrorHandler:Function;
+         var url:URLRequest = null;
+         var loader:URLLoader = null;
+         try
+         {
+            loaderComplete = function(param1:Event):void
+            {
+               var jsonData:Object;
+               try
+               {
+                  challengesFileData = new JSONDecoder(loader.data,true).getValue();
+               }
+               catch(e:Error)
+               {
+                  ShowHUDMessage("Error parsing challenges file: " + e);
+               }
+            };
+            ioErrorHandler = function(param1:*):void
+            {
+               ShowHUDMessage("Error loading challenges file: " + param1.text);
+            };
+            url = new URLRequest(CHALLENGES_DATA_FILE);
+            loader = new URLLoader();
+            loader.load(url);
+            loader.addEventListener(Event.COMPLETE,loaderComplete,false,0,true);
+            loader.addEventListener(IOErrorEvent.IO_ERROR,ioErrorHandler,false,0,true);
+         }
+         catch(e:Error)
+         {
+            ShowHUDMessage("Error loading challenges file: " + e);
+         }
       }
       
       private function initTextField() : void
@@ -926,6 +1108,11 @@ package
       public function get requiredLevelUpXP() : int
       {
          return Math.min(this.CharacterInfoData.data.level,999) * 160 + 40;
+      }
+      
+      public function get characterName() : String
+      {
+         return this.CharacterInfoData.data.name;
       }
       
       private function onChallengeDataUpdate(param1:*) : void
@@ -1932,6 +2119,30 @@ package
                               applyColor(dataField);
                            }
                            i++;
+                        }
+                     }
+                     break;
+                  case "showSiloCooldowns":
+                     if(this.challengesFileData && this.challengesFileData.siloCooldowns && this.challengesFileData.siloCooldowns[characterName])
+                     {
+                        if(config.siloCooldowns.debug)
+                        {
+                           displayMessage("TargetingMode (silo " + (this.isInSilo > -1 ? this.isInSilo + 1 : "?") + "): " + this.inTargetingMode + " / " + int(utcSeconds - this.lastTargetingModeEnded));
+                           displayMessage("Last launch: " + int(utcSeconds - this.nukeTouchdownTimeStarted));
+                        }
+                        var siloCooldowns:String = "";
+                        for(state in this.challengesFileData.siloCooldowns[characterName])
+                        {
+                           var leftCooldown:Number = SECONDS_IN_3_HOURS - (utcSeconds - this.challengesFileData.siloCooldowns[characterName][state]);
+                           if(leftCooldown >= 0)
+                           {
+                              siloCooldowns += config.siloCooldowns.textSilo.replace(STRING_SILO_NAME,config.siloCooldowns.siloNames[int(state)]).replace(STRING_TIME,FormatTimeStringCustom(leftCooldown));
+                           }
+                        }
+                        if(siloCooldowns)
+                        {
+                           displayMessage(config.siloCooldowns.text.replace(STRING_SILO_COOLDOWNS,siloCooldowns));
+                           applyColor(dataField);
                         }
                      }
                      break;
