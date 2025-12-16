@@ -2141,8 +2141,7 @@ package
                         }
                         if(siloCooldowns)
                         {
-                           displayMessage(config.siloCooldowns.text.replace(STRING_SILO_COOLDOWNS,siloCooldowns));
-                           applyColor(dataField);
+                           splitDisplayLine(config.siloCooldowns.text.replace(STRING_SILO_COOLDOWNS,siloCooldowns),dataField);
                         }
                      }
                      break;

@@ -59,6 +59,12 @@ package
       
       public static const DEFAULT_EVENT_NOTIFY_SOUND:String = "BabylonUIEndGameOverseerRankGained";
       
+      public static const DEFAULT_SILO_COOLDOWNS_FORMAT:String = "Silo cooldowns: {siloCooldowns}";
+      
+      public static const DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT:String = "[{siloName}: {time}] ";
+      
+      public static const DEFAULT_SILO_NAMES:Array = ["A","B","C"];
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -347,6 +353,19 @@ package
             config.fishingSeason.offsetHours = Parser.parseNumber(config.fishingSeason.offsetHours,0);
             config.fishingSeason.caught = Boolean(config.fishingSeason.caught) && config.fishingSeason.caught.length == 2 ? config.fishingSeason.caught : DEFAULT_FISHING_SEASON_CAUGHT;
             config.fishingSeason.hideIfCaught = Boolean(config.fishingSeason.hideIfCaught);
+         }
+         if(!config.siloCooldowns)
+         {
+            config.siloCooldowns = {};
+            config.siloCooldowns.text = DEFAULT_SILO_COOLDOWNS_FORMAT;
+            config.siloCooldowns.textSilo = DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
+            config.siloCooldowns.siloNames = DEFAULT_SILO_NAMES;
+         }
+         else
+         {
+            config.siloCooldowns.text = Boolean(config.siloCooldowns.text) ? config.siloCooldowns.text : DEFAULT_SILO_COOLDOWNS_FORMAT;
+            config.siloCooldowns.textSilo = Boolean(config.siloCooldowns.textSilo) ? config.siloCooldowns.textSilo : DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
+            config.siloCooldowns.siloNames = Boolean(config.siloCooldowns.siloNames) && config.siloCooldowns.siloNames.length == 3 ? config.siloCooldowns.siloNames : DEFAULT_SILO_NAMES;
          }
          if(!config.showOnlyTrackedChallenges)
          {
