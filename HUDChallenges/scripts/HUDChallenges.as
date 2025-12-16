@@ -862,7 +862,7 @@ package
                               this.challengesFileData.siloCooldowns[characterName] = {};
                            }
                            this.challengesFileData.siloCooldowns[characterName][isInSilo] = this.lastTargetingModeEnded;
-                           if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
+                           if(this.isSFEDefined)
                            {
                               this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
                            }
@@ -917,7 +917,7 @@ package
                      }
                      this.challengesFileData.smileyTrades[characterName].time = new Date().getTime() / 1000;
                      this.challengesFileData.smileyTrades[characterName].gold = this.goldBullion - this.goldBeforeConversationWithSmiley;
-                     if(this.topLevel.__SFCodeObj && this.topLevel.__SFCodeObj.call)
+                     if(this.isSFEDefined)
                      {
                         this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
                      }
@@ -1137,6 +1137,11 @@ package
          this.displayTimer = new Timer(config.refresh);
          this.displayTimer.addEventListener(TimerEvent.TIMER,this.displayChallengesLoop,false,0,true);
          this.displayTimer.start();
+      }
+      
+      public function get isSFEDefined() : Boolean
+      {
+         return this.topLevel.__SFCodeObj != null && this.topLevel.__SFCodeObj.call != null;
       }
       
       public function get isReloadable() : Boolean
@@ -2194,7 +2199,7 @@ package
                      }
                      break;
                   case "showSiloCooldowns":
-                     if(this.challengesFileData && this.challengesFileData.siloCooldowns && this.challengesFileData.siloCooldowns[characterName])
+                     if(this.isSFEDefined && this.challengesFileData && this.challengesFileData.siloCooldowns && this.challengesFileData.siloCooldowns[characterName])
                      {
                         if(config.siloCooldowns.debug)
                         {
@@ -2217,7 +2222,7 @@ package
                      }
                      break;
                   case "showSmiley":
-                     if(this.challengesFileData && this.challengesFileData.smileyTrades)
+                     if(this.isSFEDefined && this.challengesFileData && this.challengesFileData.smileyTrades)
                      {
                         utcWithOffset = utcSeconds + config.smiley.offsetHours * 3600;
                         timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
