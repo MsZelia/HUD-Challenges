@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.2.9";
+      public static const MOD_VERSION:String = "1.3.0";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -32,6 +32,8 @@ package
       public static const CHALLENGES_DATA_FILE:String = "../ChallengeData.ini";
       
       public static const CONFIG_RELOAD_TIME:uint = 10100;
+      
+      public static const DATA_RELOAD_TIME:uint = 30000;
       
       private static const DATA_SEPARATOR:String = "separator";
       
@@ -403,9 +405,13 @@ package
       
       private var configTimer:Timer;
       
+      private var dataTimer:Timer;
+      
       private var displayTimer:Timer;
       
       private var lastConfig:String;
+      
+      private var lastData:String;
       
       private var challengesFileData:Object = null;
       
@@ -625,6 +631,7 @@ package
             }
             this.initConfigTimer();
             this.loadConfig();
+            this.loadChallengesData();
             trace(MOD_NAME + " added to stage: " + getQualifiedClassName(this.topLevel));
          }
          else
@@ -648,6 +655,10 @@ package
          {
             this.configTimer.removeEventListener(TimerEvent.TIMER,this.loadConfig);
          }
+         if(this.dataTimer)
+         {
+            this.dataTimer.removeEventListener(TimerEvent.TIMER,this.loadChallengesData);
+         }
          if(this.displayTimer)
          {
             this.displayTimer.removeEventListener(TimerEvent.TIMER,this.displayChallengesLoop);
@@ -663,6 +674,9 @@ package
          this.configTimer = new Timer(CONFIG_RELOAD_TIME);
          this.configTimer.addEventListener(TimerEvent.TIMER,this.loadConfig,false,0,true);
          this.configTimer.start();
+         this.dataTimer = new Timer(DATA_RELOAD_TIME);
+         this.dataTimer.addEventListener(TimerEvent.TIMER,this.loadChallengesData,false,0,true);
+         this.dataTimer.start();
       }
       
       public function onBuildMenu(parentItem:String = null) : *
@@ -861,7 +875,7 @@ package
                            {
                               this.challengesFileData.siloCooldowns[characterName] = {};
                            }
-                           this.challengesFileData.siloCooldowns[characterName][isInSilo] = this.lastTargetingModeEnded;
+                           this.challengesFileData.siloCooldowns[characterName][isInSilo] = Math.floor(this.lastTargetingModeEnded);
                            if(this.isSFEDefined)
                            {
                               this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
@@ -915,7 +929,7 @@ package
                      {
                         this.challengesFileData.smileyTrades[characterName] = {};
                      }
-                     this.challengesFileData.smileyTrades[characterName].time = new Date().getTime() / 1000;
+                     this.challengesFileData.smileyTrades[characterName].time = Math.floor(new Date().getTime() / 1000);
                      this.challengesFileData.smileyTrades[characterName].gold = this.goldBullion - this.goldBeforeConversationWithSmiley;
                      if(this.isSFEDefined)
                      {
@@ -1086,10 +1100,6 @@ package
          {
             ShowHUDMessage("Error loading config: " + e);
          }
-         if(!this.challengesFileData)
-         {
-            this.loadChallengesData();
-         }
       }
       
       public function loadChallengesData() : void
@@ -1104,7 +1114,11 @@ package
                var jsonData:Object;
                try
                {
-                  challengesFileData = new JSONDecoder(loader.data,true).getValue();
+                  if(lastData != loader.data)
+                  {
+                     challengesFileData = new JSONDecoder(loader.data,true).getValue();
+                     lastData = loader.data;
+                  }
                }
                catch(e:Error)
                {
@@ -2222,7 +2236,7 @@ package
                      }
                      break;
                   case "showSmiley":
-                     if(this.isSFEDefined && this.challengesFileData && this.challengesFileData.smileyTrades)
+                     if(this.challengesFileData && this.challengesFileData.smileyTrades)
                      {
                         utcWithOffset = utcSeconds + config.smiley.offsetHours * 3600;
                         timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
