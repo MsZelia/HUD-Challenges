@@ -255,7 +255,7 @@ package
       
       private static const SMILEY_LOCALIZED:* = /(Smiley|Sonrisas|Śmieszek|Sorridente|Смайли|スマイリー|스마일리|诡异微笑|笑臉)/;
       
-      private static const SMILEY_TIMESTAMP:Number = 1765771200;
+      private static const SMILEY_TIMESTAMP:Number = 1766361600;
       
       private static const CURRENCY_TYPE_GOLD_BULLION:uint = 4;
       
