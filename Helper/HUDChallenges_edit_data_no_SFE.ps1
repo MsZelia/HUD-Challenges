@@ -1,3 +1,9 @@
+# Run file by right-clicking and selecting "Run with PowerShell"
+
+# Used to manually update HUDChallenges time stamps when SFE saving is not possible
+# Can update Smiley trade time, for "showSmiley", and silo cooldown timers, for "showSiloCooldowns"
+
+
 $dataFile = ".\ChallengeData.ini"
 
 while(1)
