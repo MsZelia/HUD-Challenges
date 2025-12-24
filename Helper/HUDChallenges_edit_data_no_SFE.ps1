@@ -33,7 +33,7 @@ while(1)
 	Write-Host
 
 
-	# Set property name to update based on used input
+	# Set property name to update based on user input
 	if($updateChoice -eq 1)
 	{
 		Write-Host "Update silo cooldown for which character?"
@@ -56,6 +56,14 @@ while(1)
 		continue
 	}
 
+
+	# Check if selected property exists and create default value if not
+	if(-not ([bool]($jsonObject.PSobject.Properties.name -match $updateProp)))
+	{
+		$dummyObj = [pscustomobject]@{}
+		$jsonObject | Add-Member -MemberType NoteProperty -Name $updateProp -Value $dummyObj
+	}
+	
 
 	# List character names to update selected property for
 	$updateName = ""
