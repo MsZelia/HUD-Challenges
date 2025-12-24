@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.3.0";
+      public static const MOD_VERSION:String = "1.3.1";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -257,6 +257,11 @@ package
       
       private static const SMILEY_TIMESTAMP:Number = 1766361600;
       
+      private static const DEFAULT_DATA_FILE_OBJECT:Object = {
+         "siloCooldowns":{},
+         "smileyTrades":{}
+      };
+      
       private static const CURRENCY_TYPE_GOLD_BULLION:uint = 4;
       
       private static const MINERVA_TIMESTAMP:Number = 1725897600;
@@ -413,7 +418,7 @@ package
       
       private var lastData:String;
       
-      private var challengesFileData:Object = null;
+      private var challengesFileData:Object = DEFAULT_DATA_FILE_OBJECT;
       
       private var HUDModeData:*;
       
@@ -865,7 +870,7 @@ package
                         {
                            if(!this.challengesFileData)
                            {
-                              this.challengesFileData = {};
+                              this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
                            }
                            if(!this.challengesFileData.siloCooldowns)
                            {
@@ -919,7 +924,7 @@ package
                   {
                      if(!this.challengesFileData)
                      {
-                        this.challengesFileData = {};
+                        this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
                      }
                      if(!this.challengesFileData.smileyTrades)
                      {
@@ -1117,6 +1122,14 @@ package
                   if(lastData != loader.data)
                   {
                      challengesFileData = new JSONDecoder(loader.data,true).getValue();
+                     if(!challengesFileData.smileyTrades)
+                     {
+                        challengesFileData.smileyTrades = {};
+                     }
+                     if(!challengesFileData.siloCooldowns)
+                     {
+                        challengesFileData.siloCooldowns = {};
+                     }
                      lastData = loader.data;
                   }
                }
@@ -2242,8 +2255,13 @@ package
                         timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
                         timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
                         thisWeekMondayTimestamp = utcWithOffset - timeThisWeek;
-                        var lastTradeTimestamp:Number = this.challengesFileData.smileyTrades[characterName] != null ? Number(this.challengesFileData.smileyTrades[characterName].time) : 0;
-                        var gold:int = int(this.challengesFileData.smileyTrades[characterName] != null ? this.challengesFileData.smileyTrades[characterName].gold : 0);
+                        var lastTradeTimestamp:Number = 0;
+                        var gold:int = 0;
+                        if(this.challengesFileData.smileyTrades[characterName] != null)
+                        {
+                           lastTradeTimestamp = Number(this.challengesFileData.smileyTrades[characterName].time);
+                           gold = int(this.challengesFileData.smileyTrades[characterName].gold);
+                        }
                         if(thisWeekMondayTimestamp > lastTradeTimestamp)
                         {
                            splitDisplayLine(config.smiley.notVisitedText.replace(STRING_TIME,FormatTimeStringCustom(SECONDS_IN_WEEK - timeThisWeek)),"smileyNotVisited");
