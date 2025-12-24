@@ -3,6 +3,8 @@
 # Used to manually update HUDChallenges time stamps when SFE saving is not possible
 # Can update Smiley trade time, for "showSmiley", and silo cooldown timers, for "showSiloCooldowns"
 
+# HUDChallenges version 1.3.1
+
 
 $dataFile = ".\ChallengeData.ini"
 
