@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.3.1";
+      public static const MOD_VERSION:String = "1.3.2";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -2162,7 +2162,7 @@ package
                         }
                         if(nthWeek != 3 && !isAvailable)
                         {
-                           list++;
+                           list = list == 24 ? 1 : list + 1;
                         }
                         if(config.minerva.showLists.indexOf(list) != -1)
                         {
