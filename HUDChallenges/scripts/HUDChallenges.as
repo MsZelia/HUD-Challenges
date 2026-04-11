@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.3.2";
+      public static const MOD_VERSION:String = "1.3.3";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -167,13 +167,14 @@ package
       
       private static const ACTIVITY_LABEL_EVENT_PARTICIPANTS:String = "$Participants";
       
-      private static const FILTER_RECENT_ACTIVITY_TYPES:Array = [1,2,5,6];
+      private static const FILTER_RECENT_ACTIVITY_TYPES:Array = [1,2,5,6,8];
       
       private static const FILTER_EVENTS:Object = {
          "publicEvent":1,
          "worldEvent":2,
          "mutatedEvent":5,
-         "caravan":6
+         "caravan":6,
+         "infestation":8
       };
       
       private static const FILTER_CHALLENGE:Object = [{

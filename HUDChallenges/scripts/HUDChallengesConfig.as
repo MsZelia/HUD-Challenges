@@ -120,6 +120,7 @@ package
             config.formats.mutatedEvent = DEFAULT_MUTATED_EVENT_FORMAT;
             config.formats.publicEvent = DEFAULT_EVENT_FORMAT;
             config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
+            config.formats.infestation = DEFAULT_EVENT_FORMAT;
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
             config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
@@ -192,6 +193,10 @@ package
             if(!config.formats.caravan)
             {
                config.formats.caravan = DEFAULT_EVENT_FORMAT;
+            }
+            if(!config.formats.infestation)
+            {
+               config.formats.infestation = DEFAULT_EVENT_FORMAT;
             }
             if(!config.formats.showSeasonEndTime)
             {
