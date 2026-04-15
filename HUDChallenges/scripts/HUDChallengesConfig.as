@@ -69,6 +69,8 @@ package
       
       public static const DEFAULT_SMILEY_NOT_VISITED_FORMAT:* = "Smiley not visited this week ({time} left)";
       
+      public static const DEFAULT_UNINVITED_GUEST_FORMAT:* = "UNINVITED GUEST INCOMING ({time} ago)";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -390,6 +392,17 @@ package
             config.smiley.hideIfVisitedThisWeek = Boolean(config.smiley.hideIfVisitedThisWeek);
             config.smiley.visitedText = Boolean(config.smiley.visitedText) ? config.smiley.visitedText : DEFAULT_SMILEY_VISITED_FORMAT;
             config.smiley.notVisitedText = Boolean(config.smiley.notVisitedText) ? config.smiley.notVisitedText : DEFAULT_SMILEY_NOT_VISITED_FORMAT;
+         }
+         if(!config.uninvitedGuest)
+         {
+            config.uninvitedGuest = {};
+            config.uninvitedGuest.hideAfter = 30;
+            config.uninvitedGuest.text = DEFAULT_UNINVITED_GUEST_FORMAT;
+         }
+         else
+         {
+            config.uninvitedGuest.hideAfter = Parser.parseNumber(config.uninvitedGuest.hideAfter,30);
+            config.uninvitedGuest.text = Boolean(config.uninvitedGuest.text) ? config.uninvitedGuest.text : DEFAULT_UNINVITED_GUEST_FORMAT;
          }
          if(!config.showOnlyTrackedChallenges)
          {

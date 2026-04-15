@@ -319,7 +319,39 @@ package
          "zhhant":/.*的繁茂季節結束了。/
       };
       
+      private static const UNINVITED_GUEST_MESSAGE_LOCALIZED:* = {
+         "en":/A creature from the forest draws near.../,
+         "es":/Una criatura del bosque se aproxima.../,
+         "esmx":/Una criatura del bosque se aproxima.../,
+         "fr":/Une créature de la forêt approche.../,
+         "de":/Ein Geschöpf des Waldes ist im Anmarsch .../,
+         "it":/Una creatura della foresta si avvicina.../,
+         "pl":/Stworzenie z lasu się zbliża.../,
+         "ptbr":/Uma criatura da floresta se aproxima.../,
+         "ru":/Существо из леса приближается.../,
+         "ja":/森の生き物が近づいてくる…/,
+         "ko":/숲속의 생물체가 가까이 다가옵니다.../,
+         "zhhans":/一只来自森林的生物正在靠近....../,
+         "zhhant":/一隻來自森林裡的生物正悄悄靠近....../
+      };
+      
       private static const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
+      
+      private static const LOCALE_TEST:* = {
+         "Lost":"en",
+         "Has perdido":"es",
+         "Perdiste":"esmx",
+         "Perdu":"fr",
+         "Verloren":"de",
+         "Persi":"it",
+         "Tracisz":"pl",
+         "Perdidos":"ptbr",
+         "Потеряно":"ru",
+         "ロスト":"ja",
+         "로스트":"ko",
+         "损失":"zhhans",
+         "損失":"zhhant"
+      };
       
       private var FISHING_SEASONS:Array = [{
          "month":0,
@@ -511,7 +543,9 @@ package
       
       private var verdantSeasons:Array = [];
       
-      private var language:String = "";
+      private var _language:String = "";
+      
+      private var uninvitedGuestTimestamp:Number = 0;
       
       private var hudTools:SharedHUDTools;
       
@@ -564,6 +598,21 @@ package
       public static function ShowHUDMessage(param1:String) : void
       {
          GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
+      }
+      
+      public function get language() : String
+      {
+         if(_language == "")
+         {
+            var dummy:String = GlobalFunc.LocalizeFormattedString("$LOST");
+            _language = LOCALE_TEST[dummy];
+            if(_language == null)
+            {
+               _language = "";
+               ShowHUDMessage("Error determining game language!");
+            }
+         }
+         return _language;
       }
       
       public function FormatCountdownTimeString(param1:Number) : String
@@ -973,6 +1022,7 @@ package
             {
                return;
             }
+            lang = language;
             while(messageIndex < this.HUDMessageProvider.data.messages.length)
             {
                errorCode = "messageData";
@@ -984,43 +1034,20 @@ package
                   errorCode = "LANGUAGE";
                   isBegin = false;
                   isVerdantSeasonMessage = false;
-                  if(language != "")
+                  if(lang != "")
                   {
-                     if(VERDANT_SEASON_BEGIN_LOCALIZED[language] && VERDANT_SEASON_BEGIN_LOCALIZED[language].test(messageText))
+                     if(VERDANT_SEASON_BEGIN_LOCALIZED[lang] && VERDANT_SEASON_BEGIN_LOCALIZED[lang].test(messageText))
                      {
-                        lang = language;
                         isBegin = true;
                         isVerdantSeasonMessage = true;
                      }
-                     else if(VERDANT_SEASON_END_LOCALIZED[language] && VERDANT_SEASON_END_LOCALIZED[language].test(messageText))
+                     else if(VERDANT_SEASON_END_LOCALIZED[lang] && VERDANT_SEASON_END_LOCALIZED[lang].test(messageText))
                      {
-                        lang = language;
                         isVerdantSeasonMessage = true;
                      }
-                  }
-                  else
-                  {
-                     l = 0;
-                     while(l < LANGUAGES.length)
+                     else if(UNINVITED_GUEST_MESSAGE_LOCALIZED[lang] && UNINVITED_GUEST_MESSAGE_LOCALIZED[lang].test(messageText))
                      {
-                        lang = LANGUAGES[l];
-                        if(VERDANT_SEASON_BEGIN_LOCALIZED[lang] && VERDANT_SEASON_BEGIN_LOCALIZED[lang].test(messageText))
-                        {
-                           isVerdantSeasonMessage = true;
-                           isBegin = true;
-                           if(lang != "es" && lang != "esmx")
-                           {
-                              language = lang;
-                           }
-                           break;
-                        }
-                        if(VERDANT_SEASON_END_LOCALIZED[lang] && VERDANT_SEASON_END_LOCALIZED[lang].test(messageText))
-                        {
-                           isVerdantSeasonMessage = true;
-                           language = lang;
-                           break;
-                        }
-                        l++;
+                        uninvitedGuestTimestamp = new Date().getTime() / 1000;
                      }
                   }
                   if(isVerdantSeasonMessage)
@@ -1918,6 +1945,10 @@ package
                      displayMessage(FULL_MOD_NAME + (this.isHudMenu ? "" : " (non-HUD)"));
                      applyColor(dataField);
                      break;
+                  case "showLang":
+                     displayMessage("Language: " + language);
+                     applyColor(dataField);
+                     break;
                   case "showLastConfigUpdate":
                      displayMessage("ConfigUpdate: " + FormatTimeStringCustom(this.timeSinceLastConfigUpdate) + " ago");
                      applyColor(dataField);
@@ -2271,6 +2302,12 @@ package
                         {
                            splitDisplayLine(config.smiley.visitedText.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastTradeTimestamp)).replace(STRING_GOLD,gold),"smileyVisited");
                         }
+                     }
+                     break;
+                  case "showUninvitedGuest":
+                     if(utcSeconds - uninvitedGuestTimestamp < config.uninvitedGuest.hideAfter)
+                     {
+                        splitDisplayLine(config.uninvitedGuest.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - uninvitedGuestTimestamp)),dataField);
                      }
                      break;
                   case "showHUDChildren":
