@@ -373,7 +373,7 @@ package
          "month":0,
          "fish":1,
          "region1":5,
-         "region2":6
+         "region2":1
       },{
          "month":1,
          "fish":4,
@@ -387,7 +387,7 @@ package
       },{
          "month":3,
          "fish":3,
-         "region1":0,
+         "region1":1,
          "region2":4
       },{
          "month":4,
