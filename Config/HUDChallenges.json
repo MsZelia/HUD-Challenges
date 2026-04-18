@@ -49,7 +49,7 @@
 	
 	/* Formats accept:
 	Challenges: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs
-	Events: mutatedEvent, publicEvent, worldEvent, caravan
+	Events: mutatedEvent, publicEvent, worldEvent, caravan, infestation
 	
 	Challenges accept: {text}, {currentValue}, {thresholdValue}
 		default: "{text} {currentValue}/{thresholdValue}"
@@ -86,10 +86,11 @@
 		"fishing": "{text} {currentValue}/{thresholdValue}", // 1.1.3
 		"burning_springs": "{text} [{currentValue}/{thresholdValue}]", // 1.2.3
 		
-		"mutatedEvent": "[M][{participants}] {text} [{mutation}] {time}",
-		"publicEvent": "[P][{participants}] {text} {time}",
-		"worldEvent": "[W] {text} {time}",
-		"caravan": "[C] {text} {time}",
+		"mutatedEvent": "[M][{participants}] {text} [{mutation}] ({time})",
+		"publicEvent": "[P][{participants}] {text} ({time})",
+		"worldEvent": "[W] {text} ({time})",
+		"caravan": "[C] {text} ({time})",
+		"infestation": "[I] {text} ({time})",
 		
 		"showSeasonEndTime": "Season end: {time}", // 1.1.3,
 		"showRaidXP": "Raid XP: {xp}", // 1.2.1
@@ -180,7 +181,7 @@
 		"visitedText": "Smiley visited this week ({gold}g {time} ago)"
 	},
 	
-	"uninvitedGuest": {
+	"uninvitedGuest": { // Update 1.4.0
 		"hideAfter": 30,
 		"text": "UNINVITED GUEST INCOMING ({time} ago)",
 		"textArrived": "UNINVITED GUEST HAS ARRIVED ({time} ago)"
@@ -276,7 +277,7 @@
 		options: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs
 		examples: "challenges:daily", "challenges:weekly"
 	"events:group"
-		options: mutatedEvent, publicEvent, worldEvent, caravan
+		options: mutatedEvent, publicEvent, worldEvent, caravan, infestation
 		examples: "events:mutatedEvent", "events:publicEvent"
 	
 	Update 1.1.1:
@@ -363,6 +364,7 @@
 		
 		"text:orange:EVENTS",
 		"showEventTimer",
+		"events:infestation",
 		"events:mutatedEvent",
 		"events:publicEvent",
 		"events:worldEvent",
@@ -372,7 +374,7 @@
 	/* Custom color options:
 	All displayData options: "showVersion", "showHUDMode", "showRenderTime"...
 	All challange options: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs
-	All events options: mutatedEvent, publicEvent, worldEvent, caravan
+	All events options: mutatedEvent, publicEvent, worldEvent, caravan, infestation
 	Any other string that can be used in "text:..." or "separator:..." displayData options
 	
 	"minervaAvailable" and "minervaNotAvailable" (Update 1.0.4)
@@ -415,6 +417,7 @@
 		"combat": "0xff5555",
 		"events": "0xccccff",
 		
+		"infestation": "0xff6b2d",
 		"caravan": "0xf7a0b5",
 		"mutatedEvent": "0xd2ff22",
 		"publicEvent": "0xffb300",
