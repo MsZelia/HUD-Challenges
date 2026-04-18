@@ -180,6 +180,12 @@
 		"visitedText": "Smiley visited this week ({gold}g {time} ago)"
 	},
 	
+	"uninvitedGuest": {
+		"hideAfter": 30,
+		"text": "UNINVITED GUEST INCOMING ({time} ago)",
+		"textArrived": "UNINVITED GUEST HAS ARRIVED ({time} ago)"
+	},
+	
 	"showOnlyTrackedChallenges": { // Update 1.0.4
 		"daily": false,
 		"weekly": false,
@@ -315,6 +321,10 @@
 		//"showTime24",
 		//"showUTCTime",
 		
+		"emptyspace:5",
+		"showUninvitedGuest",
+		"emptyspace:5",
+		
 		"showSeasonEndTime",
 		"showMiniSeasonTime",
 		"showVerdantSeasons",
@@ -429,7 +439,9 @@
 		"showSiloCooldowns": "0xffaa55",
 		
 		"smileyNotVisited": "0xffee66",
-		"smileyVisited": "0xccaa22"
+		"smileyVisited": "0xccaa22",
+		
+		"showUninvitedGuest": "0xff3333"
 	},
 	"customEventChallengeColors": { // Update 1.0.3
 		"gold star:": "0x66ff66",
@@ -466,12 +478,12 @@
 	"HUDModes": [
 		"ActivateTypeMode",
 		"All",
-		"ContainerMode",
+		//"ContainerMode",
 		//"InspectMode",
 		"MapMenu",
 		"Pipboy",
 		"PowerArmor",
-		"SelfieMode",
+		//"SelfieMode",
 		"WorkshopMode"
 	]
 }
