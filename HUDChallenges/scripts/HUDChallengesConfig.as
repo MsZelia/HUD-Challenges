@@ -71,6 +71,8 @@ package
       
       public static const DEFAULT_UNINVITED_GUEST_FORMAT:* = "UNINVITED GUEST INCOMING ({time} ago)";
       
+      public static const DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT:* = "UNINVITED GUEST HAS ARRIVED ({time} ago)";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -398,11 +400,13 @@ package
             config.uninvitedGuest = {};
             config.uninvitedGuest.hideAfter = 30;
             config.uninvitedGuest.text = DEFAULT_UNINVITED_GUEST_FORMAT;
+            config.uninvitedGuest.textArrived = DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT;
          }
          else
          {
             config.uninvitedGuest.hideAfter = Parser.parseNumber(config.uninvitedGuest.hideAfter,30);
             config.uninvitedGuest.text = Boolean(config.uninvitedGuest.text) ? config.uninvitedGuest.text : DEFAULT_UNINVITED_GUEST_FORMAT;
+            config.uninvitedGuest.textArrived = Boolean(config.uninvitedGuest.textArrived) ? config.uninvitedGuest.textArrived : DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT;
          }
          if(!config.showOnlyTrackedChallenges)
          {

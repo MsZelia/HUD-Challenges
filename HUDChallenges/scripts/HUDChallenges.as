@@ -289,9 +289,9 @@ package
       
       private static const VERDANT_SEASON_BEGIN_LOCALIZED:* = {
          "en":/It's a verdant season in .*! Enjoy the abundance!/,
+         "fr":/Une saison verdoyante a commencé dans .* ! Profitez de l'abondance !/,
          "es":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
          "esmx":/¡Es temporada verde en .*! ¡Disfruta de la abundancia!/,
-         "fr":/Une saison verdoyante a commencé dans .* ! Profitez de l'abondance !/,
          "de":/In .* hat die fruchtbare Saison begonnen! Genieße den Überfluss!/,
          "it":/Stagione della fioritura iniziata in questa regione: .*! Goditi l'abbondanza!/,
          "pl":/.* świętuje sezon urodzaju! Korzystaj z bogactwa zbiorów!/,
@@ -305,9 +305,9 @@ package
       
       private static const VERDANT_SEASON_END_LOCALIZED:* = {
          "en":/The verdant season in .* has ended./,
+         "fr":/La saison verdoyante dans .* est terminée./,
          "es":/Ha terminado la temporada verde en .*./,
          "esmx":/Terminó la temporada verde en .*./,
-         "fr":/La saison verdoyante dans .* est terminée./,
          "de":/Die fruchtbare Saison in .* ist vorüber./,
          "it":/Stagione della fioritura terminata in questa regione: .*./,
          "pl":/.* wita koniec sezonu urodzaju./,
@@ -321,9 +321,9 @@ package
       
       private static const UNINVITED_GUEST_MESSAGE_LOCALIZED:* = {
          "en":/A creature from the forest draws near.../,
+         "fr":/Une créature de la forêt approche.../,
          "es":/Una criatura del bosque se aproxima.../,
          "esmx":/Una criatura del bosque se aproxima.../,
-         "fr":/Une créature de la forêt approche.../,
          "de":/Ein Geschöpf des Waldes ist im Anmarsch .../,
          "it":/Una creatura della foresta si avvicina.../,
          "pl":/Stworzenie z lasu się zbliża.../,
@@ -333,6 +333,22 @@ package
          "ko":/숲속의 생물체가 가까이 다가옵니다.../,
          "zhhans":/一只来自森林的生物正在靠近....../,
          "zhhant":/一隻來自森林裡的生物正悄悄靠近....../
+      };
+      
+      private static const UNINVITED_GUEST_ARRIVED_MESSAGE_LOCALIZED:* = {
+         "en":/An uninvited guest has arrived.../,
+         "fr":/Un invité imprévu est arrivé.../,
+         "es":/Ha llegado un invitado sorpresa.../,
+         "esmx":/Llegó un invitado sorpresa.../,
+         "de":/Ein unerwünschter Gast ist eingetroffen .../,
+         "it":/È arrivato un ospite indesiderato.../,
+         "pl":/Przybył nieproszony gość.../,
+         "ptbr":/Chegou um alguém indesejado.../,
+         "ru":/Прибыл незваный гость.../,
+         "ja":/招かれざる客が来たようだ…/,
+         "ko":/불청객이 도착했습니다.../,
+         "zhhans":/某位不速之客已经到来....../,
+         "zhhant":/不速之客現身了....../
       };
       
       private static const LANGUAGES:Array = ["en","es","esmx","fr","de","it","pl","ptbr","ru","ja","ko","zhhans","zhhant"];
@@ -546,6 +562,8 @@ package
       private var _language:String = "";
       
       private var uninvitedGuestTimestamp:Number = 0;
+      
+      private var uninvitedGuestArrivedTimestamp:Number = 0;
       
       private var hudTools:SharedHUDTools;
       
@@ -1048,6 +1066,10 @@ package
                      else if(UNINVITED_GUEST_MESSAGE_LOCALIZED[lang] && UNINVITED_GUEST_MESSAGE_LOCALIZED[lang].test(messageText))
                      {
                         uninvitedGuestTimestamp = new Date().getTime() / 1000;
+                     }
+                     else if(UNINVITED_GUEST_ARRIVED_MESSAGE_LOCALIZED[lang] && UNINVITED_GUEST_ARRIVED_MESSAGE_LOCALIZED[lang].test(messageText))
+                     {
+                        uninvitedGuestArrivedTimestamp = new Date().getTime() / 1000;
                      }
                   }
                   if(isVerdantSeasonMessage)
@@ -2305,7 +2327,11 @@ package
                      }
                      break;
                   case "showUninvitedGuest":
-                     if(utcSeconds - uninvitedGuestTimestamp < config.uninvitedGuest.hideAfter)
+                     if(uninvitedGuestArrivedTimestamp > uninvitedGuestTimestamp && utcSeconds - uninvitedGuestArrivedTimestamp < config.uninvitedGuest.hideAfter)
+                     {
+                        splitDisplayLine(config.uninvitedGuest.textArrived.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - uninvitedGuestArrivedTimestamp)),dataField);
+                     }
+                     else if(utcSeconds - uninvitedGuestTimestamp < config.uninvitedGuest.hideAfter)
                      {
                         splitDisplayLine(config.uninvitedGuest.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - uninvitedGuestTimestamp)),dataField);
                      }
