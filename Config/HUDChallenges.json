@@ -169,6 +169,7 @@
 	
 	"siloCooldowns": { // Update 1.2.9
 		"debug": false,
+		"showReadySilos": false,
 		"text": "Silo cooldowns: {siloCooldowns}",
 		"textSilo": "[{siloName}: {time}] ",
 		"siloNames": ["A", "B", "C"]
