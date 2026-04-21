@@ -370,12 +370,14 @@ package
          if(!config.siloCooldowns)
          {
             config.siloCooldowns = {};
+            config.siloCooldowns.showReadySilos = false;
             config.siloCooldowns.text = DEFAULT_SILO_COOLDOWNS_FORMAT;
             config.siloCooldowns.textSilo = DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
             config.siloCooldowns.siloNames = DEFAULT_SILO_NAMES;
          }
          else
          {
+            config.siloCooldowns.showReadySilos = Boolean(config.siloCooldowns.showReadySilos);
             config.siloCooldowns.text = Boolean(config.siloCooldowns.text) ? config.siloCooldowns.text : DEFAULT_SILO_COOLDOWNS_FORMAT;
             config.siloCooldowns.textSilo = Boolean(config.siloCooldowns.textSilo) ? config.siloCooldowns.textSilo : DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
             config.siloCooldowns.siloNames = Boolean(config.siloCooldowns.siloNames) && config.siloCooldowns.siloNames.length == 3 ? config.siloCooldowns.siloNames : DEFAULT_SILO_NAMES;

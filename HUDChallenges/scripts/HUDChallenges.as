@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.0";
+      public static const MOD_VERSION:String = "1.4.1";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -253,6 +253,8 @@ package
          "x":0.552305,
          "y":0.65386
       }];
+      
+      private static const SILO_IDS:Array = ["0","1","2"];
       
       private static const SMILEY_LOCALIZED:* = /(Smiley|Sonrisas|Śmieszek|Sorridente|Смайли|スマイリー|스마일리|诡异微笑|笑臉)/;
       
@@ -2288,12 +2290,17 @@ package
                            displayMessage("Last launch: " + int(utcSeconds - this.nukeTouchdownTimeStarted));
                         }
                         var siloCooldowns:String = "";
-                        for(state in this.challengesFileData.siloCooldowns[characterName])
+                        for(var siloId in SILO_IDS)
                         {
-                           var leftCooldown:Number = SECONDS_IN_3_HOURS - (utcSeconds - this.challengesFileData.siloCooldowns[characterName][state]);
-                           if(leftCooldown >= 0)
+                           var leftCooldown:Number = 0;
+                           var siloLeft:* = this.challengesFileData.siloCooldowns[characterName][siloId];
+                           if(siloLeft != null)
                            {
-                              siloCooldowns += config.siloCooldowns.textSilo.replace(STRING_SILO_NAME,config.siloCooldowns.siloNames[int(state)]).replace(STRING_TIME,FormatTimeStringCustom(leftCooldown));
+                              leftCooldown = Math.max(0,SECONDS_IN_3_HOURS - (utcSeconds - siloLeft));
+                           }
+                           if(leftCooldown > 0 || config.siloCooldowns.showReadySilos)
+                           {
+                              siloCooldowns += config.siloCooldowns.textSilo.replace(STRING_SILO_NAME,config.siloCooldowns.siloNames[int(siloId)]).replace(STRING_TIME,FormatTimeStringCustom(leftCooldown));
                            }
                         }
                         if(siloCooldowns)
