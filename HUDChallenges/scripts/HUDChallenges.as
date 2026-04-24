@@ -477,6 +477,8 @@ package
       
       private var CharacterInfoData:*;
       
+      private var CharacterNameData:*;
+      
       private var ChallengeData:*;
       
       private var RecentActivitiesData:*;
@@ -598,6 +600,7 @@ package
          this.HUDModeData = BSUIDataManager.GetDataFromClient("HUDModeData");
          this.AccountInfoData = BSUIDataManager.GetDataFromClient("AccountInfoData");
          this.CharacterInfoData = BSUIDataManager.GetDataFromClient("CharacterInfoData");
+         this.CharacterNameData = BSUIDataManager.GetDataFromClient("CharacterNameData");
          this.ChallengeData = BSUIDataManager.GetDataFromClient("ChallengeData");
          this.RecentActivitiesData = BSUIDataManager.GetDataFromClient("RecentActivitiesData");
          this.SeasonWidgetData = BSUIDataManager.GetDataFromClient("SeasonWidgetData");
@@ -1250,7 +1253,7 @@ package
       
       public function get characterName() : String
       {
-         return this.CharacterInfoData.data.name;
+         return this.CharacterNameData.data.characterName;
       }
       
       public function get goldBullion() : int
