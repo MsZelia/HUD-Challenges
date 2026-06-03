@@ -73,6 +73,12 @@ package
       
       public static const DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT:* = "UNINVITED GUEST HAS ARRIVED ({time} ago)";
       
+      public static const DEFAULT_ACTIVE_INFESTATION_FORMAT:* = "INFESTATION ACTIVE ({time} ago)";
+      
+      public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:* = "INFESTATION ENDED ({time} ago)";
+      
+      public static const DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND:String = "QSTMassFusionAlarmAlert";
+      
       public function HUDChallengesConfig()
       {
          super();
@@ -409,6 +415,21 @@ package
             config.uninvitedGuest.hideAfter = Parser.parseNumber(config.uninvitedGuest.hideAfter,30);
             config.uninvitedGuest.text = Boolean(config.uninvitedGuest.text) ? config.uninvitedGuest.text : DEFAULT_UNINVITED_GUEST_FORMAT;
             config.uninvitedGuest.textArrived = Boolean(config.uninvitedGuest.textArrived) ? config.uninvitedGuest.textArrived : DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT;
+         }
+         if(!config.activeInfestation)
+         {
+            config.activeInfestation = {};
+            config.activeInfestation.hideEndedInfestationAfter = 30;
+            config.activeInfestation.text = DEFAULT_ACTIVE_INFESTATION_FORMAT;
+            config.activeInfestation.textEnded = DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
+            config.activeInfestation.soundNotify = DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;
+         }
+         else
+         {
+            config.activeInfestation.hideEndedInfestationAfter = Parser.parseNumber(config.activeInfestation.hideEndedInfestationAfter,30);
+            config.activeInfestation.text = Boolean(config.activeInfestation.text) ? config.activeInfestation.text : DEFAULT_ACTIVE_INFESTATION_FORMAT;
+            config.activeInfestation.textEnded = Boolean(config.activeInfestation.textEnded) ? config.activeInfestation.textEnded : DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
+            config.activeInfestation.soundNotify = Boolean(config.activeInfestation.soundNotify) ? String(config.activeInfestation.soundNotify) : DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;
          }
          if(!config.showOnlyTrackedChallenges)
          {

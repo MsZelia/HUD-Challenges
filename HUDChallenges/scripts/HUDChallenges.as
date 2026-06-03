@@ -593,6 +593,14 @@ package
       
       private var goldBeforeConversationWithSmiley:int = 0;
       
+      private var isInfestationActive:Boolean = false;
+      
+      private var lastInfestationStarted:Number = 0;
+      
+      private var lastInfestationEnded:Number = 0;
+      
+      private var lastInfestationSoundPlayed:Boolean = false;
+      
       public function HUDChallenges()
       {
          super();
@@ -876,10 +884,33 @@ package
          var xDiff:Number;
          var yDiff:Number;
          var distance:int;
+         var previousInfestationState:Boolean;
          try
          {
             if(event.data && event.data.inTargetingMode != null)
             {
+               previousInfestationState = this.isInfestationActive;
+               this.isInfestationActive = event.data.MarkerData.some(function(marker:*):Boolean
+               {
+                  return marker.isInfestationRadius;
+               });
+               if(this.isInfestationActive != previousInfestationState)
+               {
+                  if(this.isInfestationActive)
+                  {
+                     this.lastInfestationStarted = new Date().getTime() / 1000;
+                  }
+                  else
+                  {
+                     this.lastInfestationEnded = new Date().getTime() / 1000;
+                     this.lastInfestationSoundPlayed = false;
+                  }
+               }
+               if(this.isInfestationActive && !this.lastInfestationSoundPlayed && config && config.activeInfestation && config.activeInfestation.soundNotify)
+               {
+                  GlobalFunc.PlayMenuSound(config.activeInfestation.soundNotify);
+                  this.lastInfestationSoundPlayed = true;
+               }
                if(this.inTargetingMode && !event.data.inTargetingMode)
                {
                   this.lastTargetingModeEnded = new Date().getTime() / 1000;
@@ -2344,6 +2375,16 @@ package
                      else if(utcSeconds - uninvitedGuestTimestamp < config.uninvitedGuest.hideAfter)
                      {
                         splitDisplayLine(config.uninvitedGuest.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - uninvitedGuestTimestamp)),dataField);
+                     }
+                     break;
+                  case "showActiveInfestation":
+                     if(isInfestationActive)
+                     {
+                        splitDisplayLine(config.activeInfestation.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationStarted)),dataField);
+                     }
+                     else if(utcSeconds - lastInfestationEnded < config.activeInfestation.hideEndedInfestationAfter)
+                     {
+                        splitDisplayLine(config.activeInfestation.textEnded.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationEnded)),dataField);
                      }
                      break;
                   case "showHUDChildren":
