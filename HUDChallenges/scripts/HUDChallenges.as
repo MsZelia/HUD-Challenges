@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.1";
+      public static const MOD_VERSION:String = "1.4.2";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -604,7 +604,7 @@ package
          this.ChallengeData = BSUIDataManager.GetDataFromClient("ChallengeData");
          this.RecentActivitiesData = BSUIDataManager.GetDataFromClient("RecentActivitiesData");
          this.SeasonWidgetData = BSUIDataManager.GetDataFromClient("SeasonWidgetData");
-         this.SeasonData = BSUIDataManager.GetDataFromClient("SeasonData");
+         this.SeasonData = BSUIDataManager.GetDataFromClient("StaticSeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
@@ -2013,16 +2013,16 @@ package
                      applyColor(dataField);
                      break;
                   case "showSeasonEndTime":
-                     if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonData)
+                     if(this.SeasonData && this.SeasonData.data)
                      {
-                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.allSeasonData.uEndTimeSec != 0 ? FormatTimeStringCustom(Number(this.SeasonData.data.allSeasonData.uEndTimeSec - date.getTime() / 1000)) : "00:00"));
+                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.uEndTimeSec != 0 ? FormatTimeStringCustom(Number(this.SeasonData.data.uEndTimeSec - date.getTime() / 1000)) : "00:00"));
                         applyColor(dataField);
                      }
                      break;
                   case "showMiniSeasonTime":
-                     if(this.SeasonData && this.SeasonData.data && this.SeasonData.data.allSeasonData)
+                     if(this.SeasonData && this.SeasonData.data)
                      {
-                        var seasonData:Object = this.SeasonData.data.allSeasonData;
+                        var seasonData:Object = this.SeasonData.data;
                         if(seasonData.szBeginTime != "")
                         {
                            if(seasonData.iSeasonType == 1)
