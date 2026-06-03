@@ -188,6 +188,13 @@
 		"textArrived": "UNINVITED GUEST HAS ARRIVED ({time} ago)"
 	},
 	
+	"activeInfestation": { // Update 1.4.2
+		"hideEndedInfestationAfter": 30,
+		"text": "INFESTATION ACTIVE ({time} ago)",
+		"textEnded": "INFESTATION ENDED ({time} ago)",
+		"soundNotify": "QSTMassFusionAlarmAlert"
+	},
+	
 	"showOnlyTrackedChallenges": { // Update 1.0.4
 		"daily": false,
 		"weekly": false,
@@ -325,6 +332,7 @@
 		
 		"emptyspace:5",
 		"showUninvitedGuest",
+		"showActiveInfestation",
 		"emptyspace:5",
 		
 		"showSeasonEndTime",
@@ -445,7 +453,9 @@
 		"smileyNotVisited": "0xffee66",
 		"smileyVisited": "0xccaa22",
 		
-		"showUninvitedGuest": "0xff3333"
+		"showUninvitedGuest": "0xff3333",
+		
+		"showActiveInfestation": "0xff3333"
 	},
 	"customEventChallengeColors": { // Update 1.0.3
 		"gold star:": "0x66ff66",
