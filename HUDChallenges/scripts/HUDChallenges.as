@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.2";
+      public static const MOD_VERSION:String = "1.4.3";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -599,6 +599,8 @@ package
       
       private var lastInfestationEnded:Number = 0;
       
+      private var lastInfestationEndedFalsePositiveBackup:Number = 0;
+      
       private var lastInfestationSoundPlayed:Boolean = false;
       
       public function HUDChallenges()
@@ -902,13 +904,24 @@ package
                   }
                   else
                   {
+                     this.lastInfestationEndedFalsePositiveBackup = this.lastInfestationEnded;
                      this.lastInfestationEnded = new Date().getTime() / 1000;
                      this.lastInfestationSoundPlayed = false;
                   }
                }
                if(this.isInfestationActive && !this.lastInfestationSoundPlayed && config && config.activeInfestation && config.activeInfestation.soundNotify)
                {
-                  GlobalFunc.PlayMenuSound(config.activeInfestation.soundNotify);
+                  setTimeout(function():void
+                  {
+                     if(lastInfestationEnded < lastInfestationStarted)
+                     {
+                        GlobalFunc.PlayMenuSound(config.activeInfestation.soundNotify);
+                     }
+                     else
+                     {
+                        lastInfestationEnded = lastInfestationEndedFalsePositiveBackup;
+                     }
+                  },2000);
                   this.lastInfestationSoundPlayed = true;
                }
                if(this.inTargetingMode && !event.data.inTargetingMode)
