@@ -73,7 +73,7 @@ package
       
       public static const DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT:* = "UNINVITED GUEST HAS ARRIVED ({time} ago)";
       
-      public static const DEFAULT_ACTIVE_INFESTATION_FORMAT:* = "INFESTATION ACTIVE ({time} ago)";
+      public static const DEFAULT_ACTIVE_INFESTATION_FORMAT:* = "[{amount}] INFESTATION ACTIVE ({time} ago)";
       
       public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:* = "INFESTATION ENDED ({time} ago)";
       
