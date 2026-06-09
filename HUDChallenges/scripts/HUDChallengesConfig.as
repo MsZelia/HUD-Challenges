@@ -420,6 +420,7 @@ package
          {
             config.activeInfestation = {};
             config.activeInfestation.hideEndedInfestationAfter = 30;
+            config.activeInfestation.showPossibleLocations = true;
             config.activeInfestation.text = DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
             config.activeInfestation.soundNotify = DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;
@@ -427,6 +428,7 @@ package
          else
          {
             config.activeInfestation.hideEndedInfestationAfter = Parser.parseNumber(config.activeInfestation.hideEndedInfestationAfter,30);
+            config.activeInfestation.showPossibleLocations = Boolean(config.activeInfestation.showPossibleLocations);
             config.activeInfestation.text = Boolean(config.activeInfestation.text) ? config.activeInfestation.text : DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = Boolean(config.activeInfestation.textEnded) ? config.activeInfestation.textEnded : DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
             config.activeInfestation.soundNotify = Boolean(config.activeInfestation.soundNotify) ? String(config.activeInfestation.soundNotify) : DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;

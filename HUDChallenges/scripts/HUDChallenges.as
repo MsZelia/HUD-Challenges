@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.3";
+      public static const MOD_VERSION:String = "1.4.4";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -142,6 +142,8 @@ package
       private static const STRING_SILO_COOLDOWNS:String = "{siloCooldowns}";
       
       private static const STRING_GOLD:String = "{gold}";
+      
+      private static const STRING_AMOUNT:String = "{amount}";
       
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
@@ -433,6 +435,268 @@ package
          "region2":7
       }];
       
+      private var INFESTATION_LOCATIONS:Array = [{
+         "text":"Aaronholt Homestead",
+         "x":0.2989081740379333,
+         "y":0.0637967437505722,
+         "markerID":16741
+      },{
+         "text":"Abandoned Bog Town",
+         "x":0.91290545463562,
+         "y":0.6041107177734375,
+         "markerID":16722
+      },{
+         "text":"AMS Testing Site",
+         "x":0.2988991737365723,
+         "y":0.7119367718696594,
+         "markerID":3742198
+      },{
+         "text":"Appalachian Antiques",
+         "x":0.7891989946365356,
+         "y":0.675908088684082,
+         "markerID":45523
+      },{
+         "text":"Beckley",
+         "x":0.1726222187280655,
+         "y":0.6642710566520691,
+         "markerID":45623
+      },{
+         "text":"Berkeley Springs",
+         "x":0.806221067905426,
+         "y":0.3627200126647949,
+         "markerID":396485
+      },{
+         "text":"Bolton Greens",
+         "x":0.5703281760215759,
+         "y":0.3018859922885895,
+         "markerID":617144
+      },{
+         "text":"Brim Quarry",
+         "x":0.2264306098222733,
+         "y":0.5876491665840149,
+         "markerID":3959290
+      },{
+         "text":"Camp Adams",
+         "x":0.2423727065324783,
+         "y":0.47979524731636,
+         "markerID":3501080
+      },{
+         "text":"Charleston Landfill",
+         "x":0.2953631281852722,
+         "y":0.5415453314781189,
+         "markerID":1101032
+      },{
+         "text":"Charleston Trainyard",
+         "x":0.3159781396389,
+         "y":0.5136355757713318,
+         "markerID":1100961
+      },{
+         "text":"Clarksburg",
+         "x":0.4999190270900726,
+         "y":0.08186815679073334,
+         "markerID":379961
+      },{
+         "text":"Converted Munitions Factory",
+         "x":0.7716513276100159,
+         "y":0.05412361398339272,
+         "markerID":1089188
+      },{
+         "text":"Dabney Homestead",
+         "x":0.9241119027137756,
+         "y":0.4664892554283142,
+         "markerID":1089240
+      },{
+         "text":"Dyer Chemical",
+         "x":0.9015149474143982,
+         "y":0.2923915386199951,
+         "markerID":341971
+      },{
+         "text":"Fort Defiance",
+         "x":0.7633997201919556,
+         "y":0.6813845038414,
+         "markerID":16738
+      },{
+         "text":"Garrahan Estate",
+         "x":0.4020235538482666,
+         "y":0.7225922346115112,
+         "markerID":532421
+      },{
+         "text":"Glassed Cavern",
+         "x":0.9503713846206665,
+         "y":0.7418032884597778,
+         "markerID":3148474
+      },{
+         "text":"Gorge Junkyard",
+         "x":0.4378471374511719,
+         "y":0.2347486466169357,
+         "markerID":408960
+      },{
+         "text":"Grafton Steel",
+         "x":0.5861498713493347,
+         "y":0.1534660458564758,
+         "markerID":447229
+      },{
+         "text":"Grafton",
+         "x":0.4448642432689667,
+         "y":0.119108609855175,
+         "markerID":450088
+      },{
+         "text":"Greg\'s Mine Supply",
+         "x":0.5050308704376221,
+         "y":0.3213384449481964,
+         "markerID":597766
+      },{
+         "text":"Harpers Ferry",
+         "x":0.8720114827156067,
+         "y":0.41164880990982,
+         "markerID":459621
+      },{
+         "text":"Helvetia",
+         "x":0.4767119884490967,
+         "y":0.3516916334629059,
+         "markerID":381753
+      },{
+         "text":"Huntersville",
+         "x":0.6806320548057556,
+         "y":0.5994973182678223,
+         "markerID":466974
+      },{
+         "text":"Lewisburg",
+         "x":0.4291717112064362,
+         "y":0.6413661241531372,
+         "markerID":591210
+      },{
+         "text":"Monongah",
+         "x":0.6615170240402222,
+         "y":0.2488953620195389,
+         "markerID":604863
+      },{
+         "text":"Morgantown Trainyard",
+         "x":0.487294703722,
+         "y":0.2347206473350525,
+         "markerID":576849
+      },{
+         "text":"Morgantown",
+         "x":0.5450178384780884,
+         "y":0.2413253933191299,
+         "markerID":3317063
+      },{
+         "text":"Mount Blair Trainyard",
+         "x":0.2838606536388397,
+         "y":0.6613721251487732,
+         "markerID":605170
+      },{
+         "text":"Mount Blair",
+         "x":0.2873014807701111,
+         "y":0.6218461990356445,
+         "markerID":605129
+      },{
+         "text":"New Appalachian Central Trainyard",
+         "x":0.5760658979415894,
+         "y":0.4608826041221619,
+         "markerID":611124
+      },{
+         "text":"New Gad",
+         "x":0.4322697818279266,
+         "y":0.49520057439804,
+         "markerID":631368
+      },{
+         "text":"Palace of the Winding Path",
+         "x":0.6643891334533691,
+         "y":0.088238701224327,
+         "markerID":617056
+      },{
+         "text":"Pleasant Valley Cabins",
+         "x":0.6440085768699646,
+         "y":0.36610722541809,
+         "markerID":103328
+      },{
+         "text":"Pleasant Valley Ski Resort",
+         "x":0.6439716815948486,
+         "y":0.3864994943141937,
+         "markerID":102960
+      },{
+         "text":"Ranger District Office",
+         "x":0.8487986326217651,
+         "y":0.5988738536834717,
+         "markerID":630817
+      },{
+         "text":"Red Rocket Mega Stop",
+         "x":0.8241234421730042,
+         "y":0.1202619597315788,
+         "markerID":630835
+      },{
+         "text":"Seneca Rocks Visitor Center",
+         "x":0.6607925295829773,
+         "y":0.3046977519989014,
+         "markerID":3866153
+      },{
+         "text":"Sons of Dane Compound",
+         "x":0.7551337480545044,
+         "y":0.2272959053516388,
+         "markerID":1089654
+      },{
+         "text":"Summersville Dam",
+         "x":0.3904936015605927,
+         "y":0.5408506393432617,
+         "markerID":3741247
+      },{
+         "text":"Summersville Docks",
+         "x":0.4073135852813721,
+         "y":0.506458044052124,
+         "markerID":631316
+      },{
+         "text":"Sunnytop Ski Lanes",
+         "x":0.7205044031143188,
+         "y":0.1553768366575241,
+         "markerID":1089651
+      },{
+         "text":"Sunshine Meadows Industrial Farm",
+         "x":0.2718645036220551,
+         "y":0.3612886071205139,
+         "markerID":591398
+      },{
+         "text":"The General\'s Steakhouse",
+         "x":0.91383284330368,
+         "y":0.5389155745506287,
+         "markerID":20585
+      },{
+         "text":"The Giant Teapot",
+         "x":0.2850592136383057,
+         "y":0.4777061641216278,
+         "markerID":630858
+      },{
+         "text":"The Whitespring Golf Club",
+         "x":0.5238217115402222,
+         "y":0.5210681557655334,
+         "markerID":631898
+      },{
+         "text":"Tyler County Dirt Track",
+         "x":0.2343284785747528,
+         "y":0.14152592420578,
+         "markerID":3007870
+      },{
+         "text":"Tyler County Fairgrounds",
+         "x":0.2545343637466431,
+         "y":0.1323051750659943,
+         "markerID":662395
+      },{
+         "text":"Wade Airport",
+         "x":0.3730539381504059,
+         "y":0.4935921728610992,
+         "markerID":1100973
+      },{
+         "text":"Wavy Willard\'s Water Park",
+         "x":0.4895053505897522,
+         "y":0.02985663525760174,
+         "markerID":728388
+      },{
+         "text":"Welch",
+         "x":0.24394904077053,
+         "y":0.6856974363327026,
+         "markerID":737068
+      }];
+      
       private var MONTHS_LOCALIZED:Array = new Array(12);
       
       private var REGION_LOCALIZED:Array = new Array(8);
@@ -490,6 +754,8 @@ package
       private var HUDMessageProvider:*;
       
       private var UniversalRewardData:*;
+      
+      private var MapMenuData:*;
       
       private var _challenges:Object;
       
@@ -603,6 +869,10 @@ package
       
       private var lastInfestationSoundPlayed:Boolean = false;
       
+      private var activeInfestations:Array = [];
+      
+      private var infestationLocationsLocalized:Boolean = false;
+      
       public function HUDChallenges()
       {
          super();
@@ -617,6 +887,7 @@ package
          this.SeasonData = BSUIDataManager.GetDataFromClient("StaticSeasonData");
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
+         this.MapMenuData = BSUIDataManager.GetDataFromClient("MapMenuData");
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
@@ -718,8 +989,8 @@ package
                stage.addEventListener(KeyboardEvent.KEY_UP,this.keyUpHandler,false,0,true);
             }
             this.initConfigTimer();
-            this.loadConfig();
-            this.loadChallengesData();
+            setTimeout(this.loadConfig,2500);
+            setTimeout(this.loadChallengesData,5000);
             trace(MOD_NAME + " added to stage: " + getQualifiedClassName(this.topLevel));
          }
          else
@@ -885,17 +1156,64 @@ package
          var j:int;
          var xDiff:Number;
          var yDiff:Number;
-         var distance:int;
+         var distance:Number;
          var previousInfestationState:Boolean;
+         var infestationMarkers:Array;
+         var location:*;
+         var marker:*;
+         var t1:*;
          try
          {
             if(event.data && event.data.inTargetingMode != null)
             {
+               t1 = getTimer();
                previousInfestationState = this.isInfestationActive;
-               this.isInfestationActive = event.data.MarkerData.some(function(marker:*):Boolean
+               if(!this.infestationLocationsLocalized)
                {
-                  return marker.isInfestationRadius;
+                  i = 0;
+                  while(i < MapMenuData.data.MarkerData.length)
+                  {
+                     marker = MapMenuData.data.MarkerData[i];
+                     j = 0;
+                     while(j < INFESTATION_LOCATIONS.length)
+                     {
+                        if(marker.markerID == INFESTATION_LOCATIONS[j].markerID)
+                        {
+                           INFESTATION_LOCATIONS[j].text = marker.text;
+                           this.infestationLocationsLocalized = true;
+                        }
+                        j++;
+                     }
+                     i++;
+                  }
+               }
+               infestationMarkers = MapMenuData.data.MarkerData.filter(function(m:*):Boolean
+               {
+                  return m.isInfestationRadius;
                });
+               this.activeInfestations = [];
+               i = 0;
+               while(i < infestationMarkers.length)
+               {
+                  this.activeInfestations.push({
+                     "x":infestationMarkers[i].x,
+                     "y":infestationMarkers[i].y,
+                     "possibleLocations":[]
+                  });
+                  j = 0;
+                  while(j < INFESTATION_LOCATIONS.length)
+                  {
+                     location = INFESTATION_LOCATIONS[j];
+                     distance = Math.sqrt(Math.pow(this.activeInfestations[i].x - location.x,2) + Math.pow(this.activeInfestations[i].y - location.y,2));
+                     if(distance <= 0.1)
+                     {
+                        this.activeInfestations[i].possibleLocations.push(location.text);
+                     }
+                     j++;
+                  }
+                  i++;
+               }
+               this.isInfestationActive = this.activeInfestations.length;
                if(this.isInfestationActive != previousInfestationState)
                {
                   if(this.isInfestationActive)
@@ -955,6 +1273,7 @@ package
                   }
                }
                this.inTargetingMode = event.data.inTargetingMode;
+               ShowHUDMessage("mapUpdate: " + (getTimer() - t1) + "ms");
             }
          }
          catch(e:*)
@@ -1997,6 +2316,56 @@ package
       
       public function displayData(ddata:Array) : void
       {
+         var date:Date;
+         var utcSeconds:Number;
+         var utc:Number;
+         var eventsTimestampHour:*;
+         var seasonData:Object;
+         var page:int;
+         var pageData:Object;
+         var i:int;
+         var vSeason:Object;
+         var timeDelta:int;
+         var fishingNextDate:Date;
+         var fishingStartDate:Date;
+         var fishingEndDate:Date;
+         var dateFormat:String;
+         var fishingTime:String;
+         var month:int;
+         var fishingMonth:String;
+         var fishingFish:String;
+         var fishingRegion1:String;
+         var fishingRegion2:String;
+         var fishCaught:String;
+         var utcWithOffset:Number;
+         var timeSinceMinervaTimestamp:Number;
+         var timeThisWeek:Number;
+         var thisWeekMondayTimestamp:Number;
+         var thisWeekWednesdayTimestamp:Number;
+         var thisWeekThursdayTimestamp:Number;
+         var daysFromTimestamp:Number;
+         var weeksFromTimestamp:Number;
+         var nthWeek:int;
+         var location:int;
+         var list:int;
+         var isAvailable:Boolean;
+         var arriveLeaveTime:Number;
+         var timeSinceCodesTimestamp:Number;
+         var iWeeksFromTimeStamp:int;
+         var expireTime:Number;
+         var codeAlpha:String;
+         var codeBravo:String;
+         var codeCharlie:String;
+         var timeThisHour:Number;
+         var timeUntilEvent:Number;
+         var siloCooldowns:String;
+         var siloId:*;
+         var leftCooldown:Number;
+         var siloLeft:*;
+         var lastTradeTimestamp:Number;
+         var gold:int;
+         var showPossibleLocations:*;
+         var parts:Array;
          var data:Array = ddata.concat();
          if(config.anchor == "bottom")
          {
@@ -2004,10 +2373,10 @@ package
          }
          if(data && data.length > 0)
          {
-            var date:Date = new Date();
-            var utcSeconds:Number = date.getTime() / 1000;
-            var utc:Number = (utcSeconds + config.offsetUTC * 3600) % 86400;
-            var eventsTimestampHour:* = utcSeconds - utcSeconds % 3600;
+            date = new Date();
+            utcSeconds = date.getTime() / 1000;
+            utc = (utcSeconds + config.offsetUTC * 3600) % 86400;
+            eventsTimestampHour = utcSeconds - utcSeconds % 3600;
             for each(dataField in data)
             {
                switch(dataField)
@@ -2066,7 +2435,7 @@ package
                   case "showMiniSeasonTime":
                      if(this.SeasonData && this.SeasonData.data)
                      {
-                        var seasonData:Object = this.SeasonData.data;
+                        seasonData = this.SeasonData.data;
                         if(seasonData.szBeginTime != "")
                         {
                            if(seasonData.iSeasonType == 1)
@@ -2075,14 +2444,14 @@ package
                               this.miniSeasonRewardsClaimed = 0;
                               if(seasonData.seasonPageDataA && seasonData.seasonPageDataA.length > 0)
                               {
-                                 var page:int = 0;
+                                 page = 0;
                                  while(page < seasonData.seasonPageDataA.length)
                                  {
-                                    var pageData:Object = seasonData.seasonPageDataA[page].pageTileDataA;
+                                    pageData = seasonData.seasonPageDataA[page].pageTileDataA;
                                     if(pageData)
                                     {
                                        this.miniSeasonRewards += int(pageData.length);
-                                       var i:int = 0;
+                                       i = 0;
                                        while(i < pageData.length)
                                        {
                                           if(pageData[i] && pageData[i].bHasBeenClaimed)
@@ -2117,8 +2486,8 @@ package
                         i = this.verdantSeasons.length - 1;
                         while(i >= 0)
                         {
-                           var vSeason:Object = this.verdantSeasons[i];
-                           var timeDelta:int = utcSeconds - vSeason.time;
+                           vSeason = this.verdantSeasons[i];
+                           timeDelta = utcSeconds - vSeason.time;
                            if(vSeason.active)
                            {
                               splitDisplayLine(config.verdantSeason.activeText.replace(STRING_REGION,vSeason.region).replace(STRING_TIME,FormatTimeStringCustom(timeDelta)),"verdantSeasonActive");
@@ -2140,17 +2509,17 @@ package
                      {
                         setRegionsLocalized();
                         setFishLocalized(this.ChallengeData);
-                        var fishingNextDate:Date = GetFirstNextFirstWeekDay(2,date);
-                        var fishingStartDate:Date = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
-                        var fishingEndDate:Date = new Date(fishingNextDate.time - 60000);
-                        var dateFormat:String = config.fishingSeason.dateFormat;
-                        var fishingTime:String = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - date.time / 1000,0));
-                        var month:int = fishingStartDate.month;
-                        var fishingMonth:String = MONTHS_LOCALIZED[FISHING_SEASONS[month].month];
-                        var fishingFish:String = FISH_LOCALIZED[FISHING_SEASONS[month].fish];
-                        var fishingRegion1:String = REGION_LOCALIZED[FISHING_SEASONS[month].region1];
-                        var fishingRegion2:String = REGION_LOCALIZED[FISHING_SEASONS[month].region2];
-                        var fishCaught:String = "";
+                        fishingNextDate = GetFirstNextFirstWeekDay(2,date);
+                        fishingStartDate = GetFirstWeekDay(2,fishingNextDate.month - 1,date.fullYear);
+                        fishingEndDate = new Date(fishingNextDate.time - 60000);
+                        dateFormat = config.fishingSeason.dateFormat;
+                        fishingTime = FormatTimeStringCustom(Math.max(fishingNextDate.time / 1000 - date.time / 1000,0));
+                        month = fishingStartDate.month;
+                        fishingMonth = MONTHS_LOCALIZED[FISHING_SEASONS[month].month];
+                        fishingFish = FISH_LOCALIZED[FISHING_SEASONS[month].fish];
+                        fishingRegion1 = REGION_LOCALIZED[FISHING_SEASONS[month].region1];
+                        fishingRegion2 = REGION_LOCALIZED[FISHING_SEASONS[month].region2];
+                        fishCaught = "";
                         fishCaught = Boolean(config.fishingSeason.caught) && Boolean(FISH_CAUGHT[month]) ? config.fishingSeason.caught[1] : config.fishingSeason.caught[0];
                         if(config.fishingSeason.debug)
                         {
@@ -2210,19 +2579,19 @@ package
                   case "showMinerva":
                      if(config.minerva)
                      {
-                        var utcWithOffset:Number = utcSeconds + config.minerva.offsetHours * 3600;
-                        var timeSinceMinervaTimestamp:Number = utcWithOffset - MINERVA_TIMESTAMP;
-                        var timeThisWeek:Number = timeSinceMinervaTimestamp % SECONDS_IN_WEEK;
-                        var thisWeekMondayTimestamp:Number = utcWithOffset - timeThisWeek;
-                        var thisWeekWednesdayTimestamp:Number = thisWeekMondayTimestamp + 2 * SECONDS_IN_DAY;
-                        var thisWeekThursdayTimestamp:Number = thisWeekMondayTimestamp + 3 * SECONDS_IN_DAY;
-                        var daysFromTimestamp:Number = Math.floor(timeSinceMinervaTimestamp / SECONDS_IN_DAY);
-                        var weeksFromTimestamp:Number = Math.floor(timeSinceMinervaTimestamp / SECONDS_IN_WEEK);
-                        var nthWeek:int = weeksFromTimestamp % 5;
-                        var location:int = nthWeek > 2 ? 3 : nthWeek;
-                        var list:int = (Math.floor(weeksFromTimestamp / 5) * 4 + location + MINERVA_TIMESTAMP_LIST) % 24 + 1;
-                        var isAvailable:Boolean = false;
-                        var arriveLeaveTime:Number = 0;
+                        utcWithOffset = utcSeconds + config.minerva.offsetHours * 3600;
+                        timeSinceMinervaTimestamp = utcWithOffset - MINERVA_TIMESTAMP;
+                        timeThisWeek = timeSinceMinervaTimestamp % SECONDS_IN_WEEK;
+                        thisWeekMondayTimestamp = utcWithOffset - timeThisWeek;
+                        thisWeekWednesdayTimestamp = thisWeekMondayTimestamp + 2 * SECONDS_IN_DAY;
+                        thisWeekThursdayTimestamp = thisWeekMondayTimestamp + 3 * SECONDS_IN_DAY;
+                        daysFromTimestamp = Math.floor(timeSinceMinervaTimestamp / SECONDS_IN_DAY);
+                        weeksFromTimestamp = Math.floor(timeSinceMinervaTimestamp / SECONDS_IN_WEEK);
+                        nthWeek = weeksFromTimestamp % 5;
+                        location = nthWeek > 2 ? 3 : nthWeek;
+                        list = (Math.floor(weeksFromTimestamp / 5) * 4 + location + MINERVA_TIMESTAMP_LIST) % 24 + 1;
+                        isAvailable = false;
+                        arriveLeaveTime = 0;
                         switch(nthWeek)
                         {
                            case 4:
@@ -2284,13 +2653,13 @@ package
                      if(config.nuclearCodes)
                      {
                         utcWithOffset = utcSeconds + config.nuclearCodes.offsetHours * 3600;
-                        var timeSinceCodesTimestamp:Number = utcWithOffset - NUCLEAR_CODES_TIMESTAMP;
+                        timeSinceCodesTimestamp = utcWithOffset - NUCLEAR_CODES_TIMESTAMP;
                         timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
-                        var iWeeksFromTimeStamp:int = (Math.floor(timeSinceCodesTimestamp / SECONDS_IN_WEEK) - 1) % 52;
-                        var expireTime:Number = SECONDS_IN_WEEK - timeThisWeek;
-                        var codeAlpha:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24,8)),8);
-                        var codeBravo:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 8,8)),8);
-                        var codeCharlie:String = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 16,8)),8);
+                        iWeeksFromTimeStamp = (Math.floor(timeSinceCodesTimestamp / SECONDS_IN_WEEK) - 1) % 52;
+                        expireTime = SECONDS_IN_WEEK - timeThisWeek;
+                        codeAlpha = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24,8)),8);
+                        codeBravo = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 8,8)),8);
+                        codeCharlie = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(iWeeksFromTimeStamp * 24 + 16,8)),8);
                         splitDisplayLine(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,FormatTimeStringCustom(expireTime)),dataField);
                         if(iWeeksFromTimeStamp == 0)
                         {
@@ -2314,11 +2683,11 @@ package
                   case "showEventTimer":
                      if(config.eventTimer)
                      {
-                        var timeThisHour:Number = (utcSeconds - eventsTimestampHour) % 3600;
+                        timeThisHour = (utcSeconds - eventsTimestampHour) % 3600;
                         i = 0;
                         while(i < config.eventTimer.eventTimestamps.length)
                         {
-                           var timeUntilEvent:Number = config.eventTimer.eventTimestamps[i] * 60 - timeThisHour;
+                           timeUntilEvent = config.eventTimer.eventTimestamps[i] * 60 - timeThisHour;
                            if(timeThisHour < config.eventTimer.eventTimestamps[i] * 60 && timeUntilEvent < config.eventTimer.showWithDurationBelowMinutes * 60)
                            {
                               displayMessage(config.eventTimer.text.replace(STRING_TIME,FormatTimeStringCustom(timeUntilEvent)));
@@ -2336,11 +2705,11 @@ package
                            displayMessage("TargetingMode (silo " + (this.isInSilo > -1 ? this.isInSilo + 1 : "?") + "): " + this.inTargetingMode + " / " + int(utcSeconds - this.lastTargetingModeEnded));
                            displayMessage("Last launch: " + int(utcSeconds - this.nukeTouchdownTimeStarted));
                         }
-                        var siloCooldowns:String = "";
-                        for(var siloId in SILO_IDS)
+                        siloCooldowns = "";
+                        for(siloId in SILO_IDS)
                         {
-                           var leftCooldown:Number = 0;
-                           var siloLeft:* = this.challengesFileData.siloCooldowns[characterName][siloId];
+                           leftCooldown = 0;
+                           siloLeft = this.challengesFileData.siloCooldowns[characterName][siloId];
                            if(siloLeft != null)
                            {
                               leftCooldown = Math.max(0,SECONDS_IN_3_HOURS - (utcSeconds - siloLeft));
@@ -2363,8 +2732,8 @@ package
                         timeSinceCodesTimestamp = utcWithOffset - SMILEY_TIMESTAMP;
                         timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
                         thisWeekMondayTimestamp = utcWithOffset - timeThisWeek;
-                        var lastTradeTimestamp:Number = 0;
-                        var gold:int = 0;
+                        lastTradeTimestamp = 0;
+                        gold = 0;
                         if(this.challengesFileData.smileyTrades[characterName] != null)
                         {
                            lastTradeTimestamp = Number(this.challengesFileData.smileyTrades[characterName].time);
@@ -2393,7 +2762,24 @@ package
                   case "showActiveInfestation":
                      if(isInfestationActive)
                      {
-                        splitDisplayLine(config.activeInfestation.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationStarted)),dataField);
+                        showPossibleLocations = function():void
+                        {
+                           var i:int = 0;
+                           while(i < activeInfestations.length)
+                           {
+                              splitDisplayLine(activeInfestations[i].possibleLocations.join(", "),"infestationLocations");
+                              i++;
+                           }
+                        };
+                        if(config.anchor == "bottom" && config.activeInfestation.showPossibleLocations)
+                        {
+                           showPossibleLocations();
+                        }
+                        splitDisplayLine(config.activeInfestation.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationStarted)).replace(STRING_AMOUNT,activeInfestations.length),dataField);
+                        if(config.anchor == "top" && config.activeInfestation.showPossibleLocations)
+                        {
+                           showPossibleLocations();
+                        }
                      }
                      else if(utcSeconds - lastInfestationEnded < config.activeInfestation.hideEndedInfestationAfter)
                      {
@@ -2404,7 +2790,7 @@ package
                      showHUDChildren();
                      break;
                   default:
-                     var parts:Array = dataField.split(":");
+                     parts = dataField.split(":");
                      if(parts.length > 0)
                      {
                         switch(parts[0])
