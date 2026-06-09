@@ -1161,12 +1161,10 @@ package
          var infestationMarkers:Array;
          var location:*;
          var marker:*;
-         var t1:*;
          try
          {
             if(event.data && event.data.inTargetingMode != null)
             {
-               t1 = getTimer();
                previousInfestationState = this.isInfestationActive;
                if(!this.infestationLocationsLocalized)
                {
@@ -1273,7 +1271,6 @@ package
                   }
                }
                this.inTargetingMode = event.data.inTargetingMode;
-               ShowHUDMessage("mapUpdate: " + (getTimer() - t1) + "ms");
             }
          }
          catch(e:*)
