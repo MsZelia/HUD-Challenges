@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.5";
+      public static const MOD_VERSION:String = "1.4.6";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -441,11 +441,6 @@ package
          "y":0.0637967437505722,
          "markerID":16741
       },{
-         "text":"Abandoned Bog Town",
-         "x":0.91290545463562,
-         "y":0.6041107177734375,
-         "markerID":16722
-      },{
          "text":"AMS Testing Site",
          "x":0.2988991737365723,
          "y":0.7119367718696594,
@@ -476,35 +471,10 @@ package
          "y":0.5876491665840149,
          "markerID":3959290
       },{
-         "text":"Camp Adams",
-         "x":0.2423727065324783,
-         "y":0.47979524731636,
-         "markerID":3501080
-      },{
-         "text":"Charleston Landfill",
-         "x":0.2953631281852722,
-         "y":0.5415453314781189,
-         "markerID":1101032
-      },{
          "text":"Charleston Trainyard",
          "x":0.3159781396389,
          "y":0.5136355757713318,
          "markerID":1100961
-      },{
-         "text":"Clarksburg",
-         "x":0.4999190270900726,
-         "y":0.08186815679073334,
-         "markerID":379961
-      },{
-         "text":"Converted Munitions Factory",
-         "x":0.7716513276100159,
-         "y":0.05412361398339272,
-         "markerID":1089188
-      },{
-         "text":"Dabney Homestead",
-         "x":0.9241119027137756,
-         "y":0.4664892554283142,
-         "markerID":1089240
       },{
          "text":"Dyer Chemical",
          "x":0.9015149474143982,
@@ -515,26 +485,6 @@ package
          "x":0.7633997201919556,
          "y":0.6813845038414,
          "markerID":16738
-      },{
-         "text":"Garrahan Estate",
-         "x":0.4020235538482666,
-         "y":0.7225922346115112,
-         "markerID":532421
-      },{
-         "text":"Glassed Cavern",
-         "x":0.9503713846206665,
-         "y":0.7418032884597778,
-         "markerID":3148474
-      },{
-         "text":"Gorge Junkyard",
-         "x":0.4378471374511719,
-         "y":0.2347486466169357,
-         "markerID":408960
-      },{
-         "text":"Grafton Steel",
-         "x":0.5861498713493347,
-         "y":0.1534660458564758,
-         "markerID":447229
       },{
          "text":"Grafton",
          "x":0.4448642432689667,
@@ -551,11 +501,6 @@ package
          "y":0.41164880990982,
          "markerID":459621
       },{
-         "text":"Helvetia",
-         "x":0.4767119884490967,
-         "y":0.3516916334629059,
-         "markerID":381753
-      },{
          "text":"Huntersville",
          "x":0.6806320548057556,
          "y":0.5994973182678223,
@@ -565,11 +510,6 @@ package
          "x":0.4291717112064362,
          "y":0.6413661241531372,
          "markerID":591210
-      },{
-         "text":"Monongah",
-         "x":0.6615170240402222,
-         "y":0.2488953620195389,
-         "markerID":604863
       },{
          "text":"Morgantown Trainyard",
          "x":0.487294703722,
@@ -585,11 +525,6 @@ package
          "x":0.2838606536388397,
          "y":0.6613721251487732,
          "markerID":605170
-      },{
-         "text":"Mount Blair",
-         "x":0.2873014807701111,
-         "y":0.6218461990356445,
-         "markerID":605129
       },{
          "text":"New Appalachian Central Trainyard",
          "x":0.5760658979415894,
@@ -621,11 +556,6 @@ package
          "y":0.5988738536834717,
          "markerID":630817
       },{
-         "text":"Red Rocket Mega Stop",
-         "x":0.8241234421730042,
-         "y":0.1202619597315788,
-         "markerID":630835
-      },{
          "text":"Seneca Rocks Visitor Center",
          "x":0.6607925295829773,
          "y":0.3046977519989014,
@@ -651,11 +581,6 @@ package
          "y":0.1553768366575241,
          "markerID":1089651
       },{
-         "text":"Sunshine Meadows Industrial Farm",
-         "x":0.2718645036220551,
-         "y":0.3612886071205139,
-         "markerID":591398
-      },{
          "text":"The General\'s Steakhouse",
          "x":0.91383284330368,
          "y":0.5389155745506287,
@@ -671,25 +596,10 @@ package
          "y":0.5210681557655334,
          "markerID":631898
       },{
-         "text":"Tyler County Dirt Track",
-         "x":0.2343284785747528,
-         "y":0.14152592420578,
-         "markerID":3007870
-      },{
          "text":"Tyler County Fairgrounds",
          "x":0.2545343637466431,
          "y":0.1323051750659943,
          "markerID":662395
-      },{
-         "text":"Wade Airport",
-         "x":0.3730539381504059,
-         "y":0.4935921728610992,
-         "markerID":1100973
-      },{
-         "text":"Wavy Willard\'s Water Park",
-         "x":0.4895053505897522,
-         "y":0.02985663525760174,
-         "markerID":728388
       },{
          "text":"Welch",
          "x":0.24394904077053,
