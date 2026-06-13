@@ -473,7 +473,7 @@ package
                {
                   if(config.eventSoundNotify.events[event] === true)
                   {
-                     config.eventSoundNotify.events[event] = DEFAULT_EVENT_NOTIFY_SOUND;
+                     config.eventSoundNotify.events[event] = config.eventSoundNotify.defaultSound;
                   }
                }
             }
