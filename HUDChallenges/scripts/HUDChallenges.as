@@ -798,7 +798,7 @@ package
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
          this.MapMenuData = BSUIDataManager.GetDataFromClient("MapMenuData");
-         BSUIDataManager.Subscribe("RecentActivitiesData",this.updateEventTimestamps);
+         BSUIDataManager.Subscribe("RecentActivitiesData",this.onRecentActivitiesUpdate);
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
@@ -915,7 +915,7 @@ package
       {
          BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
          BSUIDataManager.Unsubscribe("MessageEvents",this.onMessageEvent);
-         BSUIDataManager.Unsubscribe("RecentActivitiesData",this.updateEventTimestamps);
+         BSUIDataManager.Unsubscribe("RecentActivitiesData",this.onRecentActivitiesUpdate);
          BSUIDataManager.Unsubscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Unsubscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
@@ -1648,7 +1648,7 @@ package
          }
       }
       
-      private function updateEventTimestamps(event:*) : void
+      private function onRecentActivitiesUpdate(event:*) : void
       {
          if(!config)
          {
@@ -1680,7 +1680,7 @@ package
          }
       }
       
-      private function onRecentActivitiesDataUpdate(param1:*) : void
+      private function updateRecentActivities(param1:*) : void
       {
          var events:Array;
          var t1:Number;
@@ -1757,7 +1757,7 @@ package
          }
          catch(e:*)
          {
-            displayMessage("Error onRecentActivitiesDataUpdate:" + e);
+            displayMessage("Error updateRecentActivities:" + e);
          }
       }
       
@@ -2912,7 +2912,7 @@ package
                return;
             }
             this.resetMessages();
-            this.onRecentActivitiesDataUpdate(this.RecentActivitiesData);
+            this.updateRecentActivities(this.RecentActivitiesData);
             this.onChallengeDataUpdate(this.ChallengeData);
             this.displayData(config.displayData);
             drawBackground();
