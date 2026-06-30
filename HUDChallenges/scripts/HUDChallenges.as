@@ -798,6 +798,7 @@ package
          this.HUDMessageProvider = BSUIDataManager.GetDataFromClient("HUDMessageProvider");
          this.UniversalRewardData = BSUIDataManager.GetDataFromClient("UniversalRewardData");
          this.MapMenuData = BSUIDataManager.GetDataFromClient("MapMenuData");
+         BSUIDataManager.Subscribe("RecentActivitiesData",this.updateEventTimestamps);
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
@@ -914,6 +915,10 @@ package
       {
          BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
          BSUIDataManager.Unsubscribe("MessageEvents",this.onMessageEvent);
+         BSUIDataManager.Unsubscribe("RecentActivitiesData",this.updateEventTimestamps);
+         BSUIDataManager.Unsubscribe("MapMenuData",this.onMapMenuUpdate);
+         BSUIDataManager.Unsubscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
+         BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -1643,6 +1648,38 @@ package
          }
       }
       
+      private function updateEventTimestamps(event:*) : void
+      {
+         if(!config)
+         {
+            return;
+         }
+         for each(activity in event.data.recentActivities)
+         {
+            if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
+            {
+               if(_eventTimes[activity.id] == null)
+               {
+                  _eventTimes[activity.id] = {
+                     "time":activity.time,
+                     "timestamp":getTimer()
+                  };
+                  if(config.eventSoundNotify.enabled && config.eventSoundNotify.events[activity.name])
+                  {
+                     GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
+                  }
+               }
+               else if(_eventTimes[activity.id].time != activity.time)
+               {
+                  _eventTimes[activity.id] = {
+                     "time":activity.time,
+                     "timestamp":getTimer()
+                  };
+               }
+            }
+         }
+      }
+      
       private function onRecentActivitiesDataUpdate(param1:*) : void
       {
          var events:Array;
@@ -1664,24 +1701,6 @@ package
                      "name":activity.name,
                      "type":activity.type
                   });
-                  if(_eventTimes[activity.id] == null)
-                  {
-                     _eventTimes[activity.id] = {
-                        "time":activity.time,
-                        "timestamp":getTimer()
-                     };
-                     if(config.eventSoundNotify.enabled && config.eventSoundNotify.events[activity.name])
-                     {
-                        GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
-                     }
-                  }
-                  else if(_eventTimes[activity.id].time != activity.time)
-                  {
-                     _eventTimes[activity.id] = {
-                        "time":activity.time,
-                        "timestamp":getTimer()
-                     };
-                  }
                   if(activity.type == ACTIVITY_TYPE_MUTATED_EVENT)
                   {
                      events[events.length - 1].mutation = "";
