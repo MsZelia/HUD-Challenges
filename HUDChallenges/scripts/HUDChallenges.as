@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.7";
+      public static const MOD_VERSION:String = "1.4.8";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -1118,7 +1118,7 @@ package
                   {
                      location = INFESTATION_LOCATIONS[j];
                      distance = Math.sqrt(Math.pow(this.activeInfestations[i].x - location.x,2) + Math.pow(this.activeInfestations[i].y - location.y,2));
-                     if(distance <= 0.1)
+                     if(distance <= 0.07)
                      {
                         this.activeInfestations[i].possibleLocations.push(location.text);
                      }
