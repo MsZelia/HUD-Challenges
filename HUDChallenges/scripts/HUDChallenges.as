@@ -669,7 +669,7 @@ package
       
       private var _challenges:Object;
       
-      private var _events:Array;
+      private var _events:Array = [];
       
       private var _eventTimes:* = {};
       
@@ -803,6 +803,7 @@ package
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Subscribe("DialogueData",this.onDialogueUpdate);
+         BSUIDataManager.Subscribe("HUDModeData",this.updateVisibility);
       }
       
       public static function toString(param1:Object) : String
@@ -877,6 +878,7 @@ package
       
       public function addedToStageHandler(param1:Event) : *
       {
+         this.updateVisibility();
          removeEventListener(Event.ADDED_TO_STAGE,this.addedToStageHandler);
          addEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler,false,0,true);
          this.topLevel = stage.getChildAt(0);
@@ -919,6 +921,7 @@ package
          BSUIDataManager.Unsubscribe("MapMenuData",this.onMapMenuUpdate);
          BSUIDataManager.Unsubscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
+         BSUIDataManager.Unsubscribe("HUDModeData",this.updateVisibility);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -979,10 +982,12 @@ package
             if(selectItem == HUDTOOLS_MENU_TOGGLE_VISIBILITY)
             {
                this.toggleVisibility = !this.toggleVisibility;
+               this.updateVisibility();
             }
             else if(selectItem == HUDTOOLS_MENU_HIDE)
             {
                this.forceHide = !this.forceHide;
+               this.updateVisibility();
             }
             else if(selectItem == HUDTOOLS_MENU_RELOAD_CONFIG)
             {
@@ -1044,10 +1049,12 @@ package
          if(event.keyCode == config.toggleVisibilityHotkey)
          {
             this.toggleVisibility = !this.toggleVisibility;
+            this.updateVisibility();
          }
          if(event.keyCode == config.forceHideHotkey)
          {
             this.forceHide = !this.forceHide;
+            this.updateVisibility();
          }
       }
       
@@ -1059,6 +1066,17 @@ package
             {
                return x.menuName == MAIN_MENU;
             }));
+         }
+         catch(e:Error)
+         {
+         }
+      }
+      
+      private function updateVisibility() : void
+      {
+         try
+         {
+            this.visible = !this.forceHide && Boolean(this.isValidHUDMode() ^ this.toggleVisibility);
          }
          catch(e:Error)
          {
@@ -1686,10 +1704,6 @@ package
          var t1:Number;
          try
          {
-            if(!config)
-            {
-               return;
-            }
             t1 = Number(getTimer());
             events = [];
             for each(activity in param1.data.recentActivities)
@@ -1787,10 +1801,6 @@ package
       
       public function resetMessages(setFormat:Boolean = false) : void
       {
-         if(!config)
-         {
-            return;
-         }
          this.nextY = config.y;
          this.nextX = config.x;
          this.nextYSpacing = config.ySpacing;
@@ -1895,6 +1905,10 @@ package
       
       public function drawBackground() : void
       {
+         if(!config)
+         {
+            return;
+         }
          if(config.background)
          {
             this.graphics.beginFill(config.backgroundColor,config.backgroundAlpha);
@@ -2856,7 +2870,7 @@ package
             config.formats[eventType] = HUDChallengesConfig.DEFAULT_EVENT_FORMAT;
          }
          var isCountdown:Boolean = false;
-         var timeSeconds:Number = _eventTimes[event.id].time + (getTimer() - _eventTimes[event.id].timestamp) / 1000;
+         var timeSeconds:Number = _eventTimes[event.id] != null ? _eventTimes[event.id].time + (getTimer() - _eventTimes[event.id].timestamp) / 1000 : 0;
          if(config.countdownTimerForEvents.enabled && config.countdownTimerForEvents.events[event.name] != null && config.countdownTimerForEvents.events[event.name] > 0)
          {
             timeSeconds = config.countdownTimerForEvents.events[event.name] - timeSeconds;
@@ -2905,10 +2919,10 @@ package
       public function displayChallengesLoop() : void
       {
          var t1:Number;
+         var errorCode:String;
          try
          {
             t1 = Number(getTimer());
-            this.visible = !this.forceHide && Boolean(this.isValidHUDMode() ^ this.toggleVisibility);
             this.scoreBar = null;
             this.xpBar = null;
             if(!this.visible)
@@ -2919,19 +2933,27 @@ package
             {
                return;
             }
+            errorCode = "reset";
             this.resetMessages();
+            errorCode = "updateRecent";
             this.updateRecentActivities(this.RecentActivitiesData);
+            errorCode = "updateChallenge";
             this.onChallengeDataUpdate(this.ChallengeData);
+            errorCode = "displayData";
             this.displayData(config.displayData);
+            errorCode = "drawBackground";
             drawBackground();
+            errorCode = "drawSeparators";
             drawSeparators();
+            errorCode = "drawBar";
             drawBar(this.scoreBar,config.scoreBar,"scoreBar");
+            errorCode = "drawBar2";
             drawBar(this.xpBar,config.xpBar,"xpBar");
             this._lastRenderTime = getTimer() - t1;
          }
          catch(error:*)
          {
-            displayMessage("Error displaying: " + error);
+            displayMessage("Error displaying (" + errorCode + "): " + error);
             drawBackground();
          }
       }
