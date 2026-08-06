@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.8";
+      public static const MOD_VERSION:String = "1.4.9";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -1787,6 +1787,10 @@ package
       
       public function resetMessages(setFormat:Boolean = false) : void
       {
+         if(!config)
+         {
+            return;
+         }
          this.nextY = config.y;
          this.nextX = config.x;
          this.nextYSpacing = config.ySpacing;
@@ -2908,6 +2912,10 @@ package
             this.scoreBar = null;
             this.xpBar = null;
             if(!this.visible)
+            {
+               return;
+            }
+            if(!config)
             {
                return;
             }
