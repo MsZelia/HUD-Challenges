@@ -3,7 +3,7 @@
 # Used to manually update HUDChallenges time stamps when SFE saving is not possible
 # Can update Smiley trade time, for "showSmiley", and silo cooldown timers, for "showSiloCooldowns"
 
-# HUDChallenges version 1.4.9
+# HUDChallenges version 1.4.10
 
 
 $dataFile = ".\ChallengeData.ini"
@@ -58,12 +58,15 @@ while(1)
 			}
 		}
 		Write-Host "Silo cooldowns:"
-		foreach($char in $jsonObject.siloCooldowns.PSobject.Properties.Name)
+		if([bool]($jsonObject.PSobject.Properties.name -match "siloCooldowns"))
 		{
-			Write-Host "   " $char :
-			foreach($silo in $jsonObject.siloCooldowns.$char.PSobject.Properties.Name)
+			foreach($char in $jsonObject.siloCooldowns.PSobject.Properties.Name)
 			{
-				Write-Host "      " ([char]([int]($silo) + 65)) - ([DateTimeOffset]::FromUnixTimeSeconds($jsonObject.siloCooldowns.$char.$silo).DateTime).ToString("s")
+				Write-Host "   " $char :
+				foreach($silo in $jsonObject.siloCooldowns.$char.PSobject.Properties.Name)
+				{
+					Write-Host "      " ([char]([int]($silo) + 65)) - ([DateTimeOffset]::FromUnixTimeSeconds($jsonObject.siloCooldowns.$char.$silo).DateTime).ToString("s")
+				}
 			}
 		}
 		Write-Host
