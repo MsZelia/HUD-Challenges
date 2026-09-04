@@ -172,6 +172,7 @@
 		"showReadySilos": false,
 		"text": "Silo cooldowns: {siloCooldowns}",
 		"textSilo": "[{siloName}: {time}] ",
+		"textSiloReady": "READY",
 		"siloNames": ["A", "B", "C"]
 	},
 	
