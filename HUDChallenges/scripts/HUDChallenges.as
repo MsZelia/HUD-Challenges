@@ -2664,6 +2664,10 @@ package
                         for(siloId in SILO_IDS)
                         {
                            leftCooldown = 0;
+                           if(this.challengesFileData.siloCooldowns[characterName] == null)
+                           {
+                              this.challengesFileData.siloCooldowns[characterName] = {};
+                           }
                            siloLeft = this.challengesFileData.siloCooldowns[characterName][siloId];
                            if(siloLeft != null)
                            {
