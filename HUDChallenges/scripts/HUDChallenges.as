@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.10";
+      public static const MOD_VERSION:String = "1.4.11";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -2669,9 +2669,13 @@ package
                            {
                               leftCooldown = Math.max(0,SECONDS_IN_3_HOURS - (utcSeconds - siloLeft));
                            }
-                           if(leftCooldown > 0 || config.siloCooldowns.showReadySilos)
+                           if(leftCooldown > 0)
                            {
                               siloCooldowns += config.siloCooldowns.textSilo.replace(STRING_SILO_NAME,config.siloCooldowns.siloNames[int(siloId)]).replace(STRING_TIME,FormatTimeStringCustom(leftCooldown));
+                           }
+                           else if(config.siloCooldowns.showReadySilos)
+                           {
+                              siloCooldowns += config.siloCooldowns.textSilo.replace(STRING_SILO_NAME,config.siloCooldowns.siloNames[int(siloId)]).replace(STRING_TIME,config.siloCooldowns.textSiloReady);
                            }
                         }
                         if(siloCooldowns)

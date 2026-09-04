@@ -63,6 +63,8 @@ package
       
       public static const DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT:String = "[{siloName}: {time}] ";
       
+      public static const DEFAULT_SILO_COOLDOWNS_READY_FORMAT:String = "READY";
+      
       public static const DEFAULT_SILO_NAMES:Array = ["A","B","C"];
       
       public static const DEFAULT_SMILEY_VISITED_FORMAT:* = "Smiley visited this week ({gold}g {time} ago)";
@@ -379,6 +381,7 @@ package
             config.siloCooldowns.showReadySilos = false;
             config.siloCooldowns.text = DEFAULT_SILO_COOLDOWNS_FORMAT;
             config.siloCooldowns.textSilo = DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
+            config.siloCooldowns.textSiloReady = DEFAULT_SILO_COOLDOWNS_READY_FORMAT;
             config.siloCooldowns.siloNames = DEFAULT_SILO_NAMES;
          }
          else
@@ -386,7 +389,8 @@ package
             config.siloCooldowns.showReadySilos = Boolean(config.siloCooldowns.showReadySilos);
             config.siloCooldowns.text = Boolean(config.siloCooldowns.text) ? config.siloCooldowns.text : DEFAULT_SILO_COOLDOWNS_FORMAT;
             config.siloCooldowns.textSilo = Boolean(config.siloCooldowns.textSilo) ? config.siloCooldowns.textSilo : DEFAULT_SILO_COOLDOWNS_SINGLE_FORMAT;
-            config.siloCooldowns.siloNames = Boolean(config.siloCooldowns.siloNames) && config.siloCooldowns.siloNames.length == 3 ? config.siloCooldowns.siloNames : DEFAULT_SILO_NAMES;
+            config.siloCooldowns.textSiloReady = Boolean(config.siloCooldowns.textSiloReady) ? config.siloCooldowns.textSiloReady : DEFAULT_SILO_COOLDOWNS_READY_FORMAT;
+            config.siloCooldowns.siloNames = Boolean(config.siloCooldowns.siloNames) && config.siloCooldowns.siloNames is Array && config.siloCooldowns.siloNames.length == 3 ? config.siloCooldowns.siloNames : DEFAULT_SILO_NAMES;
          }
          if(!config.smiley)
          {
