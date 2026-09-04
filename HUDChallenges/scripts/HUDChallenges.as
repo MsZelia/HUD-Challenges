@@ -2653,8 +2653,12 @@ package
                      }
                      break;
                   case "showSiloCooldowns":
-                     if(this.challengesFileData && this.challengesFileData.siloCooldowns && this.challengesFileData.siloCooldowns[characterName])
+                     if(this.challengesFileData && this.challengesFileData.siloCooldowns)
                      {
+                        if(this.challengesFileData.siloCooldowns[characterName] == null)
+                        {
+                           this.challengesFileData.siloCooldowns[characterName] = {};
+                        }
                         if(config.siloCooldowns.debug)
                         {
                            displayMessage("TargetingMode (silo " + (this.isInSilo > -1 ? this.isInSilo + 1 : "?") + "): " + this.inTargetingMode + " / " + int(utcSeconds - this.lastTargetingModeEnded));
@@ -2664,10 +2668,6 @@ package
                         for(siloId in SILO_IDS)
                         {
                            leftCooldown = 0;
-                           if(this.challengesFileData.siloCooldowns[characterName] == null)
-                           {
-                              this.challengesFileData.siloCooldowns[characterName] = {};
-                           }
                            siloLeft = this.challengesFileData.siloCooldowns[characterName][siloId];
                            if(siloLeft != null)
                            {
