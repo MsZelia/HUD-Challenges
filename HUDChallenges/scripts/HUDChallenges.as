@@ -1100,6 +1100,7 @@ package
          var xDiff:Number;
          var yDiff:Number;
          var distance:Number;
+         var marker:*;
          try
          {
             if(event.data && event.data.inTargetingMode != null)
@@ -1164,10 +1165,11 @@ package
       
       private function onCloudDataUpdate(event:FromClientDataEvent) : void
       {
+         var i:int;
+         var j:int;
          var previousInfestationState:Boolean;
          var infestationMarkers:Array;
          var location:*;
-         var marker:*;
          var distance:Number;
          try
          {
