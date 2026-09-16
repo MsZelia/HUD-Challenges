@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.11";
+      public static const MOD_VERSION:String = "1.4.12";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -227,6 +227,10 @@ package
          "name":"burning_springs",
          "type":2,
          "category":10
+      },{
+         "name":"pets",
+         "type":2,
+         "category":11
       }];
       
       private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
@@ -806,6 +810,7 @@ package
          BSUIDataManager.Subscribe("RecentActivitiesData",this.onRecentActivitiesUpdate);
          BSUIDataManager.Subscribe("MessageEvents",this.onMessageEvent);
          BSUIDataManager.Subscribe("MapMenuData",this.onMapMenuUpdate);
+         BSUIDataManager.Subscribe("CloudData",this.onCloudDataUpdate);
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Subscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Subscribe("HUDModeData",this.updateVisibility);
@@ -1095,15 +1100,10 @@ package
          var xDiff:Number;
          var yDiff:Number;
          var distance:Number;
-         var previousInfestationState:Boolean;
-         var infestationMarkers:Array;
-         var location:*;
-         var marker:*;
          try
          {
             if(event.data && event.data.inTargetingMode != null)
             {
-               previousInfestationState = this.isInfestationActive;
                if(!this.infestationLocationsLocalized)
                {
                   i = 0;
@@ -1123,9 +1123,60 @@ package
                      i++;
                   }
                }
-               infestationMarkers = MapMenuData.data.MarkerData.filter(function(m:*):Boolean
+               if(this.inTargetingMode && !event.data.inTargetingMode)
                {
-                  return m.isInfestationRadius;
+                  this.lastTargetingModeEnded = new Date().getTime() / 1000;
+                  i = 0;
+                  while(i < event.data.MarkerData.length)
+                  {
+                     if(!event.data.MarkerData[i].text && event.data.MarkerData[i].markerType == "PlayerLocal")
+                     {
+                        j = 0;
+                        while(j < SILO_POSITIONS.length)
+                        {
+                           xDiff = event.data.MarkerData[i].x - SILO_POSITIONS[j].x;
+                           yDiff = event.data.MarkerData[i].y - SILO_POSITIONS[j].y;
+                           distance = int(Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2)) * 4096);
+                           if(distance < 20)
+                           {
+                              this.isInSilo = j;
+                              break;
+                           }
+                           j++;
+                        }
+                        if(j == SILO_POSITIONS.length)
+                        {
+                           this.isInSilo = -1;
+                        }
+                        break;
+                     }
+                     i++;
+                  }
+               }
+               this.inTargetingMode = event.data.inTargetingMode;
+            }
+         }
+         catch(e:*)
+         {
+            ShowHUDMessage("onMapMenuUpdate error: " + e);
+         }
+      }
+      
+      private function onCloudDataUpdate(event:FromClientDataEvent) : void
+      {
+         var previousInfestationState:Boolean;
+         var infestationMarkers:Array;
+         var location:*;
+         var marker:*;
+         var distance:Number;
+         try
+         {
+            if(event && event.data && event.data.CloudList && event.data.CloudList.length)
+            {
+               previousInfestationState = this.isInfestationActive;
+               infestationMarkers = event.data.CloudList.filter(function(c:*):Boolean
+               {
+                  return c.statusType == "AddMarker";
                });
                this.activeInfestations = [];
                i = 0;
@@ -1178,42 +1229,11 @@ package
                   },2000);
                   this.lastInfestationSoundPlayed = true;
                }
-               if(this.inTargetingMode && !event.data.inTargetingMode)
-               {
-                  this.lastTargetingModeEnded = new Date().getTime() / 1000;
-                  i = 0;
-                  while(i < event.data.MarkerData.length)
-                  {
-                     if(!event.data.MarkerData[i].text && event.data.MarkerData[i].markerType == "PlayerLocal")
-                     {
-                        j = 0;
-                        while(j < SILO_POSITIONS.length)
-                        {
-                           xDiff = event.data.MarkerData[i].x - SILO_POSITIONS[j].x;
-                           yDiff = event.data.MarkerData[i].y - SILO_POSITIONS[j].y;
-                           distance = int(Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2)) * 4096);
-                           if(distance < 20)
-                           {
-                              this.isInSilo = j;
-                              break;
-                           }
-                           j++;
-                        }
-                        if(j == SILO_POSITIONS.length)
-                        {
-                           this.isInSilo = -1;
-                        }
-                        break;
-                     }
-                     i++;
-                  }
-               }
-               this.inTargetingMode = event.data.inTargetingMode;
             }
          }
          catch(e:*)
          {
-            ShowHUDMessage("onMapMenuUpdate error: " + e);
+            ShowHUDMessage("onCloudDataUpdate error: " + e);
          }
       }
       
