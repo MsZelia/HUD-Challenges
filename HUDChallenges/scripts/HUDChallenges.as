@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.12";
+      public static const MOD_VERSION:String = "1.4.13";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -1171,34 +1171,49 @@ package
          var infestationMarkers:Array;
          var location:*;
          var distance:Number;
+         var newInfestation:*;
          try
          {
             if(event && event.data && event.data.CloudList && event.data.CloudList.length)
             {
                previousInfestationState = this.isInfestationActive;
-               infestationMarkers = event.data.CloudList.filter(function(c:*):Boolean
-               {
-                  return c.statusType == "AddMarker";
-               });
-               this.activeInfestations = [];
+               infestationMarkers = event.data.CloudList;
                i = 0;
                while(i < infestationMarkers.length)
                {
-                  this.activeInfestations.push({
-                     "x":infestationMarkers[i].x,
-                     "y":infestationMarkers[i].y,
-                     "possibleLocations":[]
-                  });
-                  j = 0;
-                  while(j < INFESTATION_LOCATIONS.length)
+                  if(infestationMarkers[i].statusType == "AddMarker")
                   {
-                     location = INFESTATION_LOCATIONS[j];
-                     distance = Math.sqrt(Math.pow(this.activeInfestations[i].x - location.x,2) + Math.pow(this.activeInfestations[i].y - location.y,2));
-                     if(distance <= 0.07)
+                     if(!this.activeInfestations.some(function(infestation:Object):Boolean
                      {
-                        this.activeInfestations[i].possibleLocations.push(location.text);
+                        return infestation.targetInstanceID == infestationMarkers[i].targetInstanceID;
+                     }))
+                     {
+                        newInfestation = {
+                           "x":infestationMarkers[i].x,
+                           "y":infestationMarkers[i].y,
+                           "targetInstanceID":infestationMarkers[i].targetInstanceID,
+                           "possibleLocations":[]
+                        };
+                        j = 0;
+                        while(j < INFESTATION_LOCATIONS.length)
+                        {
+                           location = INFESTATION_LOCATIONS[j];
+                           distance = Math.sqrt(Math.pow(newInfestation.x - location.x,2) + Math.pow(newInfestation.y - location.y,2));
+                           if(distance <= 0.07)
+                           {
+                              newInfestation.possibleLocations.push(location.text);
+                           }
+                           j++;
+                        }
+                        this.activeInfestations.push(newInfestation);
                      }
-                     j++;
+                  }
+                  else if(infestationMarkers[i].statusType == "RemoveMarker")
+                  {
+                     this.activeInfestations = this.activeInfestations.filter(function(infestation:*):Boolean
+                     {
+                        return infestation.targetInstanceID != infestationMarkers[i].targetInstanceID;
+                     });
                   }
                   i++;
                }
