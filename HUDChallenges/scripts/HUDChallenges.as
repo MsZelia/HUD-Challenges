@@ -778,7 +778,7 @@ package
       
       private var goldBeforeConversationWithSmiley:int = 0;
       
-      private var isInfestationActive:Boolean = false;
+      private var infestationsActive:int = 0;
       
       private var lastInfestationStarted:Number = 0;
       
@@ -1076,6 +1076,10 @@ package
             {
                return x.menuName == MAIN_MENU;
             }));
+            if(this.isInMainMenu)
+            {
+               this.activeInfestations = [];
+            }
          }
          catch(e:Error)
          {
@@ -1167,7 +1171,7 @@ package
       {
          var i:int;
          var j:int;
-         var previousInfestationState:Boolean;
+         var previousInfestationsActive:int;
          var infestationMarkers:Array;
          var location:*;
          var distance:Number;
@@ -1176,7 +1180,7 @@ package
          {
             if(event && event.data && event.data.CloudList && event.data.CloudList.length)
             {
-               previousInfestationState = this.isInfestationActive;
+               previousInfestationsActive = this.activeInfestations.length;
                infestationMarkers = event.data.CloudList;
                i = 0;
                while(i < infestationMarkers.length)
@@ -1217,21 +1221,20 @@ package
                   }
                   i++;
                }
-               this.isInfestationActive = this.activeInfestations.length;
-               if(this.isInfestationActive != previousInfestationState)
+               this.infestationsActive = this.activeInfestations.length;
+               if(this.infestationsActive != previousInfestationsActive)
                {
-                  if(this.isInfestationActive)
+                  if(this.infestationsActive > previousInfestationsActive)
                   {
                      this.lastInfestationStarted = new Date().getTime() / 1000;
                   }
-                  else
+                  else if(this.infestationsActive < previousInfestationsActive)
                   {
                      this.lastInfestationEndedFalsePositiveBackup = this.lastInfestationEnded;
                      this.lastInfestationEnded = new Date().getTime() / 1000;
-                     this.lastInfestationSoundPlayed = false;
                   }
                }
-               if(this.isInfestationActive && !this.lastInfestationSoundPlayed && config && config.activeInfestation && config.activeInfestation.soundNotify)
+               if(this.infestationsActive > previousInfestationsActive && config && config.activeInfestation && config.activeInfestation.soundNotify)
                {
                   setTimeout(function():void
                   {
@@ -1244,7 +1247,6 @@ package
                         lastInfestationEnded = lastInfestationEndedFalsePositiveBackup;
                      }
                   },2000);
-                  this.lastInfestationSoundPlayed = true;
                }
             }
          }
@@ -2760,7 +2762,7 @@ package
                      }
                      break;
                   case "showActiveInfestation":
-                     if(isInfestationActive)
+                     if(infestationsActive)
                      {
                         showPossibleLocations = function():void
                         {
