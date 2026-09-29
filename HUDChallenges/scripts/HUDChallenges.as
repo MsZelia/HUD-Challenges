@@ -1201,10 +1201,10 @@ package
                   }
                   this.players = _players;
                   this.worldEvents = _worldEvents;
-                  participants = 0;
                   i = 0;
                   while(i < this.activeInfestations.length)
                   {
+                     participants = 0;
                      j = 0;
                      while(j < this.players.length)
                      {
