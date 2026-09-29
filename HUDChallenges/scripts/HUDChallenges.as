@@ -23,6 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
+      public static const MOD_VERSION:String = "1.5.0";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -59,6 +60,8 @@ package
       private static const STRING_TIME:String = "{time}";
       
       private static const STRING_LOCATION:String = "{location}";
+      
+      private static const STRING_LOCATIONS:String = "{locations}";
       
       private static const STRING_LIST:String = "{list}";
       
@@ -143,6 +146,8 @@ package
       private static const STRING_GOLD:String = "{gold}";
       
       private static const STRING_AMOUNT:String = "{amount}";
+      
+      private static const STRING_HUDMODE:String = "{HUDMode}";
       
       private static const TITLE_HUDMENU:String = "HUDMenu";
       
@@ -1238,7 +1243,8 @@ package
                            "x":infestationMarkers[i].x,
                            "y":infestationMarkers[i].y,
                            "targetInstanceID":infestationMarkers[i].targetInstanceID,
-                           "possibleLocations":[]
+                           "possibleLocations":[],
+                           "time":new Date().getTime() / 1000
                         };
                         j = 0;
                         while(j < INFESTATION_LOCATIONS.length)
@@ -2839,7 +2845,7 @@ package
                            var i:int = 0;
                            while(i < activeInfestations.length)
                            {
-                              splitDisplayLine(activeInfestations[i].possibleLocations.join(", "),"infestationLocations");
+                              splitDisplayLine(config.activeInfestation.textLocations.replace(STRING_LOCATIONS,activeInfestations[i].possibleLocations.join(config.activeInfestation.locationsDelimiter)).replace(STRING_PARTICIPANTS,activeInfestations[i].participants).replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - activeInfestations[i].time)),"infestationLocations");
                               i++;
                            }
                         };

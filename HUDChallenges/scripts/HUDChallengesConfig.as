@@ -99,6 +99,10 @@ package
       
       public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:String = "INFESTATION ENDED ({time} ago)";
       
+      public static const DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT:String = "{locations} [{participants}][{time} ago]";
+      
+      public static const DEFAULT_ACTIVE_INFESTATION_DELIMITER:String = "/";
+      
       public static const DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND:String = "QSTMassFusionAlarmAlert";
       
       public function HUDChallengesConfig()
@@ -502,6 +506,8 @@ package
             config.activeInfestation.showPossibleLocations = true;
             config.activeInfestation.text = DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
+            config.activeInfestation.textLocations = DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT;
+            config.activeInfestation.locationsDelimiter = DEFAULT_ACTIVE_INFESTATION_DELIMITER;
             config.activeInfestation.soundNotify = DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;
          }
          else
@@ -510,7 +516,9 @@ package
             config.activeInfestation.showPossibleLocations = Boolean(config.activeInfestation.showPossibleLocations);
             config.activeInfestation.text = Boolean(config.activeInfestation.text) ? config.activeInfestation.text : DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = Boolean(config.activeInfestation.textEnded) ? config.activeInfestation.textEnded : DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
-            config.activeInfestation.soundNotify = Boolean(config.activeInfestation.soundNotify) ? String(config.activeInfestation.soundNotify) : DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND;
+            config.activeInfestation.textLocations = Boolean(config.activeInfestation.textLocations) ? config.activeInfestation.textLocations : DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT;
+            config.activeInfestation.locationsDelimiter = Boolean(config.activeInfestation.locationsDelimiter) ? config.activeInfestation.locationsDelimiter : DEFAULT_ACTIVE_INFESTATION_DELIMITER;
+            config.activeInfestation.soundNotify = config.activeInfestation.soundNotify === false ? false : (Boolean(config.activeInfestation.soundNotify) ? String(config.activeInfestation.soundNotify) : DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND);
          }
          if(!config.showOnlyTrackedChallenges)
          {
