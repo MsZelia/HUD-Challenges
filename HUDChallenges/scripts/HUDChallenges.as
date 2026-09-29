@@ -23,7 +23,6 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.4.14";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -161,7 +160,11 @@ package
       
       private static const ACTIVITY_TYPE_PUBLIC_EVENT:uint = 1;
       
+      private static const ACTIVITY_TYPE_WORLD_EVENT:uint = 2;
+      
       private static const ACTIVITY_TYPE_MUTATED_EVENT:uint = 5;
+      
+      private static const ACTIVITY_TYPE_INFESTATION:uint = 8;
       
       private static const ACTIVITY_LABEL_MUTATED_EVENT:String = "$DailyOps_Header_Mutation";
       
@@ -628,6 +631,8 @@ package
       
       private var _lastChallengeUpdateTime:Number = 0;
       
+      private var _lastMapUpdateTime:Number = 0;
+      
       private var _lastConfigUpdateTime:Number = 0;
       
       private var _lastRenderTime:Number = 0;
@@ -791,6 +796,10 @@ package
       private var activeInfestations:Array = [];
       
       private var infestationLocationsLocalized:Boolean = false;
+      
+      private var players:Array = [];
+      
+      private var worldEvents:Object = {};
       
       public function HUDChallenges()
       {
@@ -1079,6 +1088,8 @@ package
             if(this.isInMainMenu)
             {
                this.activeInfestations = [];
+               this.players = [];
+               this.worldEvents = {};
             }
          }
          catch(e:Error)
@@ -1105,8 +1116,12 @@ package
          var yDiff:Number;
          var distance:Number;
          var marker:*;
+         var t1:Number;
+         var _players:Array = [];
+         var _worldEvents:Object = {};
          try
          {
+            t1 = Number(getTimer());
             if(event.data && event.data.inTargetingMode != null)
             {
                if(!this.infestationLocationsLocalized)
@@ -1141,8 +1156,8 @@ package
                         {
                            xDiff = event.data.MarkerData[i].x - SILO_POSITIONS[j].x;
                            yDiff = event.data.MarkerData[i].y - SILO_POSITIONS[j].y;
-                           distance = int(Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2)) * 4096);
-                           if(distance < 20)
+                           distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2));
+                           if(distance < 0.005)
                            {
                               this.isInSilo = j;
                               break;
@@ -1159,7 +1174,34 @@ package
                   }
                }
                this.inTargetingMode = event.data.inTargetingMode;
+               if(MapMenuData && MapMenuData.data && MapMenuData.data.MarkerData)
+               {
+                  i = 0;
+                  while(i < MapMenuData.data.MarkerData.length)
+                  {
+                     marker = MapMenuData.data.MarkerData[i];
+                     if(marker.playerLevel > 0)
+                     {
+                        _players.push({
+                           "name":marker.text.split("<")[0],
+                           "x":marker.x,
+                           "y":marker.y
+                        });
+                     }
+                     else if(marker.markerType.indexOf("InWorld") == 0)
+                     {
+                        _worldEvents[marker.markerID] = {
+                           "x":marker.x,
+                           "y":marker.y
+                        };
+                     }
+                     i++;
+                  }
+                  this.players = _players;
+                  this.worldEvents = _worldEvents;
+               }
             }
+            _lastMapUpdateTime = getTimer() - t1;
          }
          catch(e:*)
          {
@@ -1752,6 +1794,9 @@ package
       {
          var events:Array;
          var t1:Number;
+         var eventLocation:Object;
+         var eventIndex:int;
+         var participants:int;
          try
          {
             t1 = Number(getTimer());
@@ -1765,10 +1810,11 @@ package
                      "name":activity.name,
                      "type":activity.type
                   });
+                  eventIndex = events.length - 1;
                   if(activity.type == ACTIVITY_TYPE_MUTATED_EVENT)
                   {
-                     events[events.length - 1].mutation = "";
-                     events[events.length - 1].participants = -1;
+                     events[eventIndex].mutation = "";
+                     events[eventIndex].participants = "?";
                      for each(detail in activity.details)
                      {
                         if(detail.groupLabel == ACTIVITY_LABEL_MUTATED_EVENT && detail.pairList.length > 0)
@@ -1777,11 +1823,11 @@ package
                            {
                               if(mutation == 0)
                               {
-                                 events[events.length - 1].mutation = detail.pairList[mutation].label;
+                                 events[eventIndex].mutation = detail.pairList[mutation].label;
                               }
                               else
                               {
-                                 events[events.length - 1].mutation += "|" + detail.pairList[mutation].label;
+                                 events[eventIndex].mutation += "|" + detail.pairList[mutation].label;
                               }
                            }
                         }
@@ -1791,7 +1837,7 @@ package
                            {
                               if(detail.pairList[pair].label == ACTIVITY_LABEL_EVENT_PARTICIPANTS)
                               {
-                                 events[events.length - 1].participants = Number(detail.pairList[pair].description);
+                                 events[eventIndex].participants = Number(detail.pairList[pair].description);
                               }
                            }
                         }
@@ -1799,7 +1845,7 @@ package
                   }
                   else if(activity.type == ACTIVITY_TYPE_PUBLIC_EVENT)
                   {
-                     events[events.length - 1].participants = -1;
+                     events[eventIndex].participants = "?";
                      for each(detail in activity.details)
                      {
                         if(detail.groupLabel == ACTIVITY_LABEL_EVENT_STATS && detail.pairList.length > 0)
@@ -1808,10 +1854,30 @@ package
                            {
                               if(detail.pairList[pair].label == ACTIVITY_LABEL_EVENT_PARTICIPANTS)
                               {
-                                 events[events.length - 1].participants = Number(detail.pairList[pair].description);
+                                 events[eventIndex].participants = Number(detail.pairList[pair].description);
                               }
                            }
                         }
+                     }
+                  }
+                  else if(activity.type == ACTIVITY_TYPE_WORLD_EVENT)
+                  {
+                     events[eventIndex].participants = "?";
+                  }
+                  if(events[eventIndex].participants == "?" || events[eventIndex].participants == 0)
+                  {
+                     eventLocation = worldEvents[activity.mapMarkerId];
+                     if(eventLocation != null)
+                     {
+                        participants = 0;
+                        for(player in players)
+                        {
+                           if(Math.sqrt(Math.pow(players[player].x - eventLocation.x,2) + Math.pow(players[player].y - eventLocation.y,2)) < 0.015)
+                           {
+                              participants++;
+                           }
+                        }
+                        events[eventIndex].participants = participants;
                      }
                   }
                }
