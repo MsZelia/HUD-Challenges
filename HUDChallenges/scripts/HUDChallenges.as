@@ -1223,6 +1223,7 @@ package
          var location:*;
          var distance:Number;
          var newInfestation:*;
+         var participants:int;
          try
          {
             if(event && event.data && event.data.CloudList && event.data.CloudList.length)
@@ -1244,7 +1245,8 @@ package
                            "y":infestationMarkers[i].y,
                            "targetInstanceID":infestationMarkers[i].targetInstanceID,
                            "possibleLocations":[],
-                           "time":new Date().getTime() / 1000
+                           "time":new Date().getTime() / 1000,
+                           "participants":"?"
                         };
                         j = 0;
                         while(j < INFESTATION_LOCATIONS.length)
@@ -1257,6 +1259,18 @@ package
                            }
                            j++;
                         }
+                        participants = 0;
+                        j = 0;
+                        while(j < players.length)
+                        {
+                           distance = Math.sqrt(Math.pow(newInfestation.x - players[j].x,2) + Math.pow(newInfestation.y - players[j].y,2));
+                           if(distance <= 0.07)
+                           {
+                              participants++;
+                           }
+                           j++;
+                        }
+                        newInfestation.participants = participants;
                         this.activeInfestations.push(newInfestation);
                      }
                   }
