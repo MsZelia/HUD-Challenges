@@ -101,7 +101,7 @@ package
       
       public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:String = "INFESTATION ENDED ({time} ago)";
       
-      public static const DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT:String = "{locations} [{participants}][{time} ago]";
+      public static const DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT:String = "{locations} [{participants}] ({time} ago)";
       
       public static const DEFAULT_ACTIVE_INFESTATION_DELIMITER:String = "/";
       
