@@ -33,6 +33,8 @@ package
       
       public static const DEFAULT_LAST_MAP_UPDATE_FORMAT:String = "MapUpdate: {time}ms";
       
+      public static const DEFAULT_LAST_CLOUD_UPDATE_FORMAT:String = "CloudUpdate: {time}ms";
+      
       public static const DEFAULT_LAST_EVENTS_UPDATE_FORMAT:String = "EventsUpdate: {time}ms";
       
       public static const DEFAULT_LAST_CHALLENGES_UPDATE_FORMAT:String = "ChallengesUpdate: {time}ms";
@@ -166,6 +168,7 @@ package
             config.formats.showElapsedTime = DEFAULT_ELAPSED_TIME_FORMAT;
             config.formats.showLastConfigUpdate = DEFAULT_LAST_CONFIG_UPDATE_FORMAT;
             config.formats.showLastMapUpdate = DEFAULT_LAST_MAP_UPDATE_FORMAT;
+            config.formats.showLastCloudUpdate = DEFAULT_LAST_CLOUD_UPDATE_FORMAT;
             config.formats.showLastEventsUpdate = DEFAULT_LAST_EVENTS_UPDATE_FORMAT;
             config.formats.showLastChallengesUpdate = DEFAULT_LAST_CHALLENGES_UPDATE_FORMAT;
             config.formats.showTime12 = DEFAULT_TIME_12_FORMAT;
@@ -276,6 +279,10 @@ package
             if(!config.formats.showLastMapUpdate)
             {
                config.formats.showLastMapUpdate = DEFAULT_LAST_MAP_UPDATE_FORMAT;
+            }
+            if(!config.formats.showLastCloudUpdate)
+            {
+               config.formats.showLastCloudUpdate = DEFAULT_LAST_CLOUD_UPDATE_FORMAT;
             }
             if(!config.formats.showLastEventsUpdate)
             {

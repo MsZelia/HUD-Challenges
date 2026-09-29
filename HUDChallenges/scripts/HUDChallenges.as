@@ -638,6 +638,8 @@ package
       
       private var _lastMapUpdateTime:Number = 0;
       
+      private var _lastCloudUpdateTime:Number = 0;
+      
       private var _lastConfigUpdateTime:Number = 0;
       
       private var _lastRenderTime:Number = 0;
@@ -1224,10 +1226,12 @@ package
          var distance:Number;
          var newInfestation:*;
          var participants:int;
+         var t1:Number;
          try
          {
             if(event && event.data && event.data.CloudList && event.data.CloudList.length)
             {
+               t1 = Number(getTimer());
                previousInfestationsActive = this.activeInfestations.length;
                infestationMarkers = event.data.CloudList;
                i = 0;
@@ -1310,6 +1314,7 @@ package
                      }
                   },2000);
                }
+               _lastCloudUpdateTime = getTimer() - t1;
             }
          }
          catch(e:*)
@@ -2483,6 +2488,10 @@ package
                      break;
                   case "showLastMapUpdate":
                      displayMessage("MapTime: " + this._lastMapUpdateTime + "ms");
+                     applyColor(dataField);
+                     break;
+                  case "showLastCloudUpdate":
+                     displayMessage("CloudTime: " + this._lastCloudUpdateTime + "ms");
                      applyColor(dataField);
                      break;
                   case "showElapsedTime":
