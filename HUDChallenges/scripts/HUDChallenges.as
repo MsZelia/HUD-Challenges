@@ -2486,47 +2486,47 @@ package
                      applyColor(dataField);
                      break;
                   case "showLastConfigUpdate":
-                     displayMessage("ConfigUpdate: " + FormatTimeStringCustom(this.timeSinceLastConfigUpdate) + " ago");
+                     displayMessage(config.formats.showLastConfigUpdate.replace(STRING_TIME,FormatTimeStringCustom(this.timeSinceLastConfigUpdate)));
                      applyColor(dataField);
                      break;
                   case "showLastEventsUpdate":
-                     displayMessage("EventsTime: " + this._lastRecentActivitiesUpdateTime + "ms");
+                     displayMessage(config.formats.showLastEventsUpdate.replace(STRING_TIME,this._lastRecentActivitiesUpdateTime));
                      applyColor(dataField);
                      break;
                   case "showLastChallengesUpdate":
-                     displayMessage("ChallengesTime: " + this._lastChallengeUpdateTime + "ms");
+                     displayMessage(config.formats.showLastChallengesUpdate.replace(STRING_TIME,this._lastChallengeUpdateTime));
                      applyColor(dataField);
                      break;
                   case "showLastMapUpdate":
-                     displayMessage("MapTime: " + this._lastMapUpdateTime + "ms");
+                     displayMessage(config.formats.showLastMapUpdate.replace(STRING_TIME,this._lastMapUpdateTime));
                      applyColor(dataField);
                      break;
                   case "showLastCloudUpdate":
-                     displayMessage("CloudTime: " + this._lastCloudUpdateTime + "ms");
+                     displayMessage(config.formats.showLastCloudUpdate.replace(STRING_TIME,this._lastCloudUpdateTime));
                      applyColor(dataField);
                      break;
                   case "showElapsedTime":
-                     displayMessage("ElapsedTime: " + FormatTimeStringCustom(this.elapsedTime));
+                     displayMessage(config.formats.showElapsedTime.replace(STRING_TIME,FormatTimeStringCustom(this.elapsedTime)));
                      applyColor(dataField);
                      break;
                   case "showHUDMode":
-                     displayMessage("HUDMode: " + (!this.isInMainMenu ? this.HUDModeData.data.hudMode : MAIN_MENU));
+                     displayMessage(config.formats.showHUDMode.replace(STRING_HUDMODE,!this.isInMainMenu ? this.HUDModeData.data.hudMode : MAIN_MENU));
                      applyColor(dataField);
                      break;
                   case "showRenderTime":
-                     displayMessage("RenderTime: " + this._lastRenderTime + "ms");
+                     displayMessage(config.formats.showRenderTime.replace(STRING_TIME,this._lastRenderTime));
                      applyColor(dataField);
                      break;
                   case "showTime12":
-                     displayMessage("Time: " + (date.hours == 0 ? 12 : date.hours % 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours > 12 ? " PM" : " AM"));
+                     displayMessage(config.formats.showTime12.replace(STRING_TIME,(date.hours == 0 ? 12 : date.hours % 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours > 12 ? " PM" : " AM")));
                      applyColor(dataField);
                      break;
                   case "showTime24":
-                     displayMessage("Time: " + date.hours + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes));
+                     displayMessage(config.formats.showTime24.replace(STRING_TIME,date.hours + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes)));
                      applyColor(dataField);
                      break;
                   case "showUTCTime":
-                     displayMessage("UTC: " + FormatTimeStringCustom(utc));
+                     displayMessage(config.formats.showUTCTime.replace(STRING_TIME,FormatTimeStringCustom(utc)));
                      applyColor(dataField);
                      break;
                   case "showSeasonEndTime":
