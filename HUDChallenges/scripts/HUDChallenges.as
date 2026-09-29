@@ -1119,17 +1119,15 @@ package
       {
          var i:int;
          var j:int;
-         var xDiff:Number;
-         var yDiff:Number;
-         var distance:Number;
          var marker:*;
          var t1:Number;
+         var participants:int;
          var _players:Array = [];
          var _worldEvents:Object = {};
          try
          {
             t1 = Number(getTimer());
-            if(event.data && event.data.inTargetingMode != null)
+            if(MapMenuData.data && MapMenuData.data.inTargetingMode != null)
             {
                if(!this.infestationLocationsLocalized)
                {
@@ -1150,21 +1148,19 @@ package
                      i++;
                   }
                }
-               if(this.inTargetingMode && !event.data.inTargetingMode)
+               if(this.inTargetingMode && !MapMenuData.data.inTargetingMode)
                {
                   this.lastTargetingModeEnded = new Date().getTime() / 1000;
                   i = 0;
-                  while(i < event.data.MarkerData.length)
+                  while(i < MapMenuData.data.MarkerData.length)
                   {
-                     if(!event.data.MarkerData[i].text && event.data.MarkerData[i].markerType == "PlayerLocal")
+                     marker = MapMenuData.data.MarkerData[i];
+                     if(!marker[i].text && marker[i].markerType == "PlayerLocal")
                      {
                         j = 0;
                         while(j < SILO_POSITIONS.length)
                         {
-                           xDiff = event.data.MarkerData[i].x - SILO_POSITIONS[j].x;
-                           yDiff = event.data.MarkerData[i].y - SILO_POSITIONS[j].y;
-                           distance = Math.sqrt(Math.pow(xDiff,2) + Math.pow(yDiff,2));
-                           if(distance < 0.005)
+                           if(Math.sqrt(Math.pow(marker[i].x - SILO_POSITIONS[j].x,2) + Math.pow(marker[i].y - SILO_POSITIONS[j].y,2)) < 0.005)
                            {
                               this.isInSilo = j;
                               break;
@@ -1180,7 +1176,7 @@ package
                      i++;
                   }
                }
-               this.inTargetingMode = event.data.inTargetingMode;
+               this.inTargetingMode = MapMenuData.data.inTargetingMode;
                if(MapMenuData && MapMenuData.data && MapMenuData.data.MarkerData)
                {
                   i = 0;
@@ -1190,7 +1186,6 @@ package
                      if(marker.playerLevel > 0)
                      {
                         _players.push({
-                           "name":marker.text.split("<")[0],
                            "x":marker.x,
                            "y":marker.y
                         });
@@ -1206,6 +1201,22 @@ package
                   }
                   this.players = _players;
                   this.worldEvents = _worldEvents;
+                  participants = 0;
+                  i = 0;
+                  while(i < this.activeInfestations.length)
+                  {
+                     j = 0;
+                     while(j < this.players.length)
+                     {
+                        if(Math.sqrt(Math.pow(this.activeInfestations[i].x - this.players[j].x,2) + Math.pow(this.activeInfestations[i].y - this.players[j].y,2)) <= 0.07)
+                        {
+                           participants++;
+                        }
+                        j++;
+                     }
+                     this.activeInfestations[i].participants = participants;
+                     i++;
+                  }
                }
             }
             _lastMapUpdateTime = getTimer() - t1;
