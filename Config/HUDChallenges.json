@@ -71,6 +71,10 @@
 	
 	Update 1.2.1:
 	showRaidXP, accepts {xp}
+	
+	Update 1.5.0:
+	showHUDMode, accepts {HUDMode}
+	showRenderTime, showElapsedTime, showLastConfigUpdate, showLastMapUpdate, showLastCloudUpdate, showLastEventsUpdate, showLastChallengesUpdate, showTime12, showTime24, showUTCTime - accept {time}
 	*/
 	"formats": {
 		"daily": "{text} {currentValue}/{thresholdValue}",
@@ -89,12 +93,24 @@
 		
 		"mutatedEvent": "[M][{participants}] {text} [{mutation}] ({time})",
 		"publicEvent": "[P][{participants}] {text} ({time})",
-		"worldEvent": "[W] {text} ({time})",
+		"worldEvent": "[W][{participants}] {text} ({time})",
 		"caravan": "[C] {text} ({time})",
 		"infestation": "[I] {text} ({time})",
 		
 		"showSeasonEndTime": "Season end: {time}", // 1.1.3,
 		"showRaidXP": "Raid XP: {xp}", // 1.2.1
+		
+		"showHUDMode": "HUDMode: {HUDMode}", // 1.5.0
+		"showRenderTime": "RenderTime: {time}ms",
+		"showElapsedTime": "ElapsedTime: {time}",
+		"showLastConfigUpdate": "ConfigUpdated: {time} ago",
+		"showLastMapUpdate": "MapUpdate: {time}ms",
+		"showLastCloudUpdate": "CloudUpdate: {time}ms",
+		"showLastEventsUpdate": "EventsUpdate: {time}ms",
+		"showLastChallengesUpdate": "ChallengesUpdate: {time}ms",
+		"showTime12": "Time: {time}",
+		"showTime24": "Time: {time}",
+		"showUTCTime": "UTC: {time}",
 		
 		"timeLong": "{d}d {h}:{m}:{s}", // 1.2.2
 		"timeMid": "{h}:{m}:{s}",
@@ -195,6 +211,8 @@
 		"showPossibleLocations": true,
 		"text": "[{amount}] INFESTATION ACTIVE ({time} ago)",
 		"textEnded": "INFESTATION ENDED ({time} ago)",
+		"textLocations": "{locations} [{participants}] ({time} ago)",
+		"locationsDelimiter": " / ",
 		"soundNotify": "QSTMassFusionAlarmAlert"
 	},
 	
@@ -329,6 +347,8 @@
 		//"showRenderTime",
 		//"showElapsedTime",
 		//"showLastConfigUpdate",
+		//"showLastMapUpdate",
+		//"showLastCloudUpdate",
 		//"showLastEventsUpdate",
 		//"showLastChallengesUpdate",
 		//"showTime12",
@@ -416,6 +436,8 @@
 		"showRenderTime": "0x55ff55",
 		"showElapsedTime": "0xffaacc",
 		"showLastConfigUpdate": "0x77eeff",
+		"showLastMapUpdate": "0xaaaaff",
+		"showLastCloudUpdate": "0xaaaaff",
 		"showLastEventsUpdate": "0xaaaaff",
 		"showLastChallengesUpdate": "0xaaaaff",
 		"showTime12": "0x99ff99",
