@@ -1155,12 +1155,12 @@ package
                   while(i < MapMenuData.data.MarkerData.length)
                   {
                      marker = MapMenuData.data.MarkerData[i];
-                     if(!marker[i].text && marker[i].markerType == "PlayerLocal")
+                     if(!marker.text && marker.markerType == "PlayerLocal")
                      {
                         j = 0;
                         while(j < SILO_POSITIONS.length)
                         {
-                           if(Math.sqrt(Math.pow(marker[i].x - SILO_POSITIONS[j].x,2) + Math.pow(marker[i].y - SILO_POSITIONS[j].y,2)) < 0.005)
+                           if(Math.sqrt(Math.pow(marker.x - SILO_POSITIONS[j].x,2) + Math.pow(marker.y - SILO_POSITIONS[j].y,2)) < 0.005)
                            {
                               this.isInSilo = j;
                               break;
