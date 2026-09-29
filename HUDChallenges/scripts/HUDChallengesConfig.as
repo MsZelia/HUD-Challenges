@@ -11,51 +11,71 @@ package
       
       public static const STATE_SHOWN:String = "shown";
       
-      public static const DEFAULT_CHALLENGE_FORMAT:* = "{text} {currentValue}/{thresholdValue}";
+      public static const DEFAULT_CHALLENGE_FORMAT:String = "{text} {currentValue}/{thresholdValue}";
       
-      public static const DEFAULT_EVENT_FORMAT:* = "{text} {time}";
+      public static const DEFAULT_EVENT_FORMAT:String = "{text} {time}";
       
-      public static const DEFAULT_MUTATED_EVENT_FORMAT:* = "{text} [{mutation}] {time}";
+      public static const DEFAULT_MUTATED_EVENT_FORMAT:String = "{text} [{mutation}] {time}";
       
-      public static const DEFAULT_SCORE_FORMAT:* = "SCORE [{currentRank}] {currentValue}/{thresholdValue} ({progress}%) +{currentBoost}% boost";
+      public static const DEFAULT_SCORE_FORMAT:String = "SCORE [{currentRank}] {currentValue}/{thresholdValue} ({progress}%) +{currentBoost}% boost";
       
-      public static const DEFAULT_XP_FORMAT:* = "{text} [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
+      public static const DEFAULT_XP_FORMAT:String = "{text} [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
       
-      public static const DEFAULT_RAID_XP_FORMAT:* = "Raid XP: {xp}";
+      public static const DEFAULT_RAID_XP_FORMAT:String = "Raid XP: {xp}";
       
-      public static const DEFAULT_MINERVA_AVAILABLE_FORMAT:* = "Minerva is at {location} for {time}";
+      public static const DEFAULT_HUD_MODE_FORMAT:String = "HUDMode: {HUDMode}";
       
-      public static const DEFAULT_MINERVA_NOT_AVAILABLE_FORMAT:* = "Minerva will be at {location} in {time}";
+      public static const DEFAULT_RENDER_TIME_FORMAT:String = "RenderTime: {time}ms";
       
-      public static const DEFAULT_MINERVA_LOCATIONS:* = ["Foundation","Crater","Fort Atlas","Whitesprings"];
+      public static const DEFAULT_ELAPSED_TIME_FORMAT:String = "ElapsedTime: {time}";
       
-      public static const DEFAULT_MINERVA_LISTS:* = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
+      public static const DEFAULT_LAST_CONFIG_UPDATE_FORMAT:String = "ConfigUpdated: {time} ago";
       
-      public static const DEFAULT_NUCLEAR_CODES_TEXT_FORMAT:* = "A:{codeAlpha}  B:{codeBravo}  C:{codeCharlie} ({time})";
+      public static const DEFAULT_LAST_MAP_UPDATE_FORMAT:String = "MapUpdate: {time}ms";
       
-      public static const DEFAULT_EVENT_TIMER_TEXT_FORMAT:* = "Next public event in: {time}";
+      public static const DEFAULT_LAST_EVENTS_UPDATE_FORMAT:String = "EventsUpdate: {time}ms";
       
-      public static const DEFAULT_SEASON_END_FORMAT:* = "Season end: {time}";
+      public static const DEFAULT_LAST_CHALLENGES_UPDATE_FORMAT:String = "ChallengesUpdate: {time}ms";
       
-      public static const DEFAULT_MINISEASON_ACTIVE_FORMAT:* = "MiniSeason end: {time} [{currentValue}/{thresholdValue}]";
+      public static const DEFAULT_TIME_12_FORMAT:String = "Time: {time}";
       
-      public static const DEFAULT_MINISEASON_INACTIVE_FORMAT:* = "MiniSeason start: {time}";
+      public static const DEFAULT_TIME_24_FORMAT:String = "Time: {time}";
       
-      public static const DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT:* = "Verdant season active in {region} ({time} ago)";
+      public static const DEFAULT_UTC_TIME_FORMAT:String = "UTC: {time}";
       
-      public static const DEFAULT_VERDANT_SEASON_ENDED_FORMAT:* = "Verdant season ended in {region} ({time} ago)";
+      public static const DEFAULT_MINERVA_AVAILABLE_FORMAT:String = "Minerva is at {location} for {time}";
       
-      public static const DEFAULT_TIME_FORMAT_LONG:* = "{d}:{h}:{m}:{s}";
+      public static const DEFAULT_MINERVA_NOT_AVAILABLE_FORMAT:String = "Minerva will be at {location} in {time}";
       
-      public static const DEFAULT_TIME_FORMAT_MID:* = "{h}:{m}:{s}";
+      public static const DEFAULT_MINERVA_LOCATIONS:Array = ["Foundation","Crater","Fort Atlas","Whitesprings"];
       
-      public static const DEFAULT_TIME_FORMAT_SHORT:* = "{m}:{s}";
+      public static const DEFAULT_MINERVA_LISTS:Array = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
       
-      public static const DEFAULT_FISHING_SEASON_TEXT1_FORMAT:* = "{month} fishing season ends in {time}";
+      public static const DEFAULT_NUCLEAR_CODES_TEXT_FORMAT:String = "A:{codeAlpha}  B:{codeBravo}  C:{codeCharlie} ({time})";
       
-      public static const DEFAULT_FISHING_SEASON_TEXT2_FORMAT:* = "{caught} {fish} - {region1} / {region2}";
+      public static const DEFAULT_EVENT_TIMER_TEXT_FORMAT:String = "Next public event in: {time}";
       
-      public static const DEFAULT_FISHING_SEASON_CAUGHT:* = ["Ø","¬"];
+      public static const DEFAULT_SEASON_END_FORMAT:String = "Season end: {time}";
+      
+      public static const DEFAULT_MINISEASON_ACTIVE_FORMAT:String = "MiniSeason end: {time} [{currentValue}/{thresholdValue}]";
+      
+      public static const DEFAULT_MINISEASON_INACTIVE_FORMAT:String = "MiniSeason start: {time}";
+      
+      public static const DEFAULT_VERDANT_SEASON_ACTIVE_FORMAT:String = "Verdant season active in {region} ({time} ago)";
+      
+      public static const DEFAULT_VERDANT_SEASON_ENDED_FORMAT:String = "Verdant season ended in {region} ({time} ago)";
+      
+      public static const DEFAULT_TIME_FORMAT_LONG:String = "{d}:{h}:{m}:{s}";
+      
+      public static const DEFAULT_TIME_FORMAT_MID:String = "{h}:{m}:{s}";
+      
+      public static const DEFAULT_TIME_FORMAT_SHORT:String = "{m}:{s}";
+      
+      public static const DEFAULT_FISHING_SEASON_TEXT1_FORMAT:String = "{month} fishing season ends in {time}";
+      
+      public static const DEFAULT_FISHING_SEASON_TEXT2_FORMAT:String = "{caught} {fish} - {region1} / {region2}";
+      
+      public static const DEFAULT_FISHING_SEASON_CAUGHT:Array = ["Ø","¬"];
       
       public static const DEFAULT_EVENT_NOTIFY_SOUND:String = "BabylonUIEndGameOverseerRankGained";
       
@@ -67,17 +87,17 @@ package
       
       public static const DEFAULT_SILO_NAMES:Array = ["A","B","C"];
       
-      public static const DEFAULT_SMILEY_VISITED_FORMAT:* = "Smiley visited this week ({gold}g {time} ago)";
+      public static const DEFAULT_SMILEY_VISITED_FORMAT:String = "Smiley visited this week ({gold}g {time} ago)";
       
-      public static const DEFAULT_SMILEY_NOT_VISITED_FORMAT:* = "Smiley not visited this week ({time} left)";
+      public static const DEFAULT_SMILEY_NOT_VISITED_FORMAT:String = "Smiley not visited this week ({time} left)";
       
-      public static const DEFAULT_UNINVITED_GUEST_FORMAT:* = "UNINVITED GUEST INCOMING ({time} ago)";
+      public static const DEFAULT_UNINVITED_GUEST_FORMAT:String = "UNINVITED GUEST INCOMING ({time} ago)";
       
-      public static const DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT:* = "UNINVITED GUEST HAS ARRIVED ({time} ago)";
+      public static const DEFAULT_UNINVITED_GUEST_ARRIVED_FORMAT:String = "UNINVITED GUEST HAS ARRIVED ({time} ago)";
       
-      public static const DEFAULT_ACTIVE_INFESTATION_FORMAT:* = "[{amount}] INFESTATION ACTIVE ({time} ago)";
+      public static const DEFAULT_ACTIVE_INFESTATION_FORMAT:String = "[{amount}] INFESTATION ACTIVE ({time} ago)";
       
-      public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:* = "INFESTATION ENDED ({time} ago)";
+      public static const DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT:String = "INFESTATION ENDED ({time} ago)";
       
       public static const DEFAULT_ACTIVE_INFESTATION_NOTIFY_SOUND:String = "QSTMassFusionAlarmAlert";
       
@@ -137,6 +157,16 @@ package
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
             config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
+            config.formats.showHUDMode = DEFAULT_HUD_MODE_FORMAT;
+            config.formats.showRenderTime = DEFAULT_RENDER_TIME_FORMAT;
+            config.formats.showElapsedTime = DEFAULT_ELAPSED_TIME_FORMAT;
+            config.formats.showLastConfigUpdate = DEFAULT_LAST_CONFIG_UPDATE_FORMAT;
+            config.formats.showLastMapUpdate = DEFAULT_LAST_MAP_UPDATE_FORMAT;
+            config.formats.showLastEventsUpdate = DEFAULT_LAST_EVENTS_UPDATE_FORMAT;
+            config.formats.showLastChallengesUpdate = DEFAULT_LAST_CHALLENGES_UPDATE_FORMAT;
+            config.formats.showTime12 = DEFAULT_TIME_12_FORMAT;
+            config.formats.showTime24 = DEFAULT_TIME_24_FORMAT;
+            config.formats.showUTCTime = DEFAULT_UTC_TIME_FORMAT;
             config.formats.timeLong = DEFAULT_TIME_FORMAT_LONG;
             config.formats.timeMid = DEFAULT_TIME_FORMAT_MID;
             config.formats.timeShort = DEFAULT_TIME_FORMAT_SHORT;
@@ -222,6 +252,46 @@ package
             if(!config.formats.showRaidXP)
             {
                config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
+            }
+            if(!config.formats.showHUDMode)
+            {
+               config.formats.showHUDMode = DEFAULT_HUD_MODE_FORMAT;
+            }
+            if(!config.formats.showRenderTime)
+            {
+               config.formats.showRenderTime = DEFAULT_RENDER_TIME_FORMAT;
+            }
+            if(!config.formats.showElapsedTime)
+            {
+               config.formats.showElapsedTime = DEFAULT_ELAPSED_TIME_FORMAT;
+            }
+            if(!config.formats.showLastConfigUpdate)
+            {
+               config.formats.showLastConfigUpdate = DEFAULT_LAST_CONFIG_UPDATE_FORMAT;
+            }
+            if(!config.formats.showLastMapUpdate)
+            {
+               config.formats.showLastMapUpdate = DEFAULT_LAST_MAP_UPDATE_FORMAT;
+            }
+            if(!config.formats.showLastEventsUpdate)
+            {
+               config.formats.showLastEventsUpdate = DEFAULT_LAST_EVENTS_UPDATE_FORMAT;
+            }
+            if(!config.formats.showLastChallengesUpdate)
+            {
+               config.formats.showLastChallengesUpdate = DEFAULT_LAST_CHALLENGES_UPDATE_FORMAT;
+            }
+            if(!config.formats.showTime12)
+            {
+               config.formats.showTime12 = DEFAULT_TIME_12_FORMAT;
+            }
+            if(!config.formats.showTime24)
+            {
+               config.formats.showTime24 = DEFAULT_TIME_24_FORMAT;
+            }
+            if(!config.formats.showUTCTime)
+            {
+               config.formats.showUTCTime = DEFAULT_UTC_TIME_FORMAT;
             }
             if(!config.formats.timeLong)
             {
