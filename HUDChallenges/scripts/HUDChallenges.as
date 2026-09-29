@@ -2461,6 +2461,10 @@ package
                      displayMessage("ChallengesTime: " + this._lastChallengeUpdateTime + "ms");
                      applyColor(dataField);
                      break;
+                  case "showLastMapUpdate":
+                     displayMessage("MapTime: " + this._lastMapUpdateTime + "ms");
+                     applyColor(dataField);
+                     break;
                   case "showElapsedTime":
                      displayMessage("ElapsedTime: " + FormatTimeStringCustom(this.elapsedTime));
                      applyColor(dataField);
