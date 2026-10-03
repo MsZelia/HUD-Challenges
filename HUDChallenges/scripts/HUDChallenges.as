@@ -2518,7 +2518,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showTime12":
-                     displayMessage(config.formats.showTime12.replace(STRING_TIME,(date.hours == 0 ? 12 : date.hours % 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours > 12 ? " PM" : " AM")));
+                     displayMessage(config.formats.showTime12.replace(STRING_TIME,(date.hours == 0 ? 12 : date.hours % 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours >= 12 ? " PM" : " AM")));
                      applyColor(dataField);
                      break;
                   case "showTime24":
