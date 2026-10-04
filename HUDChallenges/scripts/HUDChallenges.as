@@ -23,7 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
-      public static const MOD_VERSION:String = "1.5.0";
+      public static const MOD_VERSION:String = "1.5.1";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
@@ -842,6 +842,14 @@ package
          GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
       }
       
+      public function ShowOverlayMessage(param1:String) : void
+      {
+         if(this.topLevel && this.topLevel.displayMessage)
+         {
+            this.topLevel.displayMessage("[" + FULL_MOD_NAME + "] " + param1);
+         }
+      }
+      
       public function get language() : String
       {
          if(_language == "")
@@ -922,6 +930,7 @@ package
             }
             else
             {
+               this.topLevel = this.topLevel.getChildAt(0);
                this.isHudMenu = false;
                BSUIDataManager.Subscribe("MenuStackData",this.updateIsMainMenu);
                stage.addEventListener(KeyboardEvent.KEY_DOWN,this.keyDownHandler,false,0,true);
@@ -2518,7 +2527,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showTime12":
-                     displayMessage(config.formats.showTime12.replace(STRING_TIME,(date.hours == 0 ? 12 : date.hours % 12 || 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours >= 12 ? " PM" : " AM")));
+                     displayMessage(config.formats.showTime12.replace(STRING_TIME,(date.hours % 12 || 12) + ":" + (date.minutes < 10 ? "0" + date.minutes : date.minutes) + (date.hours >= 12 ? " PM" : " AM")));
                      applyColor(dataField);
                      break;
                   case "showTime24":
