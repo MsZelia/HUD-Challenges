@@ -11,15 +11,19 @@ package
       
       public static const STATE_SHOWN:String = "shown";
       
+      public static const STRING_TEXT:String = "{text}";
+      
       public static const DEFAULT_CHALLENGE_FORMAT:String = "{text} {currentValue}/{thresholdValue}";
       
       public static const DEFAULT_EVENT_FORMAT:String = "{text} {time}";
       
       public static const DEFAULT_MUTATED_EVENT_FORMAT:String = "{text} [{mutation}] {time}";
       
-      public static const DEFAULT_SCORE_FORMAT:String = "SCORE [{currentRank}] {currentValue}/{thresholdValue} ({progress}%) +{currentBoost}% boost";
+      public static const DEFAULT_SCORE_FORMAT:String = "$$SCORE [{currentRank}] {currentValue}/{thresholdValue} ({progress}%) +{currentBoost}% boost";
       
-      public static const DEFAULT_XP_FORMAT:String = "{text} [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
+      public static const DEFAULT_XP_FORMAT:String = "$$XP [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
+      
+      public static const DEFAULT_PET_XP_FORMAT:String = "$$PETXP [{currentLevel}] {currentValue}/{thresholdValue} ({lastChangeValue})";
       
       public static const DEFAULT_RAID_XP_FORMAT:String = "Raid XP: {xp}";
       
@@ -325,14 +329,35 @@ package
             config.xpBar.alignVertical = "bottom";
             config.xpBar.alignHorizontal = "left";
             config.xpBar.height = 4;
+            config.xpBar.maxWidth = config.width;
          }
          else
          {
             config.xpBar.enabled = Parser.parseBoolean(config.xpBar.enabled,true);
-            config.xpBar.text = Boolean(config.xpBar.text) ? config.xpBar.text : DEFAULT_XP_FORMAT;
+            config.xpBar.text = Boolean(config.xpBar.text) ? config.xpBar.text.replace(STRING_TEXT,"$$XP") : DEFAULT_XP_FORMAT;
             config.xpBar.alignVertical = Boolean(config.xpBar.alignVertical) ? config.xpBar.alignVertical.toLowerCase() : "bottom";
             config.xpBar.alignHorizontal = Boolean(config.xpBar.alignHorizontal) ? config.xpBar.alignHorizontal.toLowerCase() : "left";
             config.xpBar.height = Parser.parseNumber(config.xpBar.height,4);
+            config.xpBar.maxWidth = Parser.parseNumber(config.xpBar.maxWidth,config.width);
+         }
+         if(!config.petXpBar)
+         {
+            config.petXpBar = {};
+            config.petXpBar.enabled = true;
+            config.petXpBar.text = DEFAULT_PET_XP_FORMAT;
+            config.petXpBar.alignVertical = "bottom";
+            config.petXpBar.alignHorizontal = "left";
+            config.petXpBar.height = 4;
+            config.petXpBar.maxWidth = config.width;
+         }
+         else
+         {
+            config.petXpBar.enabled = Parser.parseBoolean(config.petXpBar.enabled,true);
+            config.petXpBar.text = Boolean(config.petXpBar.text) ? config.petXpBar.text.replace(STRING_TEXT,"$$PETXP") : DEFAULT_PET_XP_FORMAT;
+            config.petXpBar.alignVertical = Boolean(config.petXpBar.alignVertical) ? config.petXpBar.alignVertical.toLowerCase() : "bottom";
+            config.petXpBar.alignHorizontal = Boolean(config.petXpBar.alignHorizontal) ? config.petXpBar.alignHorizontal.toLowerCase() : "left";
+            config.petXpBar.height = Parser.parseNumber(config.petXpBar.height,4);
+            config.petXpBar.maxWidth = Parser.parseNumber(config.petXpBar.maxWidth,config.width);
          }
          if(!config.scoreBar)
          {
@@ -342,14 +367,16 @@ package
             config.scoreBar.alignVertical = "bottom";
             config.scoreBar.alignHorizontal = "left";
             config.scoreBar.height = 4;
+            config.scoreBar.maxWidth = config.width;
          }
          else
          {
             config.scoreBar.enabled = Parser.parseBoolean(config.scoreBar.enabled,true);
-            config.scoreBar.text = Boolean(config.scoreBar.text) ? config.scoreBar.text : DEFAULT_SCORE_FORMAT;
+            config.scoreBar.text = Boolean(config.scoreBar.text) ? config.scoreBar.text.replace(STRING_TEXT,"$$SCORE") : DEFAULT_SCORE_FORMAT;
             config.scoreBar.alignVertical = Boolean(config.scoreBar.alignVertical) ? config.scoreBar.alignVertical.toLowerCase() : "bottom";
             config.scoreBar.alignHorizontal = Boolean(config.scoreBar.alignHorizontal) ? config.scoreBar.alignHorizontal.toLowerCase() : "left";
             config.scoreBar.height = Parser.parseNumber(config.scoreBar.height,4);
+            config.scoreBar.maxWidth = Parser.parseNumber(config.scoreBar.maxWidth,config.width);
          }
          if(!config.minerva)
          {
