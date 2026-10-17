@@ -238,6 +238,10 @@ package
          "name":"pets",
          "type":2,
          "category":11
+      },{
+         "name":"skyline_valley",
+         "type":2,
+         "category":12
       }];
       
       private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
