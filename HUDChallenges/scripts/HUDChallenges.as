@@ -639,6 +639,9 @@ package
       
       private var _lastChallengeUpdateTime:Number = 0;
       
+      
+      private var _lastChallengeUpdateTimestamp:Number = 0;
+      
       private var _lastMapUpdateTime:Number = 0;
       
       private var _lastCloudUpdateTime:Number = 0;
@@ -824,6 +827,8 @@ package
       
       private var requiredLevelUpPetXPMap:Object = null;
       
+      private var useEndTimeForChallenge:Object = null;
+      
       public function HUDChallenges()
       {
          super();
@@ -847,23 +852,24 @@ package
          BSUIDataManager.Subscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Subscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Subscribe("HUDModeData",this.updateVisibility);
+         BSUIDataManager.Subscribe("ChallengeData",this.onChallengeDataUpdate);
       }
       
-      public static function toString(param1:Object) : String
+      public static function toString(data:Object) : String
       {
-         return new JSONEncoder(param1).getString();
+         return new JSONEncoder(data).getString();
       }
       
-      public static function ShowHUDMessage(param1:String) : void
+      public static function ShowHUDMessage(message:String) : void
       {
-         GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + param1);
+         GlobalFunc.ShowHUDMessage("[" + FULL_MOD_NAME + "] " + message);
       }
       
-      public function ShowOverlayMessage(param1:String) : void
+      public function ShowOverlayMessage(message:String) : void
       {
          if(this.topLevel && this.topLevel.displayMessage)
          {
-            this.topLevel.displayMessage("[" + FULL_MOD_NAME + "] " + param1);
+            this.topLevel.displayMessage("[" + FULL_MOD_NAME + "] " + message);
          }
       }
       
@@ -882,34 +888,34 @@ package
          return _language;
       }
       
-      public function FormatCountdownTimeString(param1:Number) : String
+      public function FormatCountdownTimeString(time:Number) : String
       {
          var timeString:* = "";
-         if(param1 < 0)
+         if(time < 0)
          {
             timeString = "T+";
-            param1 = Math.abs(param1);
+            time = Math.abs(time);
          }
          else
          {
             timeString = "T-";
          }
-         return timeString + FormatTimeStringCustom(param1);
+         return timeString + FormatTimeStringCustom(time);
       }
       
-      public function FormatTimeStringCustom(param1:Number) : String
+      public function FormatTimeStringCustom(time:Number) : String
       {
-         if(isNaN(param1))
+         if(!time)
          {
             return STRING_TIME_ZERO;
          }
          var remainingTime:Number = 0;
-         var nDays:Number = Math.floor(param1 / 86400);
-         remainingTime = param1 % 86400;
+         var nDays:Number = Math.floor(time / 86400);
+         remainingTime = time % 86400;
          var nHours:Number = Math.floor(remainingTime / 3600);
-         remainingTime = param1 % 3600;
+         remainingTime = time % 3600;
          var nMinutes:Number = Math.floor(remainingTime / 60);
-         remainingTime = param1 % 60;
+         remainingTime = time % 60;
          var nSeconds:Number = Math.floor(remainingTime);
          var timeString:* = "";
          if(nDays > 0)
@@ -927,7 +933,7 @@ package
          return timeString.replace(STRING_MINUTES,GlobalFunc.PadNumber(nMinutes,2)).replace(STRING_SECONDS,GlobalFunc.PadNumber(nSeconds,2));
       }
       
-      public function addedToStageHandler(param1:Event) : *
+      public function addedToStageHandler(event:Event) : *
       {
          this.updateVisibility();
          removeEventListener(Event.ADDED_TO_STAGE,this.addedToStageHandler);
@@ -965,7 +971,7 @@ package
          }
       }
       
-      public function removedFromStageHandler(param1:Event) : *
+      public function removedFromStageHandler(event:Event) : *
       {
          BSUIDataManager.Unsubscribe("MenuStackData",this.updateIsMainMenu);
          BSUIDataManager.Unsubscribe("MessageEvents",this.onMessageEvent);
@@ -974,6 +980,7 @@ package
          BSUIDataManager.Unsubscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Unsubscribe("HUDModeData",this.updateVisibility);
+         BSUIDataManager.Uncubscribe("ChallengeData",this.onChallengeDataUpdate);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -1567,7 +1574,7 @@ package
             {
                return;
             }
-            loaderComplete = function(param1:Event):void
+            loaderComplete = function(event:Event):void
             {
                var jsonData:Object;
                var line:uint;
@@ -1579,6 +1586,8 @@ package
                      HUDChallengesConfig.init(jsonData);
                      initTextField();
                      initTimers();
+                     useEndTimeForChallenge = null;
+                     onChallengeDataUpdate(ChallengeData);
                      _lastConfigUpdateTime = getTimer();
                      lastConfig = loader.data;
                   }
@@ -1616,7 +1625,7 @@ package
          var loader:URLLoader = null;
          try
          {
-            loaderComplete = function(param1:Event):void
+            loaderComplete = function(event:Event):void
             {
                var jsonData:Object;
                try
@@ -1757,7 +1766,7 @@ package
          return 0;
       }
       
-      private function onChallengeDataUpdate(param1:*) : void
+      private function onChallengeDataUpdate(event:*) : void
       {
          var challenges:Object;
          var fo1st_disabledChallenges:int;
@@ -1774,16 +1783,19 @@ package
             {
                return;
             }
+            if(!this.useEndTimeForChallenge)
+            {
+               this.useEndTimeForChallenge = {};
+               for each(filter in FILTER_CHALLENGE)
+               {
+                  this.useEndTimeForChallenge[filter.name] = config.formats[filter.name].indexOf(STRING_END_TIME) != -1;
+               }
+            }
             now = new Date().getTime() / 1000;
             t1 = Number(getTimer());
-            this.daily_secsTilRefresh = param1.data.daily_secsTilRefresh;
-            this.weekly_secsTilRefresh = param1.data.weekly_secsTilRefresh;
-            this.monthly_secsTilRefresh = param1.data.monthly_secsTilRefresh;
-            this.event_secsTilRefresh = param1.data.event_secsTilRefresh;
-            this.seasonal_secsTilRefresh = param1.data.seasonal_secsTilRefresh;
             challenges = {};
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
-            for each(category in param1.data.categories)
+            for each(category in event.data.categories)
             {
                if(config && config.debugCats)
                {
@@ -1812,7 +1824,7 @@ package
                               "text":challenge.text,
                               "currentValue":challenge.currentValue,
                               "thresholdValue":challenge.thresholdValue,
-                              "endTime":(challenge.endTime && challenge.endTime.lo > 0 ? challenge.endTime.lo - now : 0),
+                              "endTime":(challenge.endTime && challenge.endTime.lo > 0 ? challenge.endTime.lo : 0),
                               "isTracked":challenge.isTracked,
                               "subChallenges":(Boolean(config.showSubChallenges[challengeType]) ? challenge.subChallenges.filter(function(sub:Object):Boolean
                               {
@@ -1850,10 +1862,47 @@ package
             }
             _challenges = challenges;
             _lastChallengeUpdateTime = getTimer() - t1;
+            _lastChallengeUpdateTimestamp = getTimer();
          }
          catch(e:*)
          {
             displayMessage("Error onChallengeDataUpdate:" + e);
+         }
+      }
+      
+      private function UpdateChallengeTimers() : void
+      {
+         var filter:Object;
+         var challenge:Object;
+         var t1:Number;
+         var now:Number;
+         try
+         {
+            t1 = Number(getTimer());
+            this.daily_secsTilRefresh = this.ChallengeData.data.daily_secsTilRefresh;
+            this.weekly_secsTilRefresh = this.ChallengeData.data.weekly_secsTilRefresh;
+            this.monthly_secsTilRefresh = this.ChallengeData.data.monthly_secsTilRefresh;
+            this.event_secsTilRefresh = this.ChallengeData.data.event_secsTilRefresh;
+            this.seasonal_secsTilRefresh = this.ChallengeData.data.seasonal_secsTilRefresh;
+            now = new Date().getTime() / 1000;
+            for each(filter in FILTER_CHALLENGE)
+            {
+               if(this.useEndTimeForChallenge[filter.name] && _challenges[filter.name])
+               {
+                  for each(challenge in _challenges[filter.name])
+                  {
+                     if(challenge.endTime != 0)
+                     {
+                        challenge.endTimer = challenge.endTime - now;
+                     }
+                  }
+               }
+            }
+            _lastChallengeUpdateTime2 = getTimer() - t1;
+         }
+         catch(e:*)
+         {
+            displayMessage("Error UpdateChallengeTimers:" + e);
          }
       }
       
@@ -1889,18 +1938,23 @@ package
          }
       }
       
-      private function updateRecentActivities(param1:*) : void
+      private function updateRecentActivities(event:*) : void
       {
          var events:Array;
          var t1:Number;
+         var activity:Object;
          var eventLocation:Object;
+         var detail:Object;
          var eventIndex:int;
          var participants:int;
+         var mutation:int;
+         var pair:int;
+         var player:int;
          try
          {
             t1 = Number(getTimer());
             events = [];
-            for each(activity in param1.data.recentActivities)
+            for each(activity in event.data.recentActivities)
             {
                if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
                {
@@ -2362,15 +2416,15 @@ package
          return str.replace(/^\s+|\s+$/g,"");
       }
       
-      public function setFishLocalized(param1:Object) : void
+      public function setFishLocalized(event:Object) : void
       {
          var filter:Object = {};
          filter.type = 2;
          filter.category = 9;
          var challengeID:int = 8390365;
-         if(param1 && param1.data && param1.data.categories && param1.data.categories.length)
+         if(event && event.data && event.data.categories && event.data.categories.length)
          {
-            for each(var category in param1.data.categories)
+            for each(var category in event.data.categories)
             {
                if(filter.type == category.type && filter.category == category.category)
                {
@@ -2557,7 +2611,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showLastChallengesUpdate":
-                     displayMessage(config.formats.showLastChallengesUpdate.replace(STRING_TIME,this._lastChallengeUpdateTime));
+                     displayMessage(config.formats.showLastChallengesUpdate.replace(STRING_TIME,this._lastChallengeUpdateTime + "/" + this._lastChallengeUpdateTime2));
                      applyColor(dataField);
                      break;
                   case "showLastMapUpdate":
@@ -3113,7 +3167,7 @@ package
          {
             config.formats[groupName] = HUDChallengesConfig.DEFAULT_CHALLENGE_FORMAT;
          }
-         return config.formats[groupName].replace(STRING_TEXT,challenge.text).replace(STRING_THRESHOLD_VALUE,challenge.thresholdValue).replace(STRING_CURRENT_VALUE,challenge.currentValue).replace(STRING_END_TIME,FormatTimeStringCustom(challenge.endTime));
+         return config.formats[groupName].replace(STRING_TEXT,challenge.text).replace(STRING_THRESHOLD_VALUE,challenge.thresholdValue).replace(STRING_CURRENT_VALUE,challenge.currentValue).replace(STRING_END_TIME,FormatTimeStringCustom(challenge.endTimer));
       }
       
       public function formatEvent(eventType:String, event:Object) : String
@@ -3196,7 +3250,7 @@ package
             errorCode = "updateRecent";
             this.updateRecentActivities(this.RecentActivitiesData);
             errorCode = "updateChallenge";
-            this.onChallengeDataUpdate(this.ChallengeData);
+            this.UpdateChallengeTimers();
             errorCode = "displayData";
             this.displayData(config.displayData);
             errorCode = "drawBackground";
