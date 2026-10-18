@@ -639,6 +639,7 @@ package
       
       private var _lastChallengeUpdateTime:Number = 0;
       
+      private var _lastChallengeUpdateTime2:Number = 0;
       
       private var _lastChallengeUpdateTimestamp:Number = 0;
       
@@ -2649,7 +2650,7 @@ package
                   case "showSeasonEndTime":
                      if(this.SeasonData && this.SeasonData.data)
                      {
-                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.uEndTimeSec != 0 ? FormatTimeStringCustom(Number(this.SeasonData.data.uEndTimeSec - date.getTime() / 1000)) : "00:00"));
+                        displayMessage(config.formats.showSeasonEndTime.replace(STRING_TIME,this.SeasonData.data.uEndTimeSec != 0 ? FormatTimeStringCustom(Number(this.SeasonData.data.uEndTimeSec - date.getTime() / 1000)) : STRING_TIME_ZERO));
                         applyColor(dataField);
                      }
                      break;
@@ -2913,7 +2914,7 @@ package
                            codeAlpha = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 24,8)),8);
                            codeBravo = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 16,8)),8);
                            codeCharlie = GlobalFunc.PadNumber(NUCLEAR_CODE_COMBINATIONS - int(NUCLEAR_CODE.substr(NUCLEAR_CODE.length - 8,8)),8);
-                           splitDisplayLine(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,"00:00"),dataField);
+                           splitDisplayLine(config.nuclearCodes.text.replace(STRING_CODE_ALPHA,codeAlpha).replace(STRING_CODE_BRAVO,codeBravo).replace(STRING_CODE_CHARLIE,codeCharlie).replace(STRING_TIME,STRING_TIME_ZERO),dataField);
                            if(config.anchor == "bottom")
                            {
                               displayMessage("WARNING: Rollover week, last week\'s codes:");

@@ -13,11 +13,11 @@ package
       
       public static const STRING_TEXT:String = "{text}";
       
-      public static const DEFAULT_CHALLENGE_FORMAT:String = "{text} {currentValue}/{thresholdValue}";
+      public static const DEFAULT_CHALLENGE_FORMAT:String = "{text} [{currentValue}/{thresholdValue}]";
       
-      public static const DEFAULT_EVENT_FORMAT:String = "{text} {time}";
+      public static const DEFAULT_EVENT_FORMAT:String = "{text} ({time})";
       
-      public static const DEFAULT_MUTATED_EVENT_FORMAT:String = "{text} [{mutation}] {time}";
+      public static const DEFAULT_MUTATED_EVENT_FORMAT:String = "{text} [{mutation}] ({time})";
       
       public static const DEFAULT_SCORE_FORMAT:String = "$$SCORE [{currentRank}] {currentValue}/{thresholdValue} ({progress}%) +{currentBoost}% boost";
       
