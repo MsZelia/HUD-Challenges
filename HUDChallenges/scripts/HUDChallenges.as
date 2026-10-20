@@ -152,6 +152,8 @@ package
       
       private static const MAIN_MENU:String = "MainMenu";
       
+      private static const SOCIAL_MENU:String = "SocialMenu";
+      
       private static const CHALLENGE_TYPE_DAILY:uint = 0;
       
       private static const CHALLENGE_TYPE_WEEKLY:uint = 1;
@@ -753,6 +755,8 @@ package
       
       private var isInMainMenu:Boolean = true;
       
+      private var isSocialMenuShown:Boolean = false;
+      
       private var toggleVisibility:Boolean = false;
       
       private var forceHide:Boolean = false;
@@ -854,6 +858,7 @@ package
          BSUIDataManager.Subscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Subscribe("HUDModeData",this.updateVisibility);
          BSUIDataManager.Subscribe("ChallengeData",this.onChallengeDataUpdate);
+         BSUIDataManager.Subscribe("SocialMenuData",this.updateIsSocialMenu);
       }
       
       public static function toString(data:Object) : String
@@ -982,6 +987,7 @@ package
          BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Unsubscribe("HUDModeData",this.updateVisibility);
          BSUIDataManager.Uncubscribe("ChallengeData",this.onChallengeDataUpdate);
+         BSUIDataManager.Unsubscribe("SocialMenuData",this.updateIsSocialMenu);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -1132,6 +1138,18 @@ package
                this.players = [];
                this.worldEvents = {};
             }
+         }
+         catch(e:Error)
+         {
+         }
+      }
+      
+      private function updateIsSocialMenu(event:FromClientDataEvent) : void
+      {
+         try
+         {
+            this.isSocialMenuShown = Boolean(event) && Boolean(event.data) && Boolean(event.data.showMenu);
+            this.updateVisibility();
          }
          catch(e:Error)
          {
@@ -2628,7 +2646,7 @@ package
                      applyColor(dataField);
                      break;
                   case "showHUDMode":
-                     displayMessage(config.formats.showHUDMode.replace(STRING_HUDMODE,!this.isInMainMenu ? this.HUDModeData.data.hudMode : MAIN_MENU));
+                     displayMessage(config.formats.showHUDMode.replace(STRING_HUDMODE,this.isSocialMenuShown ? SOCIAL_MENU : (this.isInMainMenu ? MAIN_MENU : this.HUDModeData.data.hudMode)));
                      applyColor(dataField);
                      break;
                   case "showRenderTime":
@@ -3309,9 +3327,9 @@ package
          {
             if(config.HUDModesState == HUDChallengesConfig.STATE_HIDDEN)
             {
-               return this.isInMainMenu ? config.HUDModes.indexOf(MAIN_MENU) == -1 : config.HUDModes.indexOf(this.HUDModeData.data.hudMode) == -1;
+               return this.isSocialMenuShown ? !config.HUDModesMap[SOCIAL_MENU] : (this.isInMainMenu ? !config.HUDModesMap[MAIN_MENU] : !config.HUDModesMap[this.HUDModeData.data.hudMode]);
             }
-            return this.isInMainMenu ? config.HUDModes.indexOf(MAIN_MENU) != -1 : config.HUDModes.indexOf(this.HUDModeData.data.hudMode) != -1;
+            return this.isSocialMenuShown ? config.HUDModesMap[SOCIAL_MENU] : (this.isInMainMenu ? config.HUDModesMap[MAIN_MENU] : config.HUDModesMap[this.HUDModeData.data.hudMode]);
          }
          return true;
       }

@@ -664,6 +664,11 @@ package
          {
             config.HUDModes = [];
          }
+         config.HUDModesMap = {};
+         for each(var mode in config.HUDModes)
+         {
+            config.HUDModesMap[mode] = true;
+         }
          _config = config;
          return _config;
       }
