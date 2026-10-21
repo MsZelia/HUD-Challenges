@@ -23,6 +23,7 @@ package
       
       public static const MOD_NAME:String = "HUDChallenges";
       
+      public static const MOD_VERSION:String = "1.6.0";
       
       public static const FULL_MOD_NAME:String = MOD_NAME + " " + MOD_VERSION;
       
