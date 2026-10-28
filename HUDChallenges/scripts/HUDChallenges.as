@@ -1738,25 +1738,25 @@ package
          {
             requiredLevelUpPetXPMap = {};
             requiredLevelUpPetXPMap[1] = 0;
-            requiredLevelUpPetXPMap[2] = 5040;
+            requiredLevelUpPetXPMap[2] = 1320;
             var i:int = 3;
             while(i <= 200)
             {
                if(i <= 5)
                {
-                  requiredLevelUpPetXPMap[i] = 320 * i + 4400;
+                  requiredLevelUpPetXPMap[i] = 200 * i + 920;
                }
                else if(i <= 50)
                {
-                  requiredLevelUpPetXPMap[i] = 240 * i + 4800;
+                  requiredLevelUpPetXPMap[i] = 276 * i + 540;
                }
-               else if(i <= 150)
+               else if(i <= 170)
                {
-                  requiredLevelUpPetXPMap[i] = 360 * i - 1200;
+                  requiredLevelUpPetXPMap[i] = 414 * i - 6360;
                }
                else
                {
-                  requiredLevelUpPetXPMap[i] = 480 * i - 19200;
+                  requiredLevelUpPetXPMap[i] = 540 * i - 27780;
                }
                i++;
             }
