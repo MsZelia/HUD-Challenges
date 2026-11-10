@@ -263,6 +263,8 @@ package
       
       private static const QUEST_ID_DEATH_FROM_ABOVE:uint = 2953065;
       
+      private static const QUEST_ID_MISSION_COUNTDOWN:uint = 4064170;
+      
       private static const SILO_POSITIONS:Array = [{
          "x":0.711506,
          "y":0.446575
@@ -800,6 +802,8 @@ package
       
       private var isDeathFromAboveActive:Boolean = false;
       
+      private var isMissionCountdownActive:Boolean = false;
+      
       private var nukeTouchdownTimeStarted:Number = 0;
       
       private var isInConversationWithSmiley:Boolean = false;
@@ -834,6 +838,8 @@ package
       private var requiredLevelUpPetXPMap:Object = null;
       
       private var useEndTimeForChallenge:Object = null;
+      
+      private var isLocalPlayerNearSilo:int = -1;
       
       public function HUDChallenges()
       {
@@ -1168,6 +1174,26 @@ package
          }
       }
       
+      private function isPlayerNearSilo(player:Object) : int
+      {
+         var isInSilo:int = -1;
+         var i:int = 0;
+         while(i < SILO_POSITIONS.length)
+         {
+            if(Math.sqrt(Math.pow(player.x - SILO_POSITIONS[i].x,2) + Math.pow(player.y - SILO_POSITIONS[i].y,2)) < 0.005)
+            {
+               isInSilo = i;
+               break;
+            }
+            i++;
+         }
+         if(i == SILO_POSITIONS.length)
+         {
+            isInSilo = -1;
+         }
+         return isInSilo;
+      }
+      
       private function onMapMenuUpdate(event:FromClientDataEvent) : void
       {
          var i:int;
@@ -1210,20 +1236,7 @@ package
                      marker = MapMenuData.data.MarkerData[i];
                      if(!marker.text && marker.markerType == "PlayerLocal")
                      {
-                        j = 0;
-                        while(j < SILO_POSITIONS.length)
-                        {
-                           if(Math.sqrt(Math.pow(marker.x - SILO_POSITIONS[j].x,2) + Math.pow(marker.y - SILO_POSITIONS[j].y,2)) < 0.005)
-                           {
-                              this.isInSilo = j;
-                              break;
-                           }
-                           j++;
-                        }
-                        if(j == SILO_POSITIONS.length)
-                        {
-                           this.isInSilo = -1;
-                        }
+                        this.isInSilo = isPlayerNearSilo(marker);
                         break;
                      }
                      i++;
@@ -1242,6 +1255,10 @@ package
                            "x":marker.x,
                            "y":marker.y
                         });
+                     }
+                     else if(!marker.text && marker.markerType == "PlayerLocal")
+                     {
+                        this.isLocalPlayerNearSilo = isPlayerNearSilo(marker);
                      }
                      else if(marker.markerType.indexOf("InWorld") == 0)
                      {
@@ -1392,19 +1409,23 @@ package
          var i:int;
          var quests:Array;
          var nukeTouchdownTimeDelta:int;
+         var isDeathFromAbovePreviouslyActive:Boolean;
          try
          {
             if(event.data && event.data.quests && event.data.quests.length)
             {
                i = 0;
                quests = event.data.quests;
+               isDeathFromAbovePreviouslyActive = this.isDeathFromAboveActive;
+               this.isDeathFromAboveActive = false;
+               this.isMissionCountdownActive = false;
                while(i < quests.length)
                {
                   if(quests[i].questId == QUEST_ID_DEATH_FROM_ABOVE)
                   {
-                     if(!this.isDeathFromAboveActive)
+                     this.isDeathFromAboveActive = true;
+                     if(!isDeathFromAbovePreviouslyActive)
                      {
-                        this.isDeathFromAboveActive = true;
                         nukeTouchdownTimeDelta = 180 - quests[i].objectives[0].timer.total_time;
                         this.nukeTouchdownTimeStarted = new Date().getTime() / 1000 - nukeTouchdownTimeDelta;
                         if(this.isInSilo != -1 && this.nukeTouchdownTimeStarted - this.lastTargetingModeEnded < 45)
@@ -1428,13 +1449,12 @@ package
                            }
                         }
                      }
-                     break;
+                  }
+                  else if(quests[i].questId == QUEST_ID_MISSION_COUNTDOWN)
+                  {
+                     this.isMissionCountdownActive = true;
                   }
                   i++;
-               }
-               if(i == quests.length)
-               {
-                  this.isDeathFromAboveActive = false;
                }
             }
          }
@@ -2914,6 +2934,14 @@ package
                   case "showNuclearCodes":
                      if(config.nuclearCodes)
                      {
+                        if(config.nuclearCodes.debug)
+                        {
+                           displayMessage("NC.debug|terminal:" + Boolean(this.HUDModeData.data.hudMode == HUDModes.TERMINAL_MODE) + ", nearSilo:" + Boolean(this.isLocalPlayerNearSilo != -1) + ", siloQuestA:" + this.isMissionCountdownActive);
+                        }
+                        if(config.nuclearCodes.showOnlyInSiloAndTerminal && !(this.isMissionCountdownActive || this.isLocalPlayerNearSilo != -1 || this.HUDModeData.data.hudMode == HUDModes.TERMINAL_MODE))
+                        {
+                           continue;
+                        }
                         utcWithOffset = utcSeconds + config.nuclearCodes.offsetHours * 3600;
                         timeSinceCodesTimestamp = utcWithOffset - NUCLEAR_CODES_TIMESTAMP;
                         timeThisWeek = timeSinceCodesTimestamp % SECONDS_IN_WEEK;
