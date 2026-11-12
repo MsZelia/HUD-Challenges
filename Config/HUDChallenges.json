@@ -48,8 +48,8 @@
 	"refresh": 1000,
 	
 	/* Formats accept:
-	Challenges: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs, skyline_valley, pets
-	Events: mutatedEvent, publicEvent, worldEvent, caravan, infestation
+	Challenges: daily, weekly, events, seasonal, character, survival, combat, social, appalachia, fishing, burning_springs, skyline_valley, pets
+	Events: mutatedEvent, publicEvent, activity, caravan, infestation
 	
 	Challenges accept: {text}, {currentValue}, {thresholdValue}
 		default: "{text} {currentValue}/{thresholdValue}"
@@ -86,7 +86,7 @@
 		"survival": "{text} [{currentValue}/{thresholdValue}]",
 		"combat": "{text} [{currentValue}/{thresholdValue}]",
 		"social": "{text} [{currentValue}/{thresholdValue}]",
-		"world": "{text} [{currentValue}/{thresholdValue}]",
+		"appalachia": "{text} [{currentValue}/{thresholdValue}]",
 		"fishing": "{text} [{currentValue}/{thresholdValue}]", // 1.1.3
 		"burning_springs": "{text} [{currentValue}/{thresholdValue}]", // 1.2.3
 		"skyline_valley": "{text} [{currentValue}/{thresholdValue}]", // 1.6.0
@@ -94,7 +94,7 @@
 		
 		"mutatedEvent": "[M][{participants}] {text} [{mutation}] ({time})",
 		"publicEvent": "[P][{participants}] {text} ({time})",
-		"worldEvent": "[W][{participants}] {text} ({time})",
+		"activity": "[A][{participants}] {text} ({time})",
 		"caravan": "[C] {text} ({time})",
 		"infestation": "[I] {text} ({time})",
 		
@@ -238,7 +238,7 @@
 		"survival": false,
 		"combat": false,
 		"social": false,
-		"world": false,
+		"appalachia": false,
 		"fishing": false, // Update 1.1.3
 		"burning_springs": false, // 1.2.3
 		"skyline_valley": false, // 1.6.0
@@ -255,7 +255,7 @@
 		"survival": false,
 		"combat": false,
 		"social": false,
-		"world": false,
+		"appalachia": false,
 		"fishing": false,
 		"burning_springs": false, // 1.2.3
 		"skyline_valley": false, // 1.6.0
@@ -319,10 +319,10 @@
 			{monthlyExpireTime}, {monthlyProgress} - Update 1.1.1
 		examples: "text:0xffffff:My custom text", "text:Daily:DAILY {dailyProgress}"
 	"challenges:group"
-		options: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs, skyline_valley, pets
+		options: daily, weekly, events, seasonal, character, survival, combat, social, appalachia, fishing, burning_springs, skyline_valley, pets
 		examples: "challenges:daily", "challenges:weekly"
 	"events:group"
-		options: mutatedEvent, publicEvent, worldEvent, caravan, infestation
+		options: mutatedEvent, publicEvent, activity, caravan, infestation
 		examples: "events:mutatedEvent", "events:publicEvent"
 	
 	Update 1.1.1:
@@ -416,14 +416,14 @@
 		"events:infestation",
 		"events:mutatedEvent",
 		"events:publicEvent",
-		"events:worldEvent",
+		"events:activity",
 		"events:caravan"
 	],
 	
 	/* Custom color options:
 	All displayData options: "showVersion", "showHUDMode", "showRenderTime"...
-	All challange options: daily, weekly, events, seasonal, character, survival, combat, social, world, fishing, burning_springs, skyline_valley, pets
-	All events options: mutatedEvent, publicEvent, worldEvent, caravan, infestation
+	All challange options: daily, weekly, events, seasonal, character, survival, combat, social, appalachia, fishing, burning_springs, skyline_valley, pets
+	All events options: mutatedEvent, publicEvent, activity, caravan, infestation
 	Any other string that can be used in "text:..." or "separator:..." displayData options
 	
 	"minervaAvailable" and "minervaNotAvailable" (Update 1.0.4)
@@ -467,6 +467,7 @@
 		"monthly": "0xffffcb",
 		"combat": "0xff5555",
 		"events": "0xccccff",
+		"appalachia": "0xffffcb",
 		"fishing": "0x99ffff",
 		"burning_springs": "0xe56a5d",
 		"skyline_valley": "0x33cc33",
@@ -476,7 +477,7 @@
 		"caravan": "0xf7a0b5",
 		"mutatedEvent": "0xd2ff22",
 		"publicEvent": "0xffb300",
-		"worldEvent": "0xffffcb",
+		"activity": "0xffffcb",
 		
 		"showScoreBar": "0xffffff",
 		"scoreBar": "0x0066ff",
