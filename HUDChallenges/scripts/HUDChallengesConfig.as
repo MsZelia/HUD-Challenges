@@ -156,14 +156,14 @@ package
             config.formats.survival = DEFAULT_CHALLENGE_FORMAT;
             config.formats.combat = DEFAULT_CHALLENGE_FORMAT;
             config.formats.social = DEFAULT_CHALLENGE_FORMAT;
-            config.formats.world = DEFAULT_CHALLENGE_FORMAT;
+            config.formats.appalachia = DEFAULT_CHALLENGE_FORMAT;
             config.formats.fishing = DEFAULT_CHALLENGE_FORMAT;
             config.formats.burning_springs = DEFAULT_CHALLENGE_FORMAT;
             config.formats.pets = DEFAULT_CHALLENGE_FORMAT;
             config.formats.skyline_valley = DEFAULT_CHALLENGE_FORMAT;
             config.formats.mutatedEvent = DEFAULT_MUTATED_EVENT_FORMAT;
             config.formats.publicEvent = DEFAULT_EVENT_FORMAT;
-            config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
+            config.formats.activity = DEFAULT_EVENT_FORMAT;
             config.formats.infestation = DEFAULT_EVENT_FORMAT;
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
@@ -221,9 +221,9 @@ package
             {
                config.formats.social = DEFAULT_CHALLENGE_FORMAT;
             }
-            if(!config.formats.world)
+            if(!config.formats.appalachia)
             {
-               config.formats.world = DEFAULT_CHALLENGE_FORMAT;
+               config.formats.appalachia = config.formats.world != null ? config.formats.world : DEFAULT_CHALLENGE_FORMAT;
             }
             if(!config.formats.fishing)
             {
@@ -249,9 +249,9 @@ package
             {
                config.formats.publicEvent = DEFAULT_EVENT_FORMAT;
             }
-            if(!config.formats.worldEvent)
+            if(!config.formats.activity)
             {
-               config.formats.worldEvent = DEFAULT_EVENT_FORMAT;
+               config.formats.activity = config.formats.worldEvent != null ? config.formats.worldEvent : DEFAULT_EVENT_FORMAT;
             }
             if(!config.formats.caravan)
             {
@@ -563,9 +563,17 @@ package
          {
             config.showOnlyTrackedChallenges = {};
          }
+         else if(config.showOnlyTrackedChallenges.appalachia == null && config.showOnlyTrackedChallenges.world != null)
+         {
+            config.showOnlyTrackedChallenges.appalachia = config.showOnlyTrackedChallenges.world;
+         }
          if(!config.showSubChallenges)
          {
             config.showSubChallenges = {};
+         }
+         else if(config.showSubChallenges.appalachia == null && config.showSubChallenges.world != null)
+         {
+            config.showSubChallenges.appalachia = config.showSubChallenges.world;
          }
          if(!config.countdownTimerForEvents)
          {
@@ -595,7 +603,7 @@ package
             }
             else
             {
-               for(event in config.eventSoundNotify.events)
+               for(var event in config.eventSoundNotify.events)
                {
                   if(config.eventSoundNotify.events[event] === true)
                   {
@@ -609,15 +617,37 @@ package
             config.displayData = [];
             config.displayData.push("showVersion");
          }
+         else
+         {
+            for(var i in config.displayData)
+            {
+               if(config.displayData[i] == "challenges:world")
+               {
+                  config.displayData[i] = "challenges:appalachia";
+               }
+               else if(config.displayData[i] == "events:worldEvent")
+               {
+                  config.displayData[i] = "events:activity";
+               }
+            }
+         }
          if(!config.customColors)
          {
             config.customColors = {};
          }
          else
          {
-            for(color in config.customColors)
+            for(var color in config.customColors)
             {
                config.customColors[color] = Parser.parseNumber(config.customColors[color],config.textColor);
+            }
+            if(config.customColors.appalachia == null && config.customColors.world != null)
+            {
+               config.customColors.appalachia = config.customColors.world;
+            }
+            if(config.customColors.activity == null && config.customColors.worldEvent != null)
+            {
+               config.customColors.activity = config.customColors.worldEvent;
             }
          }
          if(!config.customEventChallengeColors)
