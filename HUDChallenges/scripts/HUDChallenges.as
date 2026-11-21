@@ -3095,7 +3095,10 @@ package
                         {
                            showPossibleLocations();
                         }
-                        splitDisplayLine(config.activeInfestation.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationStarted)).replace(STRING_AMOUNT,activeInfestations.length),dataField);
+                        if(!config.activeInfestation.showOnlyLocations)
+                        {
+                           splitDisplayLine(config.activeInfestation.text.replace(STRING_TIME,FormatTimeStringCustom(utcSeconds - lastInfestationStarted)).replace(STRING_AMOUNT,activeInfestations.length),dataField);
+                        }
                         if(config.anchor == "top" && config.activeInfestation.showPossibleLocations)
                         {
                            showPossibleLocations();

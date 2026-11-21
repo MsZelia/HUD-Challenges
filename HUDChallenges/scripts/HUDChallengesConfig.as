@@ -543,6 +543,7 @@ package
             config.activeInfestation = {};
             config.activeInfestation.hideEndedInfestationAfter = 30;
             config.activeInfestation.showPossibleLocations = true;
+            config.activeInfestation.showOnlyLocations = false;
             config.activeInfestation.text = DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
             config.activeInfestation.textLocations = DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT;
@@ -553,6 +554,7 @@ package
          {
             config.activeInfestation.hideEndedInfestationAfter = Parser.parseNumber(config.activeInfestation.hideEndedInfestationAfter,30);
             config.activeInfestation.showPossibleLocations = Boolean(config.activeInfestation.showPossibleLocations);
+            config.activeInfestation.showOnlyLocations = Boolean(config.activeInfestation.showOnlyLocations) && config.activeInfestation.showPossibleLocations;
             config.activeInfestation.text = Boolean(config.activeInfestation.text) ? config.activeInfestation.text : DEFAULT_ACTIVE_INFESTATION_FORMAT;
             config.activeInfestation.textEnded = Boolean(config.activeInfestation.textEnded) ? config.activeInfestation.textEnded : DEFAULT_ACTIVE_INFESTATION_ENDED_FORMAT;
             config.activeInfestation.textLocations = Boolean(config.activeInfestation.textLocations) ? config.activeInfestation.textLocations : DEFAULT_ACTIVE_INFESTATION_LOCATIONS_FORMAT;
