@@ -866,6 +866,7 @@ package
          BSUIDataManager.Subscribe("HUDModeData",this.updateVisibility);
          BSUIDataManager.Subscribe("ChallengeData",this.onChallengeDataUpdate);
          BSUIDataManager.Subscribe("SocialMenuData",this.updateIsSocialMenu);
+         BSUIDataManager.Subscribe("FanfareData",this.onFanfareDataUpdate);
       }
       
       public static function toString(data:Object) : String
@@ -995,6 +996,7 @@ package
          BSUIDataManager.Unsubscribe("HUDModeData",this.updateVisibility);
          BSUIDataManager.Uncubscribe("ChallengeData",this.onChallengeDataUpdate);
          BSUIDataManager.Unsubscribe("SocialMenuData",this.updateIsSocialMenu);
+         BSUIDataManager.Unsubscribe("FanfareData",this.onFanfareDataUpdate);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
          if(stage)
          {
@@ -1404,63 +1406,100 @@ package
          }
       }
       
+      private function onFanfareDataUpdate(event:FromClientDataEvent) : void
+      {
+         var ffEvent:*;
+         try
+         {
+            if(event.data && event.data.fanfareEvents)
+            {
+               if(this.isInSilo == -1)
+               {
+                  return;
+               }
+               for each(ffEvent in event.data.fanfareEvents)
+               {
+                  if(ffEvent.questId == QUEST_ID_DEATH_FROM_ABOVE && ffEvent.fanfareEventType == 4)
+                  {
+                     this.nukeTouchdownTimeStarted = new Date().getTime() / 1000;
+                     if(this.nukeTouchdownTimeStarted - this.lastTargetingModeEnded < 30)
+                     {
+                        this.saveSiloData();
+                        this.isInSilo = -1;
+                     }
+                  }
+               }
+            }
+         }
+         catch(e:*)
+         {
+            ShowHUDMessage("onFanfareDataUpdate error: " + e);
+         }
+      }
+      
       private function onQuestTrackerUpdate(event:FromClientDataEvent) : void
       {
-         var i:int;
-         var quests:Array;
-         var nukeTouchdownTimeDelta:int;
-         var isDeathFromAbovePreviouslyActive:Boolean;
+         var quest:*;
          try
          {
             if(event.data && event.data.quests && event.data.quests.length)
             {
-               i = 0;
-               quests = event.data.quests;
-               isDeathFromAbovePreviouslyActive = this.isDeathFromAboveActive;
-               this.isDeathFromAboveActive = false;
                this.isMissionCountdownActive = false;
-               while(i < quests.length)
+               for each(quest in event.data.quests)
                {
-                  if(quests[i].questId == QUEST_ID_DEATH_FROM_ABOVE)
-                  {
-                     this.isDeathFromAboveActive = true;
-                     if(!isDeathFromAbovePreviouslyActive)
-                     {
-                        nukeTouchdownTimeDelta = 180 - quests[i].objectives[0].timer.total_time;
-                        this.nukeTouchdownTimeStarted = new Date().getTime() / 1000 - nukeTouchdownTimeDelta;
-                        if(this.isInSilo != -1 && this.nukeTouchdownTimeStarted - this.lastTargetingModeEnded < 45)
-                        {
-                           if(!this.challengesFileData)
-                           {
-                              this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
-                           }
-                           if(!this.challengesFileData.siloCooldowns)
-                           {
-                              this.challengesFileData.siloCooldowns = {};
-                           }
-                           if(!this.challengesFileData.siloCooldowns[characterName])
-                           {
-                              this.challengesFileData.siloCooldowns[characterName] = {};
-                           }
-                           this.challengesFileData.siloCooldowns[characterName][isInSilo] = Math.floor(this.lastTargetingModeEnded);
-                           if(this.isSFEDefined)
-                           {
-                              this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
-                           }
-                        }
-                     }
-                  }
-                  else if(quests[i].questId == QUEST_ID_MISSION_COUNTDOWN)
+                  if(quest.questId == QUEST_ID_MISSION_COUNTDOWN)
                   {
                      this.isMissionCountdownActive = true;
                   }
-                  i++;
                }
             }
          }
          catch(e:*)
          {
             ShowHUDMessage("onQuestTrackerUpdate error: " + e);
+         }
+      }
+      
+      private function saveSiloData() : void
+      {
+         if(!this.challengesFileData)
+         {
+            this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
+         }
+         if(!this.challengesFileData.siloCooldowns)
+         {
+            this.challengesFileData.siloCooldowns = {};
+         }
+         if(!this.challengesFileData.siloCooldowns[characterName])
+         {
+            this.challengesFileData.siloCooldowns[characterName] = {};
+         }
+         this.challengesFileData.siloCooldowns[characterName][isInSilo] = Math.floor(this.lastTargetingModeEnded);
+         if(this.isSFEDefined)
+         {
+            this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
+         }
+      }
+      
+      private function saveSmileyData() : void
+      {
+         if(!this.challengesFileData)
+         {
+            this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
+         }
+         if(!this.challengesFileData.smileyTrades)
+         {
+            this.challengesFileData.smileyTrades = {};
+         }
+         if(!this.challengesFileData.smileyTrades[characterName])
+         {
+            this.challengesFileData.smileyTrades[characterName] = {};
+         }
+         this.challengesFileData.smileyTrades[characterName].time = Math.floor(new Date().getTime() / 1000);
+         this.challengesFileData.smileyTrades[characterName].gold = this.goldBullion - this.goldBeforeConversationWithSmiley;
+         if(this.isSFEDefined)
+         {
+            this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
          }
       }
       
@@ -1483,24 +1522,7 @@ package
                   this.isInConversationWithSmiley = false;
                   if(this.goldBeforeConversationWithSmiley != this.goldBullion)
                   {
-                     if(!this.challengesFileData)
-                     {
-                        this.challengesFileData = DEFAULT_DATA_FILE_OBJECT;
-                     }
-                     if(!this.challengesFileData.smileyTrades)
-                     {
-                        this.challengesFileData.smileyTrades = {};
-                     }
-                     if(!this.challengesFileData.smileyTrades[characterName])
-                     {
-                        this.challengesFileData.smileyTrades[characterName] = {};
-                     }
-                     this.challengesFileData.smileyTrades[characterName].time = Math.floor(new Date().getTime() / 1000);
-                     this.challengesFileData.smileyTrades[characterName].gold = this.goldBullion - this.goldBeforeConversationWithSmiley;
-                     if(this.isSFEDefined)
-                     {
-                        this.topLevel.__SFCodeObj.call("writeChallengeDataFile",toString(this.challengesFileData));
-                     }
+                     this.saveSmileyData();
                   }
                }
             }
