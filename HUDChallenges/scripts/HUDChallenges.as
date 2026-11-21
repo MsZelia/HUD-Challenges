@@ -1829,6 +1829,21 @@ package
          return 0;
       }
       
+      public function indexOfCaseSensitiveString(arr:Array, searchingFor:String, fromIndex:uint = 0) : int
+      {
+         var len:uint = arr.length;
+         var index:uint = fromIndex;
+         while(index < len)
+         {
+            if(searchingFor.indexOf(arr[index]) != -1)
+            {
+               return index;
+            }
+            index++;
+         }
+         return -1;
+      }
+      
       private function onChallengeDataUpdate(event:*) : void
       {
          var challenges:Object;
@@ -3351,7 +3366,7 @@ package
          var isStateHidden:Boolean = config.hideChallengesState == HUDChallengesConfig.STATE_HIDDEN;
          if(config.hideChallenges.length > 0)
          {
-            var index:int = int(ArrayUtils.indexOfCaseInsensitiveString(config.hideChallenges,text));
+            var index:int = indexOfCaseSensitiveString(config.hideChallenges,text.toLowerCase());
             if(isStateHidden)
             {
                return index == -1;
@@ -3366,7 +3381,7 @@ package
          var isStateHidden:Boolean = config.hideEventsState == HUDChallengesConfig.STATE_HIDDEN;
          if(config.hideEvents.length > 0)
          {
-            var index:int = int(ArrayUtils.indexOfCaseInsensitiveString(config.hideEvents,text));
+            var index:int = indexOfCaseSensitiveString(config.hideEvents,text.toLowerCase());
             if(isStateHidden)
             {
                return index == -1;

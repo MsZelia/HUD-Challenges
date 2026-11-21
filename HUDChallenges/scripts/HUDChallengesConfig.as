@@ -642,20 +642,32 @@ package
          {
             config.customColors = {};
          }
-         else
+         config.customColors.xpBar = config.xpBar.barColor != null ? config.xpBar.barColor : config.customColors.xpBar;
+         config.customColors.showXPBar = config.xpBar.textColor != null ? config.xpBar.textColor : config.customColors.showXPBar;
+         config.customColors.petXpBar = config.petXpBar.barColor != null ? config.petXpBar.barColor : config.customColors.petXpBar;
+         config.customColors.showPetXPBar = config.petXpBar.textColor != null ? config.petXpBar.textColor : config.customColors.showPetXPBar;
+         config.customColors.scoreBar = config.scoreBar.barColor != null ? config.scoreBar.barColor : config.customColors.scoreBar;
+         config.customColors.showScoreBar = config.scoreBar.textColor != null ? config.scoreBar.textColor : config.customColors.showScoreBar;
+         config.customColors.minervaAvailable = config.minerva.availableColor != null ? config.minerva.availableColor : config.customColors.minervaAvailable;
+         config.customColors.minervaNotAvailable = config.minerva.notAvailableColor != null ? config.minerva.notAvailableColor : config.customColors.minervaNotAvailable;
+         config.customColors.showNuclearCodes = config.nuclearCodes.color != null ? config.nuclearCodes.color : config.customColors.showNuclearCodes;
+         config.customColors.showEventTimer = config.eventTimer.color != null ? config.eventTimer.color : config.customColors.showEventTimer;
+         config.customColors.miniSeasonActive = config.miniSeason.activeColor != null ? config.miniSeason.activeColor : config.customColors.miniSeasonActive;
+         config.customColors.miniSeasonInactive = config.miniSeason.inactiveColor != null ? config.miniSeason.inactiveColor : config.customColors.miniSeasonInactive;
+         config.customColors.verdantSeasonActive = config.verdantSeason.activeColor != null ? config.verdantSeason.activeColor : config.customColors.verdantSeasonActive;
+         config.customColors.verdantSeasonEnded = config.verdantSeason.endedColor != null ? config.verdantSeason.endedColor : config.customColors.verdantSeasonEnded;
+         config.customColors.showFishingSeason = config.fishingSeason.color != null ? config.fishingSeason.color : config.customColors.showFishingSeason;
+         config.customColors.showSiloCooldowns = config.siloCooldowns.color != null ? config.siloCooldowns.color : config.customColors.showSiloCooldowns;
+         config.customColors.smileyVisited = config.smiley.visitedColor != null ? config.smiley.visitedColor : config.customColors.smileyVisited;
+         config.customColors.smileyNotVisited = config.smiley.notVisitedColor != null ? config.smiley.notVisitedColor : config.customColors.smileyNotVisited;
+         config.customColors.showUninvitedGuest = config.uninvitedGuest.color != null ? config.uninvitedGuest.color : config.customColors.showUninvitedGuest;
+         config.customColors.showActiveInfestation = config.activeInfestation.color != null ? config.activeInfestation.color : config.customColors.showActiveInfestation;
+         config.customColors.infestationLocations = config.activeInfestation.locationsColor != null ? config.activeInfestation.locationsColor : config.customColors.infestationLocations;
+         config.customColors.appalachia = config.customColors.world != null ? config.customColors.world : config.customColors.appalachia;
+         config.customColors.activity = config.customColors.worldEvent != null ? config.customColors.worldEvent : config.customColors.activity;
+         for(var color in config.customColors)
          {
-            for(var color in config.customColors)
-            {
-               config.customColors[color] = Parser.parseNumber(config.customColors[color],config.textColor);
-            }
-            if(config.customColors.appalachia == null && config.customColors.world != null)
-            {
-               config.customColors.appalachia = config.customColors.world;
-            }
-            if(config.customColors.activity == null && config.customColors.worldEvent != null)
-            {
-               config.customColors.activity = config.customColors.worldEvent;
-            }
+            config.customColors[color] = Parser.parseNumber(config.customColors[color],config.textColor);
          }
          if(!config.customEventChallengeColors)
          {
