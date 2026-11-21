@@ -166,6 +166,7 @@ package
             config.formats.activity = DEFAULT_EVENT_FORMAT;
             config.formats.infestation = DEFAULT_EVENT_FORMAT;
             config.formats.caravan = DEFAULT_EVENT_FORMAT;
+            config.formats.hideout = DEFAULT_EVENT_FORMAT;
             config.formats.showSeasonEndTime = DEFAULT_SEASON_END_FORMAT;
             config.formats.showRaidXP = DEFAULT_RAID_XP_FORMAT;
             config.formats.showHUDMode = DEFAULT_HUD_MODE_FORMAT;
@@ -260,6 +261,10 @@ package
             if(!config.formats.infestation)
             {
                config.formats.infestation = DEFAULT_EVENT_FORMAT;
+            }
+            if(!config.formats.hideout)
+            {
+               config.formats.hideout = DEFAULT_EVENT_FORMAT;
             }
             if(!config.formats.showSeasonEndTime)
             {

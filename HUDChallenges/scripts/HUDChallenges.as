@@ -179,14 +179,15 @@ package
       
       private static const ACTIVITY_LABEL_EVENT_PARTICIPANTS:String = "$Participants";
       
-      private static const FILTER_RECENT_ACTIVITY_TYPES:Array = [1,2,5,6,8];
+      private static const FILTER_RECENT_ACTIVITY_TYPES:Array = [1,2,5,6,8,9];
       
       private static const FILTER_EVENTS:Object = {
          "publicEvent":1,
          "activity":2,
          "mutatedEvent":5,
          "caravan":6,
-         "infestation":8
+         "infestation":8,
+         "hideout":9
       };
       
       private static const FILTER_CHALLENGE:Object = [{
