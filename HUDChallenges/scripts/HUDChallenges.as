@@ -1986,33 +1986,41 @@ package
       
       private function onRecentActivitiesUpdate(event:*) : void
       {
-         if(!config)
+         var activity:*;
+         try
          {
-            return;
-         }
-         for each(var activity in event.data.recentActivities)
-         {
-            if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
+            if(!config)
             {
-               if(_eventTimes[activity.id] == null)
+               return;
+            }
+            for each(activity in event.data.recentActivities)
+            {
+               if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
                {
-                  _eventTimes[activity.id] = {
-                     "time":activity.time,
-                     "timestamp":getTimer()
-                  };
-                  if(config.eventSoundNotify.enabled && config.eventSoundNotify.events[activity.name])
+                  if(_eventTimes[activity.id] == null)
                   {
-                     GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
+                     _eventTimes[activity.id] = {
+                        "time":activity.time,
+                        "timestamp":getTimer()
+                     };
+                     if(config.eventSoundNotify.enabled && config.eventSoundNotify.events[activity.name])
+                     {
+                        GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
+                     }
+                  }
+                  else if(_eventTimes[activity.id].time != activity.time)
+                  {
+                     _eventTimes[activity.id] = {
+                        "time":activity.time,
+                        "timestamp":getTimer()
+                     };
                   }
                }
-               else if(_eventTimes[activity.id].time != activity.time)
-               {
-                  _eventTimes[activity.id] = {
-                     "time":activity.time,
-                     "timestamp":getTimer()
-                  };
-               }
             }
+         }
+         catch(e:*)
+         {
+            displayMessage("Error onRecentActivitiesUpdate:" + e);
          }
       }
       
