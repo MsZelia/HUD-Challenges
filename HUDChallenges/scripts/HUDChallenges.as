@@ -995,7 +995,7 @@ package
          BSUIDataManager.Unsubscribe("QuestTrackerProvider",this.onQuestTrackerUpdate);
          BSUIDataManager.Unsubscribe("DialogueData",this.onDialogueUpdate);
          BSUIDataManager.Unsubscribe("HUDModeData",this.updateVisibility);
-         BSUIDataManager.Uncubscribe("ChallengeData",this.onChallengeDataUpdate);
+         BSUIDataManager.Unsubscribe("ChallengeData",this.onChallengeDataUpdate);
          BSUIDataManager.Unsubscribe("SocialMenuData",this.updateIsSocialMenu);
          BSUIDataManager.Unsubscribe("FanfareData",this.onFanfareDataUpdate);
          removeEventListener(Event.REMOVED_FROM_STAGE,this.removedFromStageHandler);
@@ -1016,9 +1016,9 @@ package
          {
             this.displayTimer.removeEventListener(TimerEvent.TIMER,this.displayChallengesLoop);
          }
-         if(this.hudtools)
+         if(this.hudTools)
          {
-            this.hudtools.Shutdown();
+            this.hudTools.Shutdown();
          }
       }
       
