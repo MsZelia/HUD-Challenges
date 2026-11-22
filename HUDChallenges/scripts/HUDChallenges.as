@@ -1990,7 +1990,7 @@ package
          {
             return;
          }
-         for each(activity in event.data.recentActivities)
+         for each(var activity in event.data.recentActivities)
          {
             if(FILTER_RECENT_ACTIVITY_TYPES.indexOf(activity.type) != -1 && isValidEventName(activity.name))
             {
@@ -2158,7 +2158,7 @@ package
          this.graphics.clear();
          this.challenges_index = 0;
          this.yOffset = 0;
-         for each(challenge_tf in challenges_tf)
+         for each(var challenge_tf in challenges_tf)
          {
             if(challenge_tf != null)
             {
@@ -2415,7 +2415,7 @@ package
          groupName = groupName.toLowerCase();
          if(_challenges != null && _challenges[groupName] != null && _challenges[groupName].length > 0)
          {
-            for each(challenge in _challenges[groupName])
+            for each(var challenge in _challenges[groupName])
             {
                if(isValidChallengeName(challenge.text) && (!config.showOnlyTrackedChallenges[groupName] || challenge.isTracked))
                {
@@ -2427,7 +2427,7 @@ package
                   if(Boolean(config.showSubChallenges[groupName]) && challenge.subChallenges.length > 0)
                   {
                      var challengeColor:uint = LastDisplayTextfield.textColor;
-                     for each(sub in challenge.subChallenges)
+                     for each(var sub in challenge.subChallenges)
                      {
                         displayMessage(formatChallenge(groupName,sub));
                         LastDisplayTextfield.textColor = challengeColor;
@@ -2460,7 +2460,7 @@ package
       
       public function drawSeparators() : void
       {
-         for each(separator in separators)
+         for each(var separator in separators)
          {
             this.graphics.beginFill(separator.color);
             this.graphics.drawRect(config.x,separator.y,config.width,separator.height);
@@ -2598,7 +2598,7 @@ package
       public function splitDisplayLine(text:String, color:String) : void
       {
          var split:Array = text.split("\n");
-         for(line in split)
+         for(var line in split)
          {
             displayMessage(split[line]);
             applyColor(color);
@@ -2657,6 +2657,7 @@ package
          var gold:int;
          var showPossibleLocations:*;
          var parts:Array;
+         var dataField:*;
          var data:Array = ddata.concat();
          if(config.anchor == "bottom")
          {
