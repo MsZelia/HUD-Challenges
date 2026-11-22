@@ -703,11 +703,11 @@ package
       
       private var PetMarkers:*;
       
-      private var _challenges:Object;
+      private var _challenges:*;
       
       private var _events:Array = [];
       
-      private var _eventTimes:* = {};
+      private var _eventTimes:* = new Dictionary();
       
       private var challenges_tf:Array = [];
       
@@ -791,7 +791,7 @@ package
       
       private var miniSeasonRewardsClaimed:int = 0;
       
-      private var isKeyDownDetected:Object = {};
+      private var isKeyDownDetected:Object = new Dictionary();
       
       private var regionsLocalized:Boolean = false;
       
@@ -827,7 +827,7 @@ package
       
       private var players:Array = [];
       
-      private var worldEvents:Object = {};
+      private var worldEvents:* = new Dictionary();
       
       private var petData:Object = {
          "level":0,
@@ -836,9 +836,9 @@ package
          "progress":0
       };
       
-      private var requiredLevelUpPetXPMap:Object = null;
+      private var requiredLevelUpPetXPMap:* = null;
       
-      private var useEndTimeForChallenge:Object = null;
+      private var useEndTimeForChallenge:* = null;
       
       private var isLocalPlayerNearSilo:int = -1;
       
@@ -1146,7 +1146,7 @@ package
             {
                this.activeInfestations = [];
                this.players = [];
-               this.worldEvents = {};
+               this.worldEvents = new Dictionary();
             }
          }
          catch(e:Error)
@@ -1205,7 +1205,7 @@ package
          var t1:Number;
          var participants:int;
          var _players:Array = [];
-         var _worldEvents:Object = {};
+         var _worldEvents:* = new Dictionary();
          try
          {
             t1 = Number(getTimer());
@@ -1779,7 +1779,7 @@ package
          }
          if(requiredLevelUpPetXPMap == null)
          {
-            requiredLevelUpPetXPMap = {};
+            requiredLevelUpPetXPMap = new Dictionary();
             requiredLevelUpPetXPMap[1] = 0;
             requiredLevelUpPetXPMap[2] = 1320;
             var i:int = 3;
@@ -1846,7 +1846,7 @@ package
       
       private function onChallengeDataUpdate(event:*) : void
       {
-         var challenges:Object;
+         var challenges:*;
          var fo1st_disabledChallenges:int;
          var challengeType:String;
          var t1:Number;
@@ -1863,7 +1863,7 @@ package
             }
             if(!this.useEndTimeForChallenge)
             {
-               this.useEndTimeForChallenge = {};
+               this.useEndTimeForChallenge = new Dictionary();
                for each(filter in FILTER_CHALLENGE)
                {
                   this.useEndTimeForChallenge[filter.name] = config.formats[filter.name].indexOf(STRING_END_TIME) != -1;
@@ -1871,7 +1871,7 @@ package
             }
             now = new Date().getTime() / 1000;
             t1 = Number(getTimer());
-            challenges = {};
+            challenges = new Dictionary();
             hasSeasonPass = this.AccountInfoData && this.AccountInfoData.data && (this.AccountInfoData.data.hasZeus || this.AccountInfoData.data.hasFO1Preview);
             for each(category in event.data.categories)
             {

@@ -1,5 +1,6 @@
 package
 {
+   import flash.utils.*;
    import utils.*;
    
    public class HUDChallengesConfig
@@ -713,7 +714,7 @@ package
          {
             config.HUDModes = [];
          }
-         config.HUDModesMap = {};
+         config.HUDModesMap = new Dictionary();
          for each(var mode in config.HUDModes)
          {
             config.HUDModesMap[mode] = true;
