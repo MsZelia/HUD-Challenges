@@ -190,6 +190,15 @@ package
          "hideout":9
       };
       
+      private static const FILTER_EVENTS_BY_ID:Object = {
+         "1":"publicEvent",
+         "2":"activity",
+         "5":"mutatedEvent",
+         "6":"caravan",
+         "8":"infestation",
+         "9":"hideout"
+      };
+      
       private static const FILTER_CHALLENGE:Object = [{
          "name":"daily",
          "type":0,
@@ -247,6 +256,26 @@ package
          "type":2,
          "category":12
       }];
+      
+      private static const STRING_SEASONAL_EVENT:String = "seasonalEvent";
+      
+      private static const SEASONAL_EVENTS:Object = {
+         "papermaphover_mothmancult _1024.dds":true,
+         "papermaphover_mischiefnight_reloaded_1024.dds":true,
+         "papermaphover_meatweek_1024.dds":true,
+         "papermaphover_invaders_1024.dds":true,
+         "papermaphover_fasnacht_1024.dds":true,
+         "papermaphover_bigbloom_1024.dds":true
+      };
+      
+      private static const STRING_NUKE_EVENT:String = "nukeEvent";
+      
+      private static const NUKE_EVENTS:Object = {
+         "papermaphover_scorchedearth_1024.dds":true,
+         "papermaphover_colossus_1024.dds":true,
+         "papermaphover_seismicactivity_1024.dds":true,
+         "papermaphover_neurologicalwarfare_1024.dds":true
+      };
       
       private static const HUDTOOLS_MENU_TOGGLE_VISIBILITY:String = MOD_NAME + "_TOGGLE_VISIBILITY";
       
@@ -1984,9 +2013,28 @@ package
          }
       }
       
+      private function isSeasonalEvent(event:Object) : Boolean
+      {
+         if(event.image && event.image.imageName)
+         {
+            return SEASONAL_EVENTS[event.image.imageName.toLowerCase()];
+         }
+         return false;
+      }
+      
+      private function isNukeEvent(event:Object) : Boolean
+      {
+         if(event.image && event.image.imageName)
+         {
+            return NUKE_EVENTS[event.image.imageName.toLowerCase()];
+         }
+         return false;
+      }
+      
       private function onRecentActivitiesUpdate(event:*) : void
       {
          var activity:*;
+         var soundName:String;
          try
          {
             if(!config)
@@ -2003,9 +2051,29 @@ package
                         "time":activity.time,
                         "timestamp":getTimer()
                      };
-                     if(config.eventSoundNotify.enabled && config.eventSoundNotify.events[activity.name])
+                     if(config.eventSoundNotify.enabled)
                      {
-                        GlobalFunc.PlayMenuSound(config.eventSoundNotify.events[activity.name]);
+                        soundName = "";
+                        if(config.eventSoundNotify.events[activity.name])
+                        {
+                           soundName = config.eventSoundNotify.events[activity.name];
+                        }
+                        else if(config.eventSoundNotify.events[STRING_SEASONAL_EVENT] && isSeasonalEvent(activity))
+                        {
+                           soundName = config.eventSoundNotify.events[STRING_SEASONAL_EVENT];
+                        }
+                        else if(config.eventSoundNotify.events[STRING_NUKE_EVENT] && isNukeEvent(activity))
+                        {
+                           soundName = config.eventSoundNotify.events[STRING_NUKE_EVENT];
+                        }
+                        else if(config.eventSoundNotify.events[FILTER_EVENTS_BY_ID[activity.type]])
+                        {
+                           soundName = config.eventSoundNotify.events[FILTER_EVENTS_BY_ID[activity.type]];
+                        }
+                        if(soundName)
+                        {
+                           GlobalFunc.PlayMenuSound(soundName);
+                        }
                      }
                   }
                   else if(_eventTimes[activity.id].time != activity.time)
